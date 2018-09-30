@@ -1,0 +1,187 @@
+<extend name="../Application/Admin/View/base.html" />
+<block name="title"><title>Zshop商城-附件管理-附件列表-第<{$currentPage}>页</title></block>
+<block name="content">
+    <section class="wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <!--breadcrumbs start -->
+                <ul class="breadcrumb">
+                    <li><a href="/Admin/Index"><i class="icon-home"></i> 主面板</a></li>
+                    <li><a href="/Admin/Source">附件管理</a></li>
+                    <li class="active">附件列表</li>
+                </ul>
+                <!--breadcrumbs end -->
+
+            </div>
+        </div>
+        <!-- page start-->
+        <div class="row">
+          <div class="col-lg-12">
+            <section class="panel">
+              <header class="panel-heading"><i class="icon-list"></i> 附件列表 </header>
+              <div class="panel-body">
+                  <table class="table table-hover file-search">
+                    <thead>
+                      <tr>
+                          <th>文件名 &amp; 地址</th>
+                          <th class="hidden-phone">上传时间</th>
+                          <th class="hidden-phone">所用模块</th>
+                          <!-- <th>文件大小</th> -->
+                          <th class="hidden-phone">文件类型</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <volist name="sourceList" id="sourceList">
+                      <tr>
+                          <td>
+                              <img alt="" src="/Admin/img/file-search/jpg.png">
+                              <strong><{$sourceList.url}></strong>
+                          </td>
+                          <td class="hidden-phone"><{$sourceList.create_time|date="Y-m-d H:i:s",###}></td>
+                          <td class="hidden-phone">
+                            <if condition="$sourceList['type_id'] eq 1">商品模块</if>
+                            <if condition="$sourceList['type_id'] eq 2">文章模块</if>
+                            <if condition="$sourceList['type_id'] eq 3">会员模块</if>
+                          </td>
+                          <!-- <td>193 KB</td> -->
+                          <td class="hidden-phone">
+                            <if condition="$sourceList['source_type'] eq 1">图片</if>
+                            <if condition="$sourceList['source_type'] eq 2">文件</if>
+                            <if condition="$sourceList['source_type'] eq 3">视频</if>
+                            <if condition="$sourceList['source_type'] eq 4">音频</if>
+                          </td>
+                      </tr>
+                      </volist>
+
+                    </tbody>
+                  </table>
+
+                  <div class="text-center">
+                      <ul class="pagination">
+                          <li><a href="#">«</a></li>
+                          <li><a href="#">1</a></li>
+                          <li><a href="#">2</a></li>
+                          <li><a href="#">3</a></li>
+                          <li><a href="#">4</a></li>
+                          <li><a href="#">5</a></li>
+                          <li><a href="#">»</a></li>
+                      </ul>
+                  </div>
+              </div>
+            </section>
+          </div>
+        </div>
+        <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">对话框</h4>
+                    </div>
+                    <div class="modal-body">确定更改此商品状态</div>
+                    <div class="modal-footer">
+                        <button data-dismiss="modal" class="btn btn-default" type="button">关闭</button>
+                        <button class="btn btn-warning" id="confirmvalue1" value="" type="button"> 确认</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">对话框</h4>
+                    </div>
+                    <div class="modal-body">确定删除此记录</div>
+                    <div class="modal-footer">
+                        <button data-dismiss="modal" class="btn btn-default" type="button">关闭</button>
+                        <button class="btn btn-warning" id="confirmvalue2" value="" type="button"> 确认</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">提示消息</h4>
+                    </div>
+                    <div class="modal-body" id="reback_message">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- page end-->
+    </section>
+</block>
+    <block name="script">
+      <script type="text/javascript">
+        $(document).ready(function() {
+            //下架或者上架
+            $(".myModal1").click(function(){
+                var id = $(this).attr("value");
+                $("#confirmvalue1").attr("value",$(this).attr("value"));
+            });
+            $("#confirmvalue1").click(function(){
+              $("#myModal1").css('display','none'); 
+              $("#myModal1").removeClass("in"); 
+              $("body").removeClass("modal-open");
+                var _id = $(this).attr("value");
+                var _status = "<{$productList.status}>";
+                  $.post("/Admin/Product/changeStatus",{"id":_id,"status":_status},function(data,textStatus, jqXHR){
+                    if (data) {
+                        $("#reback_message").text("更改成功");
+                        $("body").removeClass("modal-open");
+                        $("#myModal3").addClass("in"); 
+                        $("#myModal3").css('display','block'); 
+                    }else{
+                        $("#reback_message").text("更改成功");
+                        $("body").removeClass("modal-open");
+                        $("#myModal3").addClass("in"); 
+                        $("#myModal3").css('display','block'); 
+                    }
+                    setTimeout(function (){
+                        $("#myModal3").removeClass("in"); 
+                        $("#myModal3").css('display','none'); 
+                        $("body").removeClass("modal-open");
+                        $(".modal-backdrop").removeClass("in");
+                     }, 2000);
+                    window.location.reload();
+                  });
+            });
+            //删除
+            $(".myModal2").click(function(){
+                var id = $(this).attr("value");
+                $("#confirmvalue2").attr("value",$(this).attr("value"));
+            });
+            $("#confirmvalue2").click(function(){
+              $("#myModal2").css('display','none'); 
+              $("#myModal2").removeClass("in"); 
+              $("body").removeClass("modal-open");
+                var id = $(this).attr("value");
+                  $.post("/Admin/Product/doDelete",{id:id},function(data,textStatus, jqXHR){
+                    if (data) {
+                        $("#reback_message").text("删除成功");
+                        $("body").removeClass("modal-open");
+                        $("#myModal3").addClass("in"); 
+                        $("#myModal3").css('display','block'); 
+                    }else{
+                        $("#reback_message").text("删除失败");
+                        $("body").removeClass("modal-open");
+                        $("#myModal3").addClass("in"); 
+                        $("#myModal3").css('display','block'); 
+                    }
+                    setTimeout(function (){
+                        $("#myModal3").removeClass("in"); 
+                        $("#myModal3").css('display','none'); 
+                        $("body").removeClass("modal-open");
+                        $(".modal-backdrop").removeClass("in");
+                     }, 2000);
+                    window.location.reload();
+                  });
+            });
+        });
+      </script>
+    </block>

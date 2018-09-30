@@ -1,0 +1,188 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>才秀秀</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<!-- 百度站长验证代码-->
+<meta name="baidu-site-verification" content="5Ybr8YFXyB" />
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui" />
+<meta content="telephone=no,email=no" name="format-detection" />
+<meta name="full-screen" content="yes">
+<meta name="x5-fullscreen" content="true"/>
+<meta name="360-fullscreen" content="true"/>
+<meta name="x5-page-mode" content="app"/>
+<meta name="browsermode" content="application"/>
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="apple-mobile-web-app-title" content="kuaihuojian.com" />
+<link rel="stylesheet" href="/Home/css/lib/base.css?v=<{$cssVersion}>" />
+<link rel="stylesheet" href="/Home/css/resume.css?v=<{$cssVersion}>" />
+<style>
+.select_no_hobby_hr {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    background-color: #fff;
+    z-index: 101; 
+}
+
+.select_no_hobby_hr h3 {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 100%;
+  height: 30px;
+  color: #737373;
+  padding: 0 0 0 20px;
+  font-size: 14px;
+  border-top: 1px solid #e5e5e5;
+  box-sizing: border-box;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background-color: #f5f5f5;
+  box-sizing: border-box;
+}
+
+.select_no_hobby_hr li {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 100%;
+  height: 45px;
+  font-size: 16px;
+  border-top: 1px solid #e5e5e5;
+  box-sizing: border-box;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center; 
+}
+</style>
+</head>
+<body>
+<article class="linearLayout ">
+  <section id="hint" class="hint bg_black"></section>
+
+  <figure class="photo_layout">
+    <img class="photo" <if  condition="!empty($hrInfo['icon_url'])">src="<{$hrInfo['icon_url']}>"<else />src="/Home/images/getuilogo.png"</if> width="46" height="46"/>
+    <figcaption><{$hrInfo['real_name']}> - <{$hrInfo['job']}> </figcaption>
+    <q><{$hrInfo['comapny_name']}></q>
+  </figure>
+  <section class="resume_say">
+    <div>亲爱的<{$resumeUserName}>：</div>
+    <blockquote>您好！感谢您点击查看我的邀请，以下是职位和公司的相关介绍，期待您的加入.</blockquote>
+  </section>
+  <div class="clearfix"></div>
+  <section class="work">
+    <div class="title">
+      <div class="work_name"><{$jobInfo['job_name']}></div>
+      <div class="pay">
+        <em class="icon">&#xe600;</em>
+        <{$jobInfo['job_salary']}>
+      </div>
+    </div>
+    <div class="work_info">
+      <span>
+        <em class="icon">&#xe619;</em><{$jobInfo['job_workplace']}>
+      </span>
+      <span>
+        <em class="icon">&#xe6ad;</em><{$jobInfo['job_experience']?$jobInfo['job_experience']:'不限'}>
+      </span>
+      <span>
+        <em class="icon">&#xe612;</em><{$jobInfo['job_education']?$jobInfo['job_education']:'不限'}>
+      </span>
+    </div>
+    <div class="work_sort">
+      <em class="c999">职位类别：</em><{$jobInfo['job_category']}>
+    </div>
+    <div class="treatment">
+      <{$jobInfo['job_welfare']}>
+    </div>
+
+  </section>
+
+  <section class="tab">
+    <ul class="tab_nav">
+      <li class="curr">职位描述</li>
+      <li>公司介绍</li>
+    </ul>
+    <ul class="tab_list">
+      <li class="tab_item">
+        <{$jobInfo['job_descrip']}>
+      </li>
+      <li class="tab_item hide"><{$companyInfo['company_description']}></li>
+    </ul>
+    <div class="extend">
+      <div class="btn" data-bind="extend_open_btn">展开全部描述<em class="icon"></em></div>
+      <div class="btn" data-bind="extend_close_btn">闭合全部描述<em class="icon"></em></div>
+    </div>
+  </section>
+
+  <section class="company">
+    <figure>
+      <img class="logo" src="http://img4.imgtn.bdimg.com/it/u=4214459748,3444259244&fm=206&gp=0.jpg" width="75" height="75"/>
+      <figcaption><{$companyInfo['company_name']}></figcaption>
+      <span>
+        <em class="icon">&#xe722;</em><{$companyInfo['company_size']}>
+      </span>
+      <span>
+        <em class="icon">&#xe6f6;</em> <{$companyInfo['company_nature']}>
+      </span>
+      <span>
+        <em class="icon">&#xe638;</em> <{$companyInfo['company_trade']}>
+      </span>
+    </figure>  
+
+    <address>
+      <em class="icon">&#xe63a;</em>
+      <{$companyInfo['company_address']}>
+    </address>
+  </section>
+  <from>
+      <input type="hidden" id="inviteId" name="inviteId" value="<{$jData['inviteId']}>">
+      <input type="hidden"  id="resumeId"  name="resumeId" value="<{$jData['resumeId']}>">
+      <input type="hidden"  id="jobId" name="jobId" value="<{$jData['jobId']}>">
+      <input type="hidden"  id="hrId" name="hrId" value="<{$jData['hrId']}>">
+  </from>
+</article>
+
+
+
+<figure class="photo_layout accept_shade_hr hide" style="position:absolute;top:40px;left:0;z-index:101;">
+  <img class="photo" <if  condition="!empty($hrInfo['icon_url'])">src="<{$hrInfo['icon_url']}>"<else />src="/Home/images/getuilogo.png"</if> width="46" height="46"/>
+  <figcaption class="cfff"><{$hrInfo['real_name']}> - <{$hrInfo['job']}></figcaption>
+
+  <q><{$hrInfo['comapny_name']}></q>
+  <aside class="photo_pop">
+    <blockquote>很高兴您能接受邀请，我会尽快与您联系，请保持电话畅通</blockquote>
+    <button data-bind="accept_hr">我知道了</button>
+  </aside>
+</figure>
+<script src="/Home/js/lib/zepto.js"></script>
+<script type="text/javascript">
+var inviteEndTime = <{$inviteEndTime}>;  //剩余时间
+var inviteStatus = <{$inviteStatus}>;  //剩余时间
+var hi = parseInt(inviteEndTime / 60 / 60 % 24, 10); //计算剩余的小时数
+if (hi <=9 && hi!=0) {
+  hi = '0'+hi;
+}
+var mi = parseInt(inviteEndTime  / 60 % 60, 10); //计算剩余的分钟数
+if (mi <=9 && mi!=0) {
+  mi = '0'+mi;
+}
+var si = parseInt(inviteEndTime  % 60, 10); //计算剩余的秒数
+if (si <=9 && si!=0) {
+  si = '0'+si;
+}
+</script>
+<script src="/Home/js/resume.js?v=<{$cssVersion}>"></script>
+</body>
+</html>

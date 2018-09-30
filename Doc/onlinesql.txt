@@ -1,0 +1,1082 @@
+﻿﻿=======================2017年4月21日15:51:22 start  App版本 1.2.2 ==============================
+ALTER TABLE `uu_recommend`.`uu_channel_jobs` ADD COLUMN `original_company_id` CHAR(128) DEFAULT '' NOT NULL COMMENT '原始公司id' AFTER `is_fill`;
+UPDATE `uu_channel_jobs` SET is_fill = 1 ;
+ALTER TABLE `uu_channel_jobs` ADD COLUMN `is_fill` TINYINT(1) UNSIGNED DEFAULT 0 NOT NULL COMMENT '是否填充0未填充1填充' AFTER `url`;
+db.createCollection("uu_resume_search_log");
+
+
+//马亮 职位同步--机构  sql
+ALTER TABLE `uu_channel_institutional` 
+ADD COLUMN `sync_status` TINYINT(1) DEFAULT -1 NOT NULL COMMENT '同步状态默认-1 ，开始同步0，重复1 消失2 新增3' AFTER `original_id`, 
+ADD COLUMN `status` TINYINT(1) DEFAULT 1 NOT NULL COMMENT '数据状态 1有效 0 无效' AFTER `sync_status`; 
+
+
+//马亮 职位同步--职位  sql
+ALTER TABLE `uu_channel_jobs` 
+ADD COLUMN `sync_status` TINYINT(1) DEFAULT -1 NOT NULL COMMENT '同步状态默认-1 ，开始同步0，重复1 消失2 新增3' AFTER `original_company_id`, 
+ADD COLUMN `status` TINYINT(1) DEFAULT 1 NOT NULL COMMENT '数据状态 1有效 0 无效' AFTER `sync_status`; 
+
+//郑自强  职位填充  sql
+ALTER TABLE `uu_channel_jobs`
+ADD INDEX `is_fill` (`is_fill`) USING BTREE ,
+ADD INDEX `original_company_id` (`original_company_id`) USING BTREE
+
+//郑自强  延迟发送短信表  人才蛙2.0
+CREATE TABLE `uu_delayed_send_sms`(
+`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+`sms_details` CHAR(100) NOT NULL DEFAULT '' COMMENT '短信详情',
+`status` INT(0) UNSIGNED NOT NULL DEFAULT 0 COMMENT '发送状态0未发送1未完善职位信息不发送2发送成功3发送失败',
+`user_id` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '用户id',
+`create_time` INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '创建时间',
+`updata_time` INT(10) UNSIGNED NOT NULL DEFAULT 0 COMMENT '更新时间',
+PRIMARY KEY (`id`)
+) ENGINE=INNODB CHARSET=utf8 COLLATE=utf8_general_ci;
+
+//郑自强  延迟发送短信表  人才蛙2.0
+ALTER TABLE `uu_delayed_send_sms`
+ADD COLUMN `send_time` INT(10) UNSIGNED DEFAULT 0 NOT NULL COMMENT '发送时间' AFTER `updata_time`;
+//郑自强
+ALTER TABLE `uu_delayed_send_sms` ADD COLUMN `mobile` INT(11) UNSIGNED DEFAULT 0 NOT NULL COMMENT '手机号' AFTER `job_id`;
+
+//徐超
+此次上线后台es推荐新增的表：
+用于全局过滤简历id（向所有用户始终过滤的 id），
+DROP TABLE IF EXISTS `uu_filter_resume_id`;
+CREATE TABLE `uu_filter_resume_id` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `phone_num_md5` char(32) NOT NULL DEFAULT '0' COMMENT '手机号的MD5（加密）',
+  `resume_id` char(32) DEFAULT NULL COMMENT '简历id',
+  `create_time` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  CHARSET=utf8 COMMENT='向所有用户过滤的简历';
+INSERT INTO `uu_filter_resume_id` VALUES ('1', '1945db86a851bed2cdf4791763ec4ab3', '1018878887', '0');
+
+//郑自强
+CREATE TABLE `uu_see_resume_logs` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `resume_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '被查看简历的id',
+  `user_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'hr的id',
+  `update_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
+  `create_time` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_id, resume_id` (`user_id`,`resume_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+//郑自强
+ALTER TABLE `uu_see_resume_logs`
+ADD INDEX `create_time` (`create_time`) USING BTREE
+
+//徐超
+ALTER TABLE `uu_invite`
+MODIFY COLUMN `search_log_id`  char(32) NOT NULL DEFAULT '0' COMMENT ' 通过搜索生成的邀请时的搜索ID' AFTER `send_sms_times`;
+
+//郑自强
+ALTER TABLE `uu_channel_jobs`
+ADD COLUMN `default_recommend` TINYINT(1) UNSIGNED DEFAULT 1 NOT NULL COMMENT '1默认推荐中0取消推荐' AFTER `original_company_id`,
+ADD COLUMN `is_top` TINYINT(1) UNSIGNED DEFAULT 0 NOT NULL COMMENT '1置顶0默认不置顶' AFTER `default_recommend`;
+
+//郑自强
+ALTER TABLE `uu_channel_jobs` ADD COLUMN `change_top_time` INT(10) UNSIGNED DEFAULT 0 NOT NULL COMMENT '置顶操作时间' AFTER `is_top`;
+
+//郑自强
+FOR EACH ROW BEGIN
+INSERT INTO uu_channel_jobs_not_indexing
+(
+    id,
+    user_id,
+    channel_type,
+    channel_id,
+    original_id,
+    institutional_id,
+    company_id,
+    original_publish_status,
+    is_recommend,
+    NAME,
+    short_name,
+    job_trade,
+    salary,
+    salary_from,
+    salary_to,
+    work_address,
+    work_years,
+    work_years_from,
+    work_years_to,
+    degree,
+    refresh_time,
+    refresh_end_time,
+    job_description,
+    company_name,
+    company_size,
+    company_size_from,
+    company_nature,
+    company_trade,
+    recommended_time,
+    create_time,
+    update_time,
+    is_default,
+    work_address_detail,
+    city,
+    district,
+    latitude,
+    longitude,
+    province,
+    default_recommend
+)
+VALUES
+(
+    new.id,
+    new.user_id,
+    new.channel_type,
+    new.channel_id,
+    new.original_id,
+    new.institutional_id,
+    new.company_id,
+    new.original_publish_status,
+    new.is_recommend,
+    new.name,
+    new.short_name,
+    new.job_trade,
+    new.salary,
+    new.salary_from,
+    new.salary_to,
+    new.work_address,
+    new.work_years,
+    new.work_years_from,
+    new.work_years_to,
+    new.degree,
+    new.refresh_time,
+    new.refresh_end_time,
+    new.job_description,
+    new.company_name,
+    new.company_size,
+    new.company_size_from,
+    new.company_nature,
+    new.company_trade,
+    new.recommended_time,
+    new.create_time,
+    new.update_time,
+    new.is_default,
+    new.work_address_detail,
+    new.city,
+    new.district,
+    new.latitude,
+    new.longitude,
+    new.province,
+    new.default_recommend
+);
+INSERT INTO uu_channel_jobs_half_baked
+(
+    id,
+    channel_type,
+    original_id,
+    STATUS,
+    create_time,
+    update_time
+)
+VALUES(
+    new.id,
+    new.channel_type,
+    new.original_id,
+    0,
+    new.create_time,
+    new.update_time
+);
+END
+ALTER TABLE `uu_channel_jobs_not_indexing`
+ADD COLUMN `default_recommend` TINYINT(1) UNSIGNED DEFAULT 1 NOT NULL COMMENT '1默认推荐中0取消推荐' AFTER `is_default`;
+
+//郑自强
+ALTER TABLE `uu_channel`
+ADD INDEX `user_id, bind_status` (`user_id`, `bind_status`) USING BTREE
+
+//郑自强
+ALTER TABLE `uu_channel_jobs`
+DROP INDEX `user_id` ,
+ADD INDEX `user_id` (`user_id`, `channel_id`, `create_time`) USING BTREE
+
+//马亮
+ALTER TABLE `uu_channel_jobs_name`
+ADD COLUMN `user_id` INT(11) DEFAULT 0 NOT NULL COMMENT '用户ID' AFTER `channel_jobs_id`,
+ADD COLUMN `salary_from` INT(11) DEFAULT 0 NOT NULL COMMENT '薪资范围起点' AFTER `name`,
+ADD COLUMN `salary_to` INT(11) DEFAULT 0 NOT NULL COMMENT '薪资范围最高点' AFTER `salary_from`,
+ADD COLUMN `work_years_from` TINYINT(2) DEFAULT 0 NOT NULL COMMENT '工作年数起点' AFTER `salary_to`,
+ADD COLUMN `work_years_to` TINYINT(2) DEFAULT 0 NOT NULL COMMENT '工作年数最高点' AFTER `work_years_from`,
+ADD COLUMN `degree` CHAR(8) DEFAULT '' NOT NULL COMMENT '最低学历' AFTER `work_years_to`;
+
+
+//郑自强
+ALTER TABLE `uu_channel_jobs`
+ADD COLUMN `cannel_default_time` INT(10) UNSIGNED DEFAULT 0 NOT NULL COMMENT '结束推荐时间人才蛙2.0' AFTER `change_top_time`;
+
+//刘徐超
+ALTER TABLE `uu_recommend_resume` ADD `is_job_end` TINYINT(1) NOT NULL DEFAULT '1' COMMENT '职位是否被结束，1：正常；2：职位已经结束；' AFTER `channel_job_id`;
+//刘徐超
+ALTER TABLE `uu_recommend_resume`
+ADD COLUMN `work_status`  tinyint(1) NULL DEFAULT 0 COMMENT '0:默认 1：离职或者应届毕业；2：有更好的工作可以考虑（在职） ；3：暂时不想找工作（在职）' AFTER `person_id`;
+
+//郑自强  --  马亮
+ALTER TABLE `uu_see_resume_logs` CHANGE `user_id` `user_id` INT(10) UNSIGNED DEFAULT 0 NOT NULL COMMENT 'hr的id' AFTER `id`,
+ADD COLUMN `channel_job_id` INT(11) UNSIGNED DEFAULT 0 NOT NULL COMMENT '职位ID' AFTER `resume_id`;
+
+//郑自强
+ALTER TABLE `uu_invite`
+ADD INDEX `user_id, resume_id` (`user_id`, `resume_id`) USING BTREE
+ALTER TABLE `uu_delayed_send_sms` ADD COLUMN `resume_id` INT UNSIGNED DEFAULT 0 NOT NULL COMMENT '简历id' AFTER `mobile`;
+ALTER TABLE `uu_delayed_send_sms` CHANGE `mobile` `mobile` CHAR(11) DEFAULT '0' NOT NULL COMMENT '手机号';
+
+
+//马亮
+CREATE TABLE `uu_resume_box` (
+  `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` INT(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户id',
+  `channel_job_id` INT(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '职位ID',
+  `resume_id` BIGINT(12) UNSIGNED NOT NULL DEFAULT '0' COMMENT '简历ID',
+  `invite_id` INT(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '邀请ID',
+  `see_resume_id` INT(11) NOT NULL DEFAULT '0' COMMENT 'uu_see_resume_log表ID',
+  `status` TINYINT(1) UNSIGNED NOT NULL DEFAULT '1' COMMENT '数据状态0 无效 1 有效',
+  `create_time` INT(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `update_time` INT(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `channel_job_id` (`channel_job_id`),
+  KEY `resume_id` (`resume_id`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8 COMMENT='简历夹'
+
+
+
+
+
+
+
+
+
+﻿=======================2017年4月21日15:51:22 start  App版本 1.2.2 ==============================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+﻿=======================2017年4月7日 start  App版本 1.1.3   已上线==============================
+
+ALTER TABLE `uu_users` ADD `is_alert` TINYINT(1) NOT NULL DEFAULT '0' COMMENT '是否出弹框:1 不出弹框 0：出弹框' AFTER `update_time`;
+
+ALTER TABLE `uu_recommend`.`uu_job_list_page` ADD COLUMN `auto_increment_id` INT UNSIGNED DEFAULT 0 NOT NULL COMMENT '自增id每次查找redis 自增1' AFTER `update_time`;
+
+#1.本次邮箱功能上线前需备份一下表数据，然后删除表，重新创建新表即可
+#需备份的数据表有：
+#1.uu_email
+#2.uu_email_channel
+#3.uu_email_content
+#4.uu_email_forward_log
+#5.uu_email_list
+#注：表数据及表结构全部备份*/
+
+DROP TABLE `uu_recommend`.`uu_email`; 
+DROP TABLE `uu_recommend`.`uu_email_channel`;
+DROP TABLE `uu_recommend`.`uu_email_content`; 
+DROP TABLE `uu_recommend`.`uu_email_content_v2`; 
+DROP TABLE `uu_recommend`.`uu_email_forward_log`; 
+DROP TABLE `uu_recommend`.`uu_email_list`; 
+DROP TABLE `uu_recommend`.`uu_email_log_v2`; 
+
+CREATE TABLE `uu_email_content` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '当前登录者ID',
+  `euid` varchar(55) NOT NULL DEFAULT '' COMMENT '邮箱的uid',
+  `tag_id` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '邮箱类型Id，1.智联，2.前程 3.猎聘 4.拉钩',
+  `resume_id` varchar(55) NOT NULL DEFAULT '' COMMENT '简历邮件内容里面的id',
+  `resume_email` varchar(100) NOT NULL DEFAULT '' COMMENT '简历邮件里面简历人的邮箱',
+  `resume_name` varchar(55) NOT NULL DEFAULT '' COMMENT '简历邮件里面的简历人姓名',
+  `resume_phone` varchar(55) NOT NULL DEFAULT '' COMMENT '简历邮件内容里面的简历人电话',
+  `content` text COMMENT '邮箱内容',
+  `status` tinyint(1) unsigned DEFAULT '0' COMMENT '数据状态 1有效 0 无效',
+  `create_time` int(11) unsigned DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(11) unsigned DEFAULT '0' COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `euid` (`euid`),
+  KEY `tag_id` (`tag_id`)
+) ENGINE=InnoDB CHARSET=utf8 COMMENT='简历邮件内容';
+
+CREATE TABLE `uu_email_log` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'uu_users表的主键ID',
+  `email` varchar(255) NOT NULL DEFAULT '' COMMENT '邮箱账号',
+  `password` varchar(255) NOT NULL DEFAULT '' COMMENT '邮箱密码',
+  `host_name` varchar(55) NOT NULL DEFAULT '' COMMENT 'pop3 host',
+  `mail_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0:qq邮箱 1:163邮箱 2:sina邮箱 3：126邮箱 4：139邮箱 5：hotmail邮箱 6：阿里企业云 7：腾讯企业云 8：网易企业云 9：其它邮箱',
+  `mail_type_name` varchar(55) NOT NULL DEFAULT '' COMMENT '邮箱类型名称',
+  `area` varchar(55) NOT NULL DEFAULT '' COMMENT '登录地点',
+  `account_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '登录状态1 有效 0 失效',
+  `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '邮箱账户状态1 有效 0 失效',
+  `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '数据创建时间，绑定时间。',
+  `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '数据更新时间',
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`),
+  KEY `user_id` (`user_id`),
+  KEY `email` (`email`)
+) ENGINE=InnoDB CHARSET=utf8 COMMENT='用户登录log';
+
+
+CREATE TABLE `uu_email` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'uu_users表的主键ID',
+  `email` varchar(255) NOT NULL DEFAULT '' COMMENT '邮箱账号',
+  `password` varchar(255) NOT NULL DEFAULT '' COMMENT '邮箱密码',
+  `mail_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0:qq邮箱 1:163邮箱 2:sina邮箱 3：126邮箱 4：139邮箱 5：hotmail邮箱 6：阿里企业云 7：腾讯企业云 8：网易企业云 9：其它邮箱',
+  `mail_type_name` varchar(55) NOT NULL DEFAULT '' COMMENT '邮箱类型名称',
+  `host_name` varchar(55) NOT NULL DEFAULT '' COMMENT 'pop3 host',
+  `area` varchar(55) NOT NULL DEFAULT '' COMMENT '登录地点',
+  `is_default` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否是默认0不是默认1是默认',
+  `current_resume_num` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '当前简历总数',
+  `current_total_num` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '当前邮件总数',
+  `max_resume_num` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '最大简历总数',
+  `max_total_num` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '最大邮件总数',
+  `account_status` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '邮箱账户状态1 有效 0 失效',
+  `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '数据状态 1：有效；0：无效',
+  `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '数据创建时间，绑定时间。',
+  `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '数据更新时间',
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `email` (`email`),
+  KEY `status` (`status`)
+) ENGINE=InnoDB CHARSET=utf8 COMMENT='用户绑定的Email账号';
+
+CREATE TABLE `uu_email_share` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `euid` varchar(55) NOT NULL DEFAULT '' COMMENT '邮件ID',
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '数据状态 0 无效 1 有效',
+  `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `euid` (`euid`)
+) ENGINE=InnoDB CHARSET=utf8 COMMENT='邮件分享';
+
+CREATE TABLE `uu_email_count` (
+  `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` INT(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `share_email_count` INT(11) NOT NULL DEFAULT '0' COMMENT '用户分享的邮件总数',
+  `status` TINYINT(1) NOT NULL DEFAULT '0' COMMENT '数据状态 1 有效 0 无效',
+  `create_time` INT(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `update_time` INT(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `status` (`status`)
+) ENGINE=INNODB CHARSET=utf8
+
+
+ALTER TABLE `uu_version`ADD COLUMN `sys_type`  tinyint(1) NOT NULL DEFAULT 0 COMMENT '系统类型，1：安卓，2:IOS' AFTER `is_publish`;
+
+=======================2017年4月7日 end  App版本 1.1.3 ========================
+
+
+
+======================2017年4月14日 start===========================
+ALTER TABLE `uu_recommend_resume` CHANGE `highest_school_name` `highest_school_name` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '最高学历毕业院校';
+
+ALTER TABLE `uu_invite`
+ADD COLUMN `is_top10_of_day`  tinyint(1) NULL DEFAULT 0 COMMENT '默认0：不是前10条  1：是前10条（每天发送邀请的 主键最小的10个，为1）' AFTER `update_time`;
+
+ALTER TABLE `uu_recommend_resume` CHANGE `highest_school_name` `highest_school_name` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '最高学历毕业院校';
+
+ALTER TABLE `uu_invite`
+ADD COLUMN `is_top10_of_day`  tinyint(1) NULL DEFAULT 0 COMMENT '默认0：不是前10条  1：是前10条（每天发送邀请的 主键最小的10个，为1）' AFTER `update_time`;
+
+
+
+======================2017年4月14日 end ===========================
+
+=======================2017年3月17日 start=====================================
+2017年3月17日17:52:35
+
+ALTER TABLE `uu_invite` ADD `is_send_sms` TINYINT(1) NOT NULL DEFAULT '0' COMMENT '该邀请是否发送了短信：1：已经发送；0：未发送' AFTER `is_read`, ADD `send_sms_time` TINYINT(2) NOT NULL DEFAULT '0' COMMENT '此此邀请发送的短信次数' AFTER `is_send_sms`;
+ALTER TABLE `uu_invite` CHANGE `send_sms_time` `send_sms_times` TINYINT(2) NOT NULL DEFAULT '0' COMMENT '此此邀请发送的短信次数';
+ALTER TABLE `uu_invite` ADD `auto_accept` TINYINT(1) NOT NULL DEFAULT '0' COMMENT '0：默认，1：可能会接受' AFTER `invite_status`;
+ALTER TABLE `uu_invite` CHANGE `auto_accept` `possible_accept_status` TINYINT(1) NOT NULL DEFAULT '0' COMMENT '0：默认，1：可能会接受';
+
+
+CREATE TABLE `uu_email_v2` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'uu_users表的主键ID',
+  `email` char(255) NOT NULL DEFAULT '' COMMENT '邮箱账号',
+  `password` char(32) NOT NULL DEFAULT '' COMMENT '邮箱密码',
+  `mail_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0:qq邮箱 1:163邮箱 2:sina邮箱 3：126邮箱 4：139邮箱 5：hotmail邮箱 6：阿里企业云 7：腾讯企业云 8：网易企业云 9：其它邮箱',
+  `mail_type_name` varchar(55) NOT NULL DEFAULT '' COMMENT '邮箱类型名称',
+  `host_name` varchar(55) NOT NULL DEFAULT '' COMMENT 'pop3 host',
+  `area` varchar(55) NOT NULL DEFAULT '' COMMENT '登录地点',
+  `is_default` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '是否是默认0不是默认1是默认',
+  `current_resume_num` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '当前简历总数',
+  `current_total_num` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '当前邮件总数',
+  `max_resume_num` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '最大简历总数',
+  `max_total_num` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '最大邮件总数',
+  `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '邮箱账号状态 1：有效；0：无效',
+  `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '数据创建时间，绑定时间。',
+  `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '数据更新时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_id` (`user_id`,`email`) USING BTREE,
+  KEY `status` (`status`)
+) ENGINE=InnoDB CHARSET=utf8 COMMENT='用户绑定的Email账号';
+
+CREATE TABLE `uu_email_log_v2` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'uu_users表的主键ID',
+  `email` char(255) NOT NULL DEFAULT '' COMMENT '邮箱账号',
+  `password` char(32) NOT NULL DEFAULT '' COMMENT '邮箱密码',
+  `host_name` varchar(55) NOT NULL DEFAULT '' COMMENT 'pop3 host',
+  `area` varchar(55) NOT NULL DEFAULT '' COMMENT '登录地点',
+  `status` tinyint(1) unsigned NOT NULL DEFAULT '1' COMMENT '邮箱账号状态 1：有效；0：无效',
+  `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '数据创建时间，绑定时间。',
+  `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '数据更新时间',
+  PRIMARY KEY (`id`),
+  KEY `status` (`status`),
+  KEY `user_id` (`user_id`),
+  KEY `email` (`email`)
+) ENGINE=InnoDB CHARSET=utf8 COMMENT='用户登录的log';
+
+CREATE TABLE `uu_channel_js_css` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `sys_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'sys_type系统表示1：安卓；2：IOS',
+  `channel_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '1:智联;2:前程无忧;3猎聘网;4中华英才;5.58同城;6赶集',
+  `js` text COMMENT 'js脚本',
+  `css` text COMMENT 'css样式',
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0 无效 1 有效',
+  `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `sys_type` (`sys_type`)
+) ENGINE=InnoDB CHARSET=utf8 COMMENT='渠道js脚本及css样式';
+
+
+CREATE TABLE `uu_email_content_v2` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '当前登录者ID',
+  `euid` varchar(55) NOT NULL DEFAULT '' COMMENT '邮箱的uid',
+  `tag_id` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '邮箱类型Id，1.智联，2.前程 3.猎聘 4.拉钩',
+  `resume_id` varchar(55) NOT NULL DEFAULT '' COMMENT '简历邮件内容里面的id',
+  `resume_email` varchar(100) NOT NULL DEFAULT '' COMMENT '简历邮件里面简历人的邮箱',
+  `resume_name` varchar(55) NOT NULL DEFAULT '' COMMENT '简历邮件里面的简历人姓名',
+  `resume_phone` varchar(55) NOT NULL DEFAULT '' COMMENT '简历邮件内容里面的简历人电话',
+  `content` text COMMENT '邮箱内容',
+  `status` tinyint(1) unsigned DEFAULT '0' COMMENT '数据状态 1有效 0 无效',
+  `create_time` int(11) unsigned DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(11) unsigned DEFAULT '0' COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `euid` (`euid`),
+  KEY `tag_id` (`tag_id`)
+) ENGINE=InnoDB CHARSET=utf8 COMMENT='简历邮件内容';
+
+ALTER TABLE `uu_recommend`.`uu_channel_jobs` ADD COLUMN `url` CHAR(255) DEFAULT '' NOT NULL COMMENT '原始URL' AFTER `province`; 
+ALTER TABLE `uu_recommend`.`uu_re_jobs` ADD COLUMN `url` CHAR(255) DEFAULT '' NOT NULL COMMENT '原始URL' AFTER `province`; 
+ALTER TABLE `uu_recommend`.`uu_channel_jobs` ADD COLUMN `url` CHAR(255) DEFAULT '' NOT NULL COMMENT '原始URL' AFTER `province`; 
+
+
+
+=======================2017年3月17日 end=====================================
+
+=======================我是分割线============================================
+2017年2月28日
+
+上线需执行的SQL
+
+#新建表  `uu_dict_area` 
+
+CREATE TABLE `uu_dict_area` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` char(16) NOT NULL DEFAULT '' COMMENT '地区名称',
+  `parent_id` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '父类ID',
+  `level` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT '层级，第几级。',
+  `create_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '添加时间',
+  `update_time` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `parent_id` (`parent_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=556 DEFAULT CHARSET=utf8 COMMENT='地区字典';
+
+
+INSERT INTO `uu_dict_area` (`id`, `name`, `parent_id`, `level`, `create_time`, `update_time`) VALUES
+(1, '北京', 0, 1, 1483757652, 1483757652),
+(2, '上海', 0, 1, 1483757652, 1483757652),
+(3, '天津', 0, 1, 1483757652, 1483757652),
+(4, '重庆', 0, 1, 1483757652, 1483757652),
+(5, '广东', 0, 1, 1483757652, 1483757652),
+(6, '江苏', 0, 1, 1483757652, 1483757652),
+(7, '山西', 0, 1, 1483757652, 1483757652),
+(8, '湖南', 0, 1, 1483757652, 1483757652),
+(9, '青海', 0, 1, 1483757652, 1483757652),
+(10, '湖北', 0, 1, 1483757652, 1483757652),
+(11, '山东', 0, 1, 1483757652, 1483757652),
+(12, '内蒙古', 0, 1, 1483757652, 1483757652),
+(13, '海南', 0, 1, 1483757652, 1483757652),
+(14, '宁夏', 0, 1, 1483757652, 1483757652),
+(15, '陕西', 0, 1, 1483757652, 1483757652),
+(16, '浙江', 0, 1, 1483757652, 1483757652),
+(17, '黑龙江', 0, 1, 1483757652, 1483757652),
+(18, '贵州', 0, 1, 1483757652, 1483757652),
+(19, '新疆', 0, 1, 1483757652, 1483757652),
+(20, '四川', 0, 1, 1483757652, 1483757652),
+(21, '广西', 0, 1, 1483757652, 1483757652),
+(22, '福建', 0, 1, 1483757652, 1483757652),
+(23, '云南', 0, 1, 1483757652, 1483757652),
+(24, '香港', 0, 1, 1483757652, 1483757652),
+(25, '辽宁', 0, 1, 1483757652, 1483757652),
+(26, '安徽', 0, 1, 1483757652, 1483757652),
+(27, '江西', 0, 1, 1483757652, 1483757652),
+(28, '西藏', 0, 1, 1483757652, 1483757652),
+(29, '澳门', 0, 1, 1483757652, 1483757652),
+(30, '吉林', 0, 1, 1483757652, 1483757652),
+(31, '河北', 0, 1, 1483757652, 1483757652),
+(32, '河南', 0, 1, 1483757652, 1483757652),
+(33, '甘肃', 0, 1, 1483757652, 1483757652),
+(34, '台湾', 0, 1, 1483757652, 1483757652),
+(35, '北京市', 1, 2, 1483757652, 1483757652),
+(36, '上海市', 2, 2, 1483757652, 1483757652),
+(37, '天津市', 3, 2, 1483757652, 1483757652),
+(38, '重庆市', 4, 2, 1483757652, 1483757652),
+(39, '广州', 5, 2, 1483757652, 1483757652),
+(40, '珠海', 5, 2, 1483757652, 1483757652),
+(41, '江门', 5, 2, 1483757652, 1483757652),
+(42, '肇庆', 5, 2, 1483757652, 1483757652),
+(43, '汕尾', 5, 2, 1483757652, 1483757652),
+(44, '清远', 5, 2, 1483757652, 1483757652),
+(45, '潮州', 5, 2, 1483757652, 1483757652),
+(46, '台山', 5, 2, 1483757652, 1483757652),
+(47, '开平', 5, 2, 1483757652, 1483757652),
+(48, '韶关', 5, 2, 1483757652, 1483757652),
+(49, '汕头', 5, 2, 1483757652, 1483757652),
+(50, '湛江', 5, 2, 1483757652, 1483757652),
+(51, '惠州', 5, 2, 1483757652, 1483757652),
+(52, '河源', 5, 2, 1483757652, 1483757652),
+(53, '东莞', 5, 2, 1483757652, 1483757652),
+(54, '揭阳', 5, 2, 1483757652, 1483757652),
+(55, '普宁', 5, 2, 1483757652, 1483757652),
+(56, '龙川', 5, 2, 1483757652, 1483757652),
+(57, '深圳', 5, 2, 1483757652, 1483757652),
+(58, '佛山', 5, 2, 1483757652, 1483757652),
+(59, '茂名', 5, 2, 1483757652, 1483757652),
+(60, '梅州', 5, 2, 1483757652, 1483757652),
+(61, '阳江', 5, 2, 1483757652, 1483757652),
+(62, '中山', 5, 2, 1483757652, 1483757652),
+(63, '云浮', 5, 2, 1483757652, 1483757652),
+(64, '南沙开发区', 5, 2, 1483757652, 1483757652),
+(65, '鹤山', 5, 2, 1483757652, 1483757652),
+(66, '南京', 6, 2, 1483757652, 1483757652),
+(67, '常熟', 6, 2, 1483757652, 1483757652),
+(68, '江阴', 6, 2, 1483757652, 1483757652),
+(69, '南通', 6, 2, 1483757652, 1483757652),
+(70, '盐城', 6, 2, 1483757652, 1483757652),
+(71, '泰州', 6, 2, 1483757652, 1483757652),
+(72, '太仓', 6, 2, 1483757652, 1483757652),
+(73, '如皋', 6, 2, 1483757652, 1483757652),
+(74, '高邮', 6, 2, 1483757652, 1483757652),
+(75, '溧阳', 6, 2, 1483757652, 1483757652),
+(76, '金湖', 6, 2, 1483757652, 1483757652),
+(77, '苏州', 6, 2, 1483757652, 1483757652),
+(78, '张家港', 6, 2, 1483757652, 1483757652),
+(79, '徐州', 6, 2, 1483757652, 1483757652),
+(80, '连云港', 6, 2, 1483757652, 1483757652),
+(81, '扬州', 6, 2, 1483757652, 1483757652),
+(82, '靖江', 6, 2, 1483757652, 1483757652),
+(83, '句容', 6, 2, 1483757652, 1483757652),
+(84, '丹阳', 6, 2, 1483757652, 1483757652),
+(85, '启东', 6, 2, 1483757652, 1483757652),
+(86, '盱眙', 6, 2, 1483757652, 1483757652),
+(87, '昆山', 6, 2, 1483757652, 1483757652),
+(88, '无锡', 6, 2, 1483757652, 1483757652),
+(89, '常州', 6, 2, 1483757652, 1483757652),
+(90, '淮安', 6, 2, 1483757652, 1483757652),
+(91, '镇江', 6, 2, 1483757652, 1483757652),
+(92, '宿迁', 6, 2, 1483757652, 1483757652),
+(93, '宜兴', 6, 2, 1483757652, 1483757652),
+(94, '扬中', 6, 2, 1483757652, 1483757652),
+(95, '泰兴', 6, 2, 1483757652, 1483757652),
+(96, '通州', 6, 2, 1483757652, 1483757652),
+(97, '太原', 7, 2, 1483757652, 1483757652),
+(98, '长治', 7, 2, 1483757652, 1483757652),
+(99, '晋中', 7, 2, 1483757652, 1483757652),
+(100, '临汾', 7, 2, 1483757652, 1483757652),
+(101, '和顺', 7, 2, 1483757652, 1483757652),
+(102, '大同', 7, 2, 1483757652, 1483757652),
+(103, '晋城', 7, 2, 1483757652, 1483757652),
+(104, '运城', 7, 2, 1483757652, 1483757652),
+(105, '吕梁', 7, 2, 1483757652, 1483757652),
+(106, '阳泉', 7, 2, 1483757652, 1483757652),
+(107, '朔州', 7, 2, 1483757652, 1483757652),
+(108, '忻州', 7, 2, 1483757652, 1483757652),
+(109, '永济', 7, 2, 1483757652, 1483757652),
+(110, '长沙', 8, 2, 1483757652, 1483757652),
+(111, '衡阳', 8, 2, 1483757652, 1483757652),
+(112, '常德', 8, 2, 1483757652, 1483757652),
+(113, '郴州', 8, 2, 1483757652, 1483757652),
+(114, '娄底', 8, 2, 1483757652, 1483757652),
+(115, '株洲', 8, 2, 1483757652, 1483757652),
+(116, '邵阳', 8, 2, 1483757652, 1483757652),
+(117, '张家界', 8, 2, 1483757652, 1483757652),
+(118, '永州', 8, 2, 1483757652, 1483757652),
+(119, '湘西', 8, 2, 1483757652, 1483757652),
+(120, '湘潭', 8, 2, 1483757652, 1483757652),
+(121, '岳阳', 8, 2, 1483757652, 1483757652),
+(122, '益阳', 8, 2, 1483757652, 1483757652),
+(123, '怀化', 8, 2, 1483757652, 1483757652),
+(124, '西宁', 9, 2, 1483757652, 1483757652),
+(125, '黄南', 9, 2, 1483757652, 1483757652),
+(126, '玉树', 9, 2, 1483757652, 1483757652),
+(127, '海东', 9, 2, 1483757652, 1483757652),
+(128, '海南州', 9, 2, 1483757652, 1483757652),
+(129, '海西', 9, 2, 1483757652, 1483757652),
+(130, '海北', 9, 2, 1483757652, 1483757652),
+(131, '果洛', 9, 2, 1483757652, 1483757652),
+(132, '武汉', 10, 2, 1483757652, 1483757652),
+(133, '宜昌', 10, 2, 1483757652, 1483757652),
+(134, '荆门', 10, 2, 1483757652, 1483757652),
+(135, '黄冈', 10, 2, 1483757652, 1483757652),
+(136, '恩施', 10, 2, 1483757652, 1483757652),
+(137, '天门', 10, 2, 1483757652, 1483757652),
+(138, '宜城', 10, 2, 1483757652, 1483757652),
+(139, '黄石', 10, 2, 1483757652, 1483757652),
+(140, '襄阳', 10, 2, 1483757652, 1483757652),
+(141, '孝感', 10, 2, 1483757652, 1483757652),
+(142, '咸宁', 10, 2, 1483757652, 1483757652),
+(143, '公安', 10, 2, 1483757652, 1483757652),
+(144, '仙桃', 10, 2, 1483757652, 1483757652),
+(145, '神农架', 10, 2, 1483757652, 1483757652),
+(146, '十堰', 10, 2, 1483757652, 1483757652),
+(147, '鄂州', 10, 2, 1483757652, 1483757652),
+(148, '荆州', 10, 2, 1483757652, 1483757652),
+(149, '随州', 10, 2, 1483757652, 1483757652),
+(150, '武穴', 10, 2, 1483757652, 1483757652),
+(151, '潜江', 10, 2, 1483757652, 1483757652),
+(152, '济南', 11, 2, 1483757652, 1483757652),
+(153, '枣庄', 11, 2, 1483757652, 1483757652),
+(154, '潍坊', 11, 2, 1483757652, 1483757652),
+(155, '威海', 11, 2, 1483757652, 1483757652),
+(156, '临沂', 11, 2, 1483757652, 1483757652),
+(157, '滨州', 11, 2, 1483757652, 1483757652),
+(158, '黄岛', 11, 2, 1483757652, 1483757652),
+(159, '即墨', 11, 2, 1483757652, 1483757652),
+(160, '海阳', 11, 2, 1483757652, 1483757652),
+(161, '平度', 11, 2, 1483757652, 1483757652),
+(162, '青岛', 11, 2, 1483757652, 1483757652),
+(163, '东营', 11, 2, 1483757652, 1483757652),
+(164, '济宁', 11, 2, 1483757652, 1483757652),
+(165, '日照', 11, 2, 1483757652, 1483757652),
+(166, '德州', 11, 2, 1483757652, 1483757652),
+(167, '菏泽', 11, 2, 1483757652, 1483757652),
+(168, '乳山', 11, 2, 1483757652, 1483757652),
+(169, '肥城', 11, 2, 1483757652, 1483757652),
+(170, '胶州', 11, 2, 1483757652, 1483757652),
+(171, '莱西', 11, 2, 1483757652, 1483757652),
+(172, '淄博', 11, 2, 1483757652, 1483757652),
+(173, '烟台', 11, 2, 1483757652, 1483757652),
+(174, '泰安', 11, 2, 1483757652, 1483757652),
+(175, '莱芜', 11, 2, 1483757652, 1483757652),
+(176, '聊城', 11, 2, 1483757652, 1483757652),
+(177, '荣成', 11, 2, 1483757652, 1483757652),
+(178, '城阳', 11, 2, 1483757652, 1483757652),
+(179, '兖州', 11, 2, 1483757652, 1483757652),
+(180, '胶南', 11, 2, 1483757652, 1483757652),
+(181, '呼和浩特', 12, 2, 1483757652, 1483757652),
+(182, '赤峰', 12, 2, 1483757652, 1483757652),
+(183, '呼伦贝尔', 12, 2, 1483757652, 1483757652),
+(184, '乌兰察布', 12, 2, 1483757652, 1483757652),
+(185, '乌审旗', 12, 2, 1483757652, 1483757652),
+(186, '包头', 12, 2, 1483757652, 1483757652),
+(187, '通辽', 12, 2, 1483757652, 1483757652),
+(188, '兴安盟', 12, 2, 1483757652, 1483757652),
+(189, '巴彦淖尔', 12, 2, 1483757652, 1483757652),
+(190, '满洲里', 12, 2, 1483757652, 1483757652),
+(191, '乌海', 12, 2, 1483757652, 1483757652),
+(192, '鄂尔多斯', 12, 2, 1483757652, 1483757652),
+(193, '锡林郭勒盟', 12, 2, 1483757652, 1483757652),
+(194, '阿拉善盟', 12, 2, 1483757652, 1483757652),
+(195, '海口', 13, 2, 1483757652, 1483757652),
+(196, '洋浦/洋浦经纪开发区', 13, 2, 1483757652, 1483757652),
+(197, '儋州', 13, 2, 1483757652, 1483757652),
+(198, '万宁', 13, 2, 1483757652, 1483757652),
+(199, '屯昌', 13, 2, 1483757652, 1483757652),
+(200, '琼中', 13, 2, 1483757652, 1483757652),
+(201, '昌江', 13, 2, 1483757652, 1483757652),
+(202, '三亚', 13, 2, 1483757652, 1483757652),
+(203, '五指山', 13, 2, 1483757652, 1483757652),
+(204, '东方', 13, 2, 1483757652, 1483757652),
+(205, '澄迈', 13, 2, 1483757652, 1483757652),
+(206, '保亭', 13, 2, 1483757652, 1483757652),
+(207, '乐东', 13, 2, 1483757652, 1483757652),
+(208, '琼海', 13, 2, 1483757652, 1483757652),
+(209, '文昌', 13, 2, 1483757652, 1483757652),
+(210, '定安', 13, 2, 1483757652, 1483757652),
+(211, '临高', 13, 2, 1483757652, 1483757652),
+(212, '白沙', 13, 2, 1483757652, 1483757652),
+(213, '陵水', 13, 2, 1483757652, 1483757652),
+(214, '银川', 14, 2, 1483757652, 1483757652),
+(215, '固原', 14, 2, 1483757652, 1483757652),
+(216, '石嘴山', 14, 2, 1483757652, 1483757652),
+(217, '中卫', 14, 2, 1483757652, 1483757652),
+(218, '吴忠', 14, 2, 1483757652, 1483757652),
+(219, '西安', 15, 2, 1483757652, 1483757652),
+(220, '咸阳', 15, 2, 1483757652, 1483757652),
+(221, '汉中', 15, 2, 1483757652, 1483757652),
+(222, '商洛', 15, 2, 1483757652, 1483757652),
+(223, '铜川', 15, 2, 1483757652, 1483757652),
+(224, '渭南', 15, 2, 1483757652, 1483757652),
+(225, '榆林', 15, 2, 1483757652, 1483757652),
+(226, '兴平', 15, 2, 1483757652, 1483757652),
+(227, '宝鸡', 15, 2, 1483757652, 1483757652),
+(228, '延安', 15, 2, 1483757652, 1483757652),
+(229, '安康', 15, 2, 1483757652, 1483757652),
+(230, '杨凌', 15, 2, 1483757652, 1483757652),
+(231, '杭州', 16, 2, 1483757652, 1483757652),
+(232, '嘉兴', 16, 2, 1483757652, 1483757652),
+(233, '金华', 16, 2, 1483757652, 1483757652),
+(234, '台州', 16, 2, 1483757652, 1483757652),
+(235, '义乌', 16, 2, 1483757652, 1483757652),
+(236, '东阳', 16, 2, 1483757652, 1483757652),
+(237, '慈溪', 16, 2, 1483757652, 1483757652),
+(238, '桐乡', 16, 2, 1483757652, 1483757652),
+(239, '上虞', 16, 2, 1483757652, 1483757652),
+(240, '宁海', 16, 2, 1483757652, 1483757652),
+(241, '象山', 16, 2, 1483757652, 1483757652),
+(242, '宁波', 16, 2, 1483757652, 1483757652),
+(243, '湖州', 16, 2, 1483757652, 1483757652),
+(244, '衢州', 16, 2, 1483757652, 1483757652),
+(245, '丽水', 16, 2, 1483757652, 1483757652),
+(246, '平湖', 16, 2, 1483757652, 1483757652),
+(247, '嘉善', 16, 2, 1483757652, 1483757652),
+(248, '乐清', 16, 2, 1483757652, 1483757652),
+(249, '瑞安', 16, 2, 1483757652, 1483757652),
+(250, '诸暨', 16, 2, 1483757652, 1483757652),
+(251, '三门', 16, 2, 1483757652, 1483757652),
+(252, '方家山', 16, 2, 1483757652, 1483757652),
+(253, '温州', 16, 2, 1483757652, 1483757652),
+(254, '绍兴', 16, 2, 1483757652, 1483757652),
+(255, '舟山', 16, 2, 1483757652, 1483757652),
+(256, '玉环县', 16, 2, 1483757652, 1483757652),
+(257, '永康', 16, 2, 1483757652, 1483757652),
+(258, '余姚', 16, 2, 1483757652, 1483757652),
+(259, '永嘉', 16, 2, 1483757652, 1483757652),
+(260, '温岭', 16, 2, 1483757652, 1483757652),
+(261, '海宁', 16, 2, 1483757652, 1483757652),
+(262, '德清', 16, 2, 1483757652, 1483757652),
+(263, '龙泉', 16, 2, 1483757652, 1483757652),
+(264, '哈尔滨', 17, 2, 1483757652, 1483757652),
+(265, '鹤岗', 17, 2, 1483757652, 1483757652),
+(266, '伊春', 17, 2, 1483757652, 1483757652),
+(267, '牡丹江', 17, 2, 1483757652, 1483757652),
+(268, '大兴安岭', 17, 2, 1483757652, 1483757652),
+(269, '尚志', 17, 2, 1483757652, 1483757652),
+(270, '齐齐哈尔', 17, 2, 1483757652, 1483757652),
+(271, '双鸭山', 17, 2, 1483757652, 1483757652),
+(272, '佳木斯', 17, 2, 1483757652, 1483757652),
+(273, '黑河', 17, 2, 1483757652, 1483757652),
+(274, '安达', 17, 2, 1483757652, 1483757652),
+(275, '绥芬河', 17, 2, 1483757652, 1483757652),
+(276, '鸡西', 17, 2, 1483757652, 1483757652),
+(277, '大庆', 17, 2, 1483757652, 1483757652),
+(278, '七台河', 17, 2, 1483757652, 1483757652),
+(279, '绥化', 17, 2, 1483757652, 1483757652),
+(280, '双城', 17, 2, 1483757652, 1483757652),
+(281, '肇东', 17, 2, 1483757652, 1483757652),
+(282, '贵阳', 18, 2, 1483757652, 1483757652),
+(283, '安顺', 18, 2, 1483757652, 1483757652),
+(284, '毕节', 18, 2, 1483757652, 1483757652),
+(285, '六盘水', 18, 2, 1483757652, 1483757652),
+(286, '铜仁', 18, 2, 1483757652, 1483757652),
+(287, '黔东南', 18, 2, 1483757652, 1483757652),
+(288, '遵义', 18, 2, 1483757652, 1483757652),
+(289, '黔西南', 18, 2, 1483757652, 1483757652),
+(290, '黔南', 18, 2, 1483757652, 1483757652),
+(291, '乌鲁木齐', 19, 2, 1483757652, 1483757652),
+(292, '哈密', 19, 2, 1483757652, 1483757652),
+(293, '巴音郭楞', 19, 2, 1483757652, 1483757652),
+(294, '喀什', 19, 2, 1483757652, 1483757652),
+(295, '塔城', 19, 2, 1483757652, 1483757652),
+(296, '奎屯', 19, 2, 1483757652, 1483757652),
+(297, '图木舒克', 19, 2, 1483757652, 1483757652),
+(298, '克拉玛依', 19, 2, 1483757652, 1483757652),
+(299, '昌吉', 19, 2, 1483757652, 1483757652),
+(300, '阿克苏', 19, 2, 1483757652, 1483757652),
+(301, '和田', 19, 2, 1483757652, 1483757652),
+(302, '阿勒泰', 19, 2, 1483757652, 1483757652),
+(303, '乌苏', 19, 2, 1483757652, 1483757652),
+(304, '五家渠', 19, 2, 1483757652, 1483757652),
+(305, '吐鲁番', 19, 2, 1483757652, 1483757652),
+(306, '博尔塔拉', 19, 2, 1483757652, 1483757652),
+(307, '克孜勒苏', 19, 2, 1483757652, 1483757652),
+(308, '伊犁', 19, 2, 1483757652, 1483757652),
+(309, '石河子', 19, 2, 1483757652, 1483757652),
+(310, '阿拉尔', 19, 2, 1483757652, 1483757652),
+(311, '成都', 20, 2, 1483757652, 1483757652),
+(312, '泸州', 20, 2, 1483757652, 1483757652),
+(313, '广元', 20, 2, 1483757652, 1483757652),
+(314, '乐山', 20, 2, 1483757652, 1483757652),
+(315, '宜宾', 20, 2, 1483757652, 1483757652),
+(316, '雅安', 20, 2, 1483757652, 1483757652),
+(317, '阿坝', 20, 2, 1483757652, 1483757652),
+(318, '峨眉', 20, 2, 1483757652, 1483757652),
+(319, '自贡', 20, 2, 1483757652, 1483757652),
+(320, '德阳', 20, 2, 1483757652, 1483757652),
+(321, '遂宁', 20, 2, 1483757652, 1483757652),
+(322, '南充', 20, 2, 1483757652, 1483757652),
+(323, '广安', 20, 2, 1483757652, 1483757652),
+(324, '巴中', 20, 2, 1483757652, 1483757652),
+(325, '甘孜', 20, 2, 1483757652, 1483757652),
+(326, '西昌', 20, 2, 1483757652, 1483757652),
+(327, '攀枝花', 20, 2, 1483757652, 1483757652),
+(328, '绵阳', 20, 2, 1483757652, 1483757652),
+(329, '内江', 20, 2, 1483757652, 1483757652),
+(330, '眉山', 20, 2, 1483757652, 1483757652),
+(331, '达州', 20, 2, 1483757652, 1483757652),
+(332, '资阳', 20, 2, 1483757652, 1483757652),
+(333, '凉山', 20, 2, 1483757652, 1483757652),
+(334, '简阳', 20, 2, 1483757652, 1483757652),
+(335, '南宁', 21, 2, 1483757652, 1483757652),
+(336, '梧州', 21, 2, 1483757652, 1483757652),
+(337, '钦州', 21, 2, 1483757652, 1483757652),
+(338, '百色', 21, 2, 1483757652, 1483757652),
+(339, '来宾', 21, 2, 1483757652, 1483757652),
+(340, '柳州', 21, 2, 1483757652, 1483757652),
+(341, '北海', 21, 2, 1483757652, 1483757652),
+(342, '贵港', 21, 2, 1483757652, 1483757652),
+(343, '贺州', 21, 2, 1483757652, 1483757652),
+(344, '崇左', 21, 2, 1483757652, 1483757652),
+(345, '桂林', 21, 2, 1483757652, 1483757652),
+(346, '防城港', 21, 2, 1483757652, 1483757652),
+(347, '玉林', 21, 2, 1483757652, 1483757652),
+(348, '河池', 21, 2, 1483757652, 1483757652),
+(349, '福州', 22, 2, 1483757652, 1483757652),
+(350, '三明', 22, 2, 1483757652, 1483757652),
+(351, '漳州', 22, 2, 1483757652, 1483757652),
+(352, '宁德', 22, 2, 1483757652, 1483757652),
+(353, '厦门', 22, 2, 1483757652, 1483757652),
+(354, '泉州', 22, 2, 1483757652, 1483757652),
+(355, '南平', 22, 2, 1483757652, 1483757652),
+(356, '福安', 22, 2, 1483757652, 1483757652),
+(357, '莆田', 22, 2, 1483757652, 1483757652),
+(358, '泉港区', 22, 2, 1483757652, 1483757652),
+(359, '龙岩', 22, 2, 1483757652, 1483757652),
+(360, '晋江', 22, 2, 1483757652, 1483757652),
+(361, '昆明', 23, 2, 1483757652, 1483757652),
+(362, '保山', 23, 2, 1483757652, 1483757652),
+(363, '红河', 23, 2, 1483757652, 1483757652),
+(364, '西双版纳', 23, 2, 1483757652, 1483757652),
+(365, '丽江', 23, 2, 1483757652, 1483757652),
+(366, '临沧', 23, 2, 1483757652, 1483757652),
+(367, '曲靖', 23, 2, 1483757652, 1483757652),
+(368, '昭通', 23, 2, 1483757652, 1483757652),
+(369, '文山', 23, 2, 1483757652, 1483757652),
+(370, '大理', 23, 2, 1483757652, 1483757652),
+(371, '怒江', 23, 2, 1483757652, 1483757652),
+(372, '普洱', 23, 2, 1483757652, 1483757652),
+(373, '玉溪', 23, 2, 1483757652, 1483757652),
+(374, '楚雄', 23, 2, 1483757652, 1483757652),
+(375, '思茅', 23, 2, 1483757652, 1483757652),
+(376, '德宏', 23, 2, 1483757652, 1483757652),
+(377, '迪庆', 23, 2, 1483757652, 1483757652),
+(378, '香港', 24, 2, 1483757652, 1483757652),
+(379, '大连', 25, 2, 1483757652, 1483757652),
+(380, '抚顺', 25, 2, 1483757652, 1483757652),
+(381, '锦州', 25, 2, 1483757652, 1483757652),
+(382, '辽阳', 25, 2, 1483757652, 1483757652),
+(383, '朝阳', 25, 2, 1483757652, 1483757652),
+(384, '海城', 25, 2, 1483757652, 1483757652),
+(385, '沈阳', 25, 2, 1483757652, 1483757652),
+(386, '本溪', 25, 2, 1483757652, 1483757652),
+(387, '营口', 25, 2, 1483757652, 1483757652),
+(388, '盘锦', 25, 2, 1483757652, 1483757652),
+(389, '葫芦岛', 25, 2, 1483757652, 1483757652),
+(390, '昌图', 25, 2, 1483757652, 1483757652),
+(391, '鞍山', 25, 2, 1483757652, 1483757652),
+(392, '丹东', 25, 2, 1483757652, 1483757652),
+(393, '阜新', 25, 2, 1483757652, 1483757652),
+(394, '铁岭', 25, 2, 1483757652, 1483757652),
+(395, '兴城', 25, 2, 1483757652, 1483757652),
+(396, '开原', 25, 2, 1483757652, 1483757652),
+(397, '合肥', 26, 2, 1483757652, 1483757652),
+(398, '淮南', 26, 2, 1483757652, 1483757652),
+(399, '铜陵', 26, 2, 1483757652, 1483757652),
+(400, '滁州', 26, 2, 1483757652, 1483757652),
+(401, '巢湖', 26, 2, 1483757652, 1483757652),
+(402, '池州', 26, 2, 1483757652, 1483757652),
+(403, '广德', 26, 2, 1483757652, 1483757652),
+(404, '芜湖', 26, 2, 1483757652, 1483757652),
+(405, '马鞍山', 26, 2, 1483757652, 1483757652),
+(406, '安庆', 26, 2, 1483757652, 1483757652),
+(407, '阜阳', 26, 2, 1483757652, 1483757652),
+(408, '六安', 26, 2, 1483757652, 1483757652),
+(409, '宣城', 26, 2, 1483757652, 1483757652),
+(410, '宿松', 26, 2, 1483757652, 1483757652),
+(411, '蚌埠', 26, 2, 1483757652, 1483757652),
+(412, '淮北', 26, 2, 1483757652, 1483757652),
+(413, '黄山', 26, 2, 1483757652, 1483757652),
+(414, '宿州', 26, 2, 1483757652, 1483757652),
+(415, '亳州', 26, 2, 1483757652, 1483757652),
+(416, '凤阳', 26, 2, 1483757652, 1483757652),
+(417, '南昌', 27, 2, 1483757652, 1483757652),
+(418, '九江', 27, 2, 1483757652, 1483757652),
+(419, '赣州', 27, 2, 1483757652, 1483757652),
+(420, '抚州', 27, 2, 1483757652, 1483757652),
+(421, '景德镇', 27, 2, 1483757652, 1483757652),
+(422, '新余', 27, 2, 1483757652, 1483757652),
+(423, '吉安', 27, 2, 1483757652, 1483757652),
+(424, '上饶', 27, 2, 1483757652, 1483757652),
+(425, '萍乡', 27, 2, 1483757652, 1483757652),
+(426, '鹰潭', 27, 2, 1483757652, 1483757652),
+(427, '宜春', 27, 2, 1483757652, 1483757652),
+(428, '拉萨', 28, 2, 1483757652, 1483757652),
+(429, '日喀则', 28, 2, 1483757652, 1483757652),
+(430, '林芝', 28, 2, 1483757652, 1483757652),
+(431, '昌都', 28, 2, 1483757652, 1483757652),
+(432, '那曲', 28, 2, 1483757652, 1483757652),
+(433, '山南', 28, 2, 1483757652, 1483757652),
+(434, '阿里', 28, 2, 1483757652, 1483757652),
+(435, '澳门', 29, 2, 1483757652, 1483757652),
+(436, '长春', 30, 2, 1483757652, 1483757652),
+(437, '四平', 30, 2, 1483757652, 1483757652),
+(438, '白山', 30, 2, 1483757652, 1483757652),
+(439, '延边', 30, 2, 1483757652, 1483757652),
+(440, '珲春', 30, 2, 1483757652, 1483757652),
+(441, '辽源', 30, 2, 1483757652, 1483757652),
+(442, '松原', 30, 2, 1483757652, 1483757652),
+(443, '公主岭', 30, 2, 1483757652, 1483757652),
+(444, '吉林', 30, 2, 1483757652, 1483757652),
+(445, '白城', 30, 2, 1483757652, 1483757652),
+(446, '通化', 30, 2, 1483757652, 1483757652),
+(447, '石家庄', 31, 2, 1483757652, 1483757652),
+(448, '邯郸', 31, 2, 1483757652, 1483757652),
+(449, '张家口', 31, 2, 1483757652, 1483757652),
+(450, '廊坊', 31, 2, 1483757652, 1483757652),
+(451, '固安', 31, 2, 1483757652, 1483757652),
+(452, '三河', 31, 2, 1483757652, 1483757652),
+(453, '唐山', 31, 2, 1483757652, 1483757652),
+(454, '邢台', 31, 2, 1483757652, 1483757652),
+(455, '承德', 31, 2, 1483757652, 1483757652),
+(456, '衡水', 31, 2, 1483757652, 1483757652),
+(457, '遵化', 31, 2, 1483757652, 1483757652),
+(458, '秦皇岛', 31, 2, 1483757652, 1483757652),
+(459, '保定', 31, 2, 1483757652, 1483757652),
+(460, '沧州', 31, 2, 1483757652, 1483757652),
+(461, '燕郊开发区', 31, 2, 1483757652, 1483757652),
+(462, '香河', 31, 2, 1483757652, 1483757652),
+(463, '郑州', 32, 2, 1483757652, 1483757652),
+(464, '平顶山', 32, 2, 1483757652, 1483757652),
+(465, '新乡', 32, 2, 1483757652, 1483757652),
+(466, '许昌', 32, 2, 1483757652, 1483757652),
+(467, '南阳', 32, 2, 1483757652, 1483757652),
+(468, '周口', 32, 2, 1483757652, 1483757652),
+(469, '西平', 32, 2, 1483757652, 1483757652),
+(470, '开封', 32, 2, 1483757652, 1483757652),
+(471, '安阳', 32, 2, 1483757652, 1483757652),
+(472, '焦作', 32, 2, 1483757652, 1483757652),
+(473, '漯河', 32, 2, 1483757652, 1483757652),
+(474, '商丘', 32, 2, 1483757652, 1483757652),
+(475, '驻马店', 32, 2, 1483757652, 1483757652),
+(476, '长葛', 32, 2, 1483757652, 1483757652),
+(477, '洛阳', 32, 2, 1483757652, 1483757652),
+(478, '鹤壁', 32, 2, 1483757652, 1483757652),
+(479, '濮阳', 32, 2, 1483757652, 1483757652),
+(480, '三门峡', 32, 2, 1483757652, 1483757652),
+(481, '信阳', 32, 2, 1483757652, 1483757652),
+(482, '济源', 32, 2, 1483757652, 1483757652),
+(483, '兰州', 33, 2, 1483757652, 1483757652),
+(484, '白银', 33, 2, 1483757652, 1483757652),
+(485, '张掖', 33, 2, 1483757652, 1483757652),
+(486, '庆阳', 33, 2, 1483757652, 1483757652),
+(487, '临夏', 33, 2, 1483757652, 1483757652),
+(488, '嘉峪关', 33, 2, 1483757652, 1483757652),
+(489, '天水', 33, 2, 1483757652, 1483757652),
+(490, '平凉', 33, 2, 1483757652, 1483757652),
+(491, '定西', 33, 2, 1483757652, 1483757652),
+(492, '甘南', 33, 2, 1483757652, 1483757652),
+(493, '金昌', 33, 2, 1483757652, 1483757652),
+(494, '武威', 33, 2, 1483757652, 1483757652),
+(495, '酒泉', 33, 2, 1483757652, 1483757652),
+(496, '陇南', 33, 2, 1483757652, 1483757652),
+(497, '国外', 0, 2, 1483757652, 1483757652),
+(498, '阿根廷', 497, 2, 1483757652, 1483757652),
+(499, '保加利亚', 497, 2, 1483757652, 1483757652),
+(500, '芬兰', 497, 2, 1483757652, 1483757652),
+(501, '印度', 497, 2, 1483757652, 1483757652),
+(502, '韩国', 497, 2, 1483757652, 1483757652),
+(503, '巴基斯坦', 497, 2, 1483757652, 1483757652),
+(504, '南非', 497, 2, 1483757652, 1483757652),
+(505, '乌克兰', 497, 2, 1483757652, 1483757652),
+(506, '加纳', 497, 2, 1483757652, 1483757652),
+(507, '澳大利亚', 497, 2, 1483757652, 1483757652),
+(508, '加拿大', 497, 2, 1483757652, 1483757652),
+(509, '法国', 497, 2, 1483757652, 1483757652),
+(510, '印度尼西亚', 497, 2, 1483757652, 1483757652),
+(511, '科威特', 497, 2, 1483757652, 1483757652),
+(512, '波兰', 497, 2, 1483757652, 1483757652),
+(513, '西班牙', 497, 2, 1483757652, 1483757652),
+(514, '阿联酋', 497, 2, 1483757652, 1483757652),
+(515, '尼日利亚', 497, 2, 1483757652, 1483757652),
+(516, '奥地利', 497, 2, 1483757652, 1483757652),
+(517, '塞浦路斯', 497, 2, 1483757652, 1483757652),
+(518, '德国', 497, 2, 1483757652, 1483757652),
+(519, '爱尔兰', 497, 2, 1483757652, 1483757652),
+(520, '马来西亚', 497, 2, 1483757652, 1483757652),
+(521, '葡萄牙', 497, 2, 1483757652, 1483757652),
+(522, '瑞典', 497, 2, 1483757652, 1483757652),
+(523, '英国', 497, 2, 1483757652, 1483757652),
+(524, '坦桑尼亚', 497, 2, 1483757652, 1483757652),
+(525, '白俄罗斯', 497, 2, 1483757652, 1483757652),
+(526, '捷克', 497, 2, 1483757652, 1483757652),
+(527, '希腊', 497, 2, 1483757652, 1483757652),
+(528, '以色列', 497, 2, 1483757652, 1483757652),
+(529, '荷兰', 497, 2, 1483757652, 1483757652),
+(530, '俄罗斯联邦', 497, 2, 1483757652, 1483757652),
+(531, '瑞士', 497, 2, 1483757652, 1483757652),
+(532, '美国', 497, 2, 1483757652, 1483757652),
+(533, '乌干达', 497, 2, 1483757652, 1483757652),
+(534, '比利时', 497, 2, 1483757652, 1483757652),
+(535, '丹麦', 497, 2, 1483757652, 1483757652),
+(536, '匈牙利', 497, 2, 1483757652, 1483757652),
+(537, '意大利', 497, 2, 1483757652, 1483757652),
+(538, '新西兰', 497, 2, 1483757652, 1483757652),
+(539, '沙特阿拉伯', 497, 2, 1483757652, 1483757652),
+(540, '泰国', 497, 2, 1483757652, 1483757652),
+(541, '越南', 497, 2, 1483757652, 1483757652),
+(542, '阿尔及利亚', 497, 2, 1483757652, 1483757652),
+(543, '巴西', 497, 2, 1483757652, 1483757652),
+(544, '埃及', 497, 2, 1483757652, 1483757652),
+(545, '冰岛', 497, 2, 1483757652, 1483757652),
+(546, '日本', 497, 2, 1483757652, 1483757652),
+(547, '挪威', 497, 2, 1483757652, 1483757652),
+(548, '新加坡', 497, 2, 1483757652, 1483757652),
+(549, '土耳其', 497, 2, 1483757652, 1483757652),
+(550, '安哥拉', 497, 2, 1483757652, 1483757652),
+(551, '塞内加尔', 497, 2, 1483757652, 1483757652),
+(552, '延吉', 30, 2, 1483757652, 1483757652),
+(553, '邓州', 32, 2, 1483757652, 1483757652),
+(554, '三沙', 13, 2, 1483757652, 1483757652),
+(555, '台湾', 34, 2, 1483757652, 1483757652);
+
+#更新字段
+ALTER TABLE `uu_recommend`.`uu_recommend_resume` 
+CHANGE `first_work_start` `first_work_start` char(32) DEFAULT '' NOT NULL COMMENT '第一份工作的开始时间', 
+ADD COLUMN `salary` CHAR(16) DEFAULT '' NOT NULL COMMENT '薪资' AFTER `update_time`; 
+
+
+#添加联合唯一索引
+ALTER TABLE `uu_recommend`.`uu_recommend_resume` ADD UNIQUE INDEX (`user_id`, `channel_job_id`, `resume_id`); 
+
+
+ALTER TABLE `uu_channel_jobs` ADD `recommend_sort_id` INT(4) NOT NULL DEFAULT '0' COMMENT '推荐的排序规则默认为0，推荐中设置为100，结束推荐设置为-100' AFTER `province`;
+UPDATE `uu_channel_jobs` SET `recommend_sort_id`=100 WHERE is_recommend=1
+
+#邀请添加字段  - lxc
+ALTER TABLE `uu_invite` ADD `is_send_sms` TINYINT(1) NOT NULL DEFAULT '0' COMMENT '该邀请是否发送了短信：1：已经发送；0：未发送' AFTER `is_read`, ADD `send_sms_time` TINYINT(2) NOT NULL DEFAULT '0' COMMENT '此此邀请发送的短信次数' AFTER `is_send_sms`;
+ALTER TABLE `uu_invite` CHANGE `send_sms_time` `send_sms_times` TINYINT(2) NOT NULL DEFAULT '0' COMMENT '此此邀请发送的短信次数';
+ALTER TABLE `uu_invite` ADD `auto_accept` TINYINT(1) NOT NULL DEFAULT '0' COMMENT '0：默认，1：可能会接受' AFTER `invite_status`;
+ALTER TABLE `uu_invite` CHANGE `auto_accept` `possible_accept_status` TINYINT(1) NOT NULL DEFAULT '0' COMMENT '0：默认，1：可能会接受';
+
+#人才蛙2.0职位表结束默认推荐时间字段 zzq
+ALTER TABLE `rencaiwa`.`uu_channel_jobs` ADD COLUMN `cannel_default_time` INT(10) UNSIGNED DEFAULT 0 NOT NULL COMMENT '结束推荐时间人才蛙2.0' AFTER `change_top_time`; 

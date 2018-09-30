@@ -1,0 +1,39 @@
+<header class="header white-bg">
+    <if condition="!empty($displayType) and 2 eq $displayType "><div class="container"></if>
+            <div class="sidebar-toggle-box">
+                <div data-original-title="Toggle Navigation" data-placement="right" class="icon-reorder tooltips"></div>
+            </div>
+            <!--logo start-->
+            <a href="index.html" class="logo">Zshop<span> 后台管理中心</span></a>
+            <!--logo end-->
+            <div class="nav notify-row" id="top_menu">
+
+            </div>
+            <div class="top-nav ">
+                <!--search & user info start-->
+                <ul class="nav pull-right top-menu">
+                    <li>
+                        <input type="text" class="form-control search" placeholder="Search">
+                    </li>
+                    <li>
+                        <a href="/" target="_blank">前台首页</a>
+                    </li>
+                    <!-- user login dropdown start-->
+                    <li class="dropdown">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                            <span class="username"><{$Think.session.admin_user.nickname}></span>
+                            <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu extended logout">
+                            <div class="log-arrow-up"></div>
+                            <li><a href="/Admin/Admin/changepwd"><i class=" icon-suitcase"></i>修改密码</a></li>
+                            <li><a href="#"><i class="icon-cog"></i>切换显示宽度</a></li>
+                            <li><a href="/Admin/Login/logout"><i class="icon-key"></i>退出</a></li>
+                        </ul>
+                    </li>
+                    <!-- user login dropdown end -->
+                </ul>
+                <!--search & user info end-->
+            </div>
+        <if condition="!empty($displayType) and 2 eq $displayType "></div></if>
+</header>

@@ -1,0 +1,90 @@
+<extend name="../Application/Admin/View/base.html" />
+
+    <block name="title"><title>Zshop商城-管理-添加管理员</title></block>
+    <block name="style">
+    <link href="/Admin/assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link href="/Admin/assets/jquery-easy-pie-chart/jquery.easy-pie-chart.css" rel="stylesheet" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="/Admin/css/owl.carousel.css" type="text/css">
+    </block>
+<block name="content">
+      <section class="wrapper">
+              <div class="row">
+                  <div class="col-lg-12">
+                      <!--breadcrumbs start -->
+                      <ul class="breadcrumb">
+                          <li><a href="/Admin/Index"><i class="icon-home"></i> 主面板</a></li>
+                          <li><a href="/Admin/Users">用户管理</a></li>
+                          <li class="active">添加用户</li>
+                      </ul>
+                      <!--breadcrumbs end -->
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-lg-12">
+                      <section class="panel">
+                          <header class="panel-heading">
+                              添加管理员
+                          </header>
+                          <div class="panel-body">
+                              <form class="form-horizontal" role="form" method="post" action="/Admin/Admin/doAdd" id="addForm">
+                                  <div class="form-group">
+                                        <label for="cate_name" class="col-lg-2 col-sm-2 control-label text-center">用户名</label>
+                                        <div class="col-lg-6">
+                                            <input type="text" name="username" class="form-control" id="cate_name" value="" placeholder="用户名">
+                                        </div>
+                                    </div>
+                                  <div class="form-group">
+                                      <label for="inputEmail1" class="col-lg-2 col-sm-2 control-label">昵称</label>
+                                      <div class="col-lg-6">
+                                          <input type="text" name="nickname" class="form-control" id="inputEmail1" placeholder="昵称">
+                                      </div>
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="inputPassword1" class="col-lg-2 col-sm-2 control-label">密码</label>
+                                      <div class="col-lg-6">
+                                          <input type="text" name="password" disabled="disabled" class="form-control" id="inputPassword1" placeholder="123456" value="123456">
+                                      </div>
+                                  </div>
+                                  <div class="form-group">
+                                      <div class="col-lg-offset-2 col-lg-6">
+                                          <button type="submit" name="submit" id="Submit" class="btn btn-danger">提交</button>
+                                      </div>
+                                  </div>
+                              </form>
+                          </div>
+                      </section>
+                  </div>
+              </div>
+       </section>
+</block>
+    <block name="script">
+    <script src="/Admin/js/bootstrapValidator.min.js"></script>
+    
+    <script type="text/javascript">
+        $(function(){/* 文档加载，执行一个函数*/
+            $('#addForm').bootstrapValidator({
+                message: 'This value is not valid',   
+                fields: {
+                    username: {
+                        validators: {
+                            notEmpty: {message: '用户名不能为空'},
+                            stringLength: {min: 3,max: 30,message: '用户名长度必须在3到30之间'},
+                            remote: {//ajax验证。
+                                url: '/Admin/Users/ajaxCheckUserName',
+                                type: 'post',
+                                data:{username:function() {
+                                    return $('input[name="username"]').val() }
+                                },
+                                delay :  2000,
+                                dataFilter:function(data,type){
+                                    return data;
+                                },
+                                message: '用户名称已存在',//提示消息
+                            }
+                        }
+                    }
+                }
+            })
+       });
+    </script>  
+    </block>

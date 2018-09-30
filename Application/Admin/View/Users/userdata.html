@@ -1,0 +1,191 @@
+<extend name="../Application/Admin/View/base.html" />
+
+    <block name="title"><title>Zshop商城-管理-用户列表-第<{$currentPage}>页</title></block>
+    <block name="style">
+    <link href="/Admin/assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link href="/Admin/assets/jquery-easy-pie-chart/jquery.easy-pie-chart.css" rel="stylesheet" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="/Admin/css/owl.carousel.css" type="text/css">
+    </block>
+<block name="content">
+      <section class="wrapper">
+              <div class="row">
+                  <div class="col-lg-12">
+                      <!--breadcrumbs start -->
+                      <ul class="breadcrumb">
+                          <li><a href="/Admin/Index"><i class="icon-home"></i> 主面板</a></li>
+                          <li><a href="/Admin/Users">用户管理</a></li>
+                          <li class="active">用户使用数据</li>
+                      </ul>
+                      <!--breadcrumbs end -->
+                  </div>
+              </div>
+              <!-- page start-->
+              <div class="row">
+                  <div class="col-lg-12">
+                      <div class="col-sm-12" style="padding-left:0px;padding-right:0px;">
+                      <section class="panel">
+                          <header class="panel-heading">
+                              用户列表
+                          </header>
+                          <div class="panel-body">
+                              <form class="form-horizontal" role="form" id="search" method="post" action="/Admin/Users/userdata" >
+                                  <div class="col-md-6 alltimesof">
+                                    <div class="col-md-3">
+                                      <div class="form-group">
+                                          <input type="text" name="mobile" class="form-control" id="phone" value="<{$param.mobile}>" placeholder="输入手机号搜索">
+                                      </div>
+                                    </div>
+                                      <div class="col-md-9">
+                                          <button  id="submit" class="btn btn-info">搜索</button>
+                                      </div>
+                                  </div>
+                              </form>
+                              <form class="form-horizontal" role="form" id="search" method="post" action="/Admin/Users/userdata" >
+                                  <div class="col-md-6">
+                                      <div class="input-group input-large" data-date="2016/07/28" data-date-format="yyyy/mm/dd">
+                                          <input type="text" class="form-control dpd1" value="<{$param.srtime|date='m/d/Y',###}>" name="srtime">
+                                          <span class="input-group-addon">To</span>
+                                          <input type="text" class="form-control dpd2" value="<{$param.ertime|date='m/d/Y',###}>" name="ertime">
+                                      </div>
+                                      <span class="help-block">注册时间查询</span>
+                                      <div class="col-md-9">
+                                          <button  id="" class="btn btn-info">搜索</button>
+                                      </div>
+                                  </div>
+
+                              </form>
+                          </div>
+                                  
+                      </section>
+
+                    </div>
+
+
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-lg-12">
+                      <section class="panel">
+                          <table class="table table-striped table-advance table-hover">
+                              <thead>
+                              <tr>
+                                  <th></th>
+                                  <th></th>
+                                  <th></th>
+                                  <th></th>
+                                  <th>邀请情况</th>
+                                  <th></th>
+                                  <th></th>
+                                  <th></th>
+                                  <th></th>
+                                  <th>邮箱账号</th>
+                                  <th></th>
+                                  <th></th>
+                                  <th></th>
+                                  <th></th>
+                              </tr>
+                              <tr>
+                                  <th><i class="icon-phone"></i>手机</th>
+                                  <th><i class="icon-share-alt"></i>当前推荐</th>
+                                  <th><i class="icon-share-alt"></i>结束推荐</th>
+                                  <th><i class="icon-share-alt"></i>共推荐简历</th>
+                                  <th><i class="icon-share-sign"></i>总邀请量</th>
+                                  <th><i class="icon-share-sign"></i>总查看量</th>
+                                  <!--<th><i class="icon-share-sign"></i>待处理</th>-->
+                                  <th><i class="icon-share-sign"></i>自动接受</th>
+                                  <th><i class="icon-share-sign"></i>主动接受</th>
+                                  <th><i class="icon-share-sign"></i>主动拒绝</th>
+                                  <th><i class="icon-share-sign"></i>已过期</th>
+                                  <!--<th><i class="icon-envelope"></i>邮箱账号数</th>-->
+                                  <!--<th><i class="icon-envelope"></i>总邮件</th>-->
+                                  <!--<th><i class="icon-envelope"></i>简历邮件</th>-->
+                                  <!--<th><i class="icon-envelope"></i>分享邮件</th>-->
+                                  <th>操作</th>
+                              </tr>
+                              </thead>
+                              <tbody>
+                              <if condition="!empty($userinfolist) and is_array($userinfolist)">
+                              <volist name="userinfolist" id="user">
+                              <tr>
+                                  <td><a href="#"><{$user.mobile}></a></td>
+                                  <td><{$user.recommendjobcount}> </td>
+                                  <td><{$user.stoprecommendjobcount}>  </td>
+                                  <td><{$user.recommendResumeCount}> </td>
+                                  <td><{$user.allinvitecount}> </td>
+                                  <td><{$user.allreadinvitecount}> </td>
+
+                                  <!--<td><{$user.waitinvitecount}> </td>-->
+                                  <td><{$user.autoinviteaccept}>  </td>
+                                  <td><{$user.acceptinvitecount}>  </td>
+                                  <td><{$user.rejectinvitecount}> </td>
+                                  <td><{$user.expireinvitecount}> </td>
+                                  <td> - </td>
+                                  <td> - </td>
+                                  <td> - </td>
+                                  <td> - </td>
+                                  <td>
+                                  <a class="btn btn-primary btn-xs" href="/Admin/Users/getInviteLog/userId/<{$user.id}>">查看邀请日志</a></td>
+                              </tr>
+                              </volist>
+                              <else />
+                              <tr><td colspan="5">没有数据</td></tr>
+                              </if>
+                              </tbody>
+                          </table>
+                      </section>
+                  </div>
+                  <div class="col-lg-6"><div class="dataTables_info" id="editable-sample_info">共 <{$count}> 条记录，当前显示 第 <{$currentPage}> 页</div></div>
+                  <div class="col-lg-6"><{$page}></div>
+              </div>
+              <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                        <h4 class="modal-title">对话框</h4>
+                                    </div>
+                                    <div class="modal-body">
+
+                                        确定删除此记录
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button data-dismiss="modal" class="btn btn-default" type="button">关闭</button>
+                                        <button class="btn btn-warning" id="confirmvalue" value="" type="button"> 确认</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">提示消息</h4>
+                                    </div>
+                                    <div class="modal-body" id="reback_message">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+              <!-- page end-->
+       </section>
+</block>
+    <block name="script">
+      <script src="/Admin/js/advanced-form-components.js"></script>
+      <script type="text/javascript" src="/Admin/assets/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            $("#phone").change(function(){
+              if (!$("#phone").val().match(/^(1(3[0-9]|4[57]|5[0-35-9]|7[01678]|8[0-9])+\d{8})$/)){
+                $("#phone").val("");
+              } 
+            });
+            // $("#btn_search").click(function(){
+            //   $("#search").submit();
+            // });
+            
+        });
+      </script>
+    </block>

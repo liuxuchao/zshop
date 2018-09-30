@@ -1,0 +1,131 @@
+<extend name="../Application/Admin/View/base.html" />
+<block name="title"><title>Zshop商城-商品管理-商品列表-第<{$currentPage}>页</title></block>
+<block name="content">
+    <section class="wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <!--breadcrumbs start -->
+                <ul class="breadcrumb">
+                    <li><a href="/Admin/Index"><i class="icon-home"></i> 主面板</a></li>
+                    <li><a href="/Admin/Product">商品管理</a></li>
+                    <li class="active">商品前台模板样式（以苹果官网截图展示，截图样式仅供参考）</li>
+                    <li class="pull-right"><a href="/Admin/Product/index">返回商品列表页</a></li>
+                </ul>
+                <!--breadcrumbs end -->
+
+            </div>
+        </div>
+        <!-- page start-->
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <h3 style="height:40px;line-height: 40px;background-color: #fff;padding-left: 40px;">+ 背景通栏居中显示 商品名称，简述，图片</h3>
+                <div class="center-block">
+                    <img src="/Admin/img/templatesStyle/1.jpg" class="img-responsive center-block" alt="">
+                </div>
+            </div>
+<!--            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <h3 style="height:40px;line-height: 40px;background-color: #fff;padding-left: 40px;">+ 居中左右分栏显示 商品名称，图片</h3>
+                <div class="center-block">
+                    <img src="/Admin/img/templatesStyle/2.jpg" class="img-responsive center-block" alt="">
+                </div>
+            </div>-->
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <h3 style="height:40px;line-height: 40px;background-color: #fff;padding-left: 40px;">+ 居中左右图文显示(左图右字) 商品名称，图片</h3>
+                <div class="center-block">
+                    <img src="/Admin/img/templatesStyle/3.jpg" class="img-responsive center-block" alt="">
+                </div>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <h3 style="height:40px;line-height: 40px;background-color: #fff;padding-left: 40px;">+ 居中左右图文显示(左字右图) 商品名称，图片</h3>
+                <div class="center-block">
+                    <img src="/Admin/img/templatesStyle/4.jpg" class="img-responsive center-block" alt="">
+                </div>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <h3 style="height:40px;line-height: 40px;background-color: #fff;padding-left: 40px;">+ 居中背景图片显示(左图右字) 商品名称，简述，图片</h3>
+                <div class="center-block">
+                    <img src="/Admin/img/templatesStyle/5.jpg" class="img-responsive center-block" alt="">
+                </div>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <h3 style="height:40px;line-height: 40px;background-color: #fff;padding-left: 40px;">+ 居中背景图片显示(左字右图) 商品名称，简述，图片</h3>
+                <div class="center-block">
+                    <img src="/Admin/img/templatesStyle/6.jpg" class="img-responsive center-block" alt="">
+                </div>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <h3 style="height:40px;line-height: 40px;background-color: #fff;padding-left: 40px;color:red;">目前仅提供这6中模板样式</h3>
+            </div>
+        </div>
+        <!-- page end-->
+    </section>
+</block>
+    <block name="script">
+      <script type="text/javascript">
+        $(document).ready(function() {
+            //下架或者上架
+            $(".myModal1").click(function(){
+                var id = $(this).attr("value");
+                $("#confirmvalue1").attr("value",$(this).attr("value"));
+            });
+            $("#confirmvalue1").click(function(){
+              $("#myModal1").css('display','none'); 
+              $("#myModal1").removeClass("in"); 
+              $("body").removeClass("modal-open");
+                var _id = $(this).attr("value");
+                var _status = "<{$productList.status}>";
+                  $.post("/Admin/Product/changeStatus",{"id":_id,"status":_status},function(data,textStatus, jqXHR){
+                    if (data) {
+                        $("#reback_message").text("更改成功");
+                        $("body").removeClass("modal-open");
+                        $("#myModal3").addClass("in"); 
+                        $("#myModal3").css('display','block'); 
+                    }else{
+                        $("#reback_message").text("更改成功");
+                        $("body").removeClass("modal-open");
+                        $("#myModal3").addClass("in"); 
+                        $("#myModal3").css('display','block'); 
+                    }
+                    setTimeout(function (){
+                        $("#myModal3").removeClass("in"); 
+                        $("#myModal3").css('display','none'); 
+                        $("body").removeClass("modal-open");
+                        $(".modal-backdrop").removeClass("in");
+                     }, 2000);
+                    window.location.reload();
+                  });
+            });
+            //删除
+            $(".myModal2").click(function(){
+                var id = $(this).attr("value");
+                $("#confirmvalue2").attr("value",$(this).attr("value"));
+            });
+            $("#confirmvalue2").click(function(){
+              $("#myModal2").css('display','none'); 
+              $("#myModal2").removeClass("in"); 
+              $("body").removeClass("modal-open");
+                var id = $(this).attr("value");
+                  $.post("/Admin/Product/doDelete",{id:id},function(data,textStatus, jqXHR){
+                    if (data) {
+                        $("#reback_message").text("删除成功");
+                        $("body").removeClass("modal-open");
+                        $("#myModal3").addClass("in"); 
+                        $("#myModal3").css('display','block'); 
+                    }else{
+                        $("#reback_message").text("删除失败");
+                        $("body").removeClass("modal-open");
+                        $("#myModal3").addClass("in"); 
+                        $("#myModal3").css('display','block'); 
+                    }
+                    setTimeout(function (){
+                        $("#myModal3").removeClass("in"); 
+                        $("#myModal3").css('display','none'); 
+                        $("body").removeClass("modal-open");
+                        $(".modal-backdrop").removeClass("in");
+                     }, 2000);
+                    window.location.reload();
+                  });
+            });
+        });
+      </script>
+    </block>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>测试分词</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div>
+            <form action="/Api/Index/participles" method="POST">
+                <input type="text" name="name">
+                <input name="type" type="radio" value="1" checked="true" />分词</label> 
+                <input name="type" type="radio" value="2" />拼词</label> 
+                <button type="submit">提交</button>
+            </form>
+        </div>
+        <if condition="$type==1">
+        <div>近义词分词：<?php print_r($data[0]);?></div><br/>
+        <div>普通分词：<?php print_r($data[1]);?></div><br/>
+        <div>输出结果：<?php print_r($data[2]);?></div><br/>
+        <else/>
+        <div>拼词输出结果：<?php print_r($data);?></div><br/>
+        </if>
+    </body>
+</html>

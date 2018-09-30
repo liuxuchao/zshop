@@ -1,0 +1,345 @@
+<!doctype html>
+<html>
+<head>
+<title>CRAP_<{$resume['name']}>的简历</title>
+<include file="include/common"/>
+<link rel="stylesheet" href="/Home/css/page/personal_resume.css?v=<{$cssVersion}>" />
+</head>
+<body>
+<script>
+var param = {
+"userid":"<{$userId}>",
+<<<<<<< HEAD
+"person_id":"<{$person_id}>",
+=======
+"person_id":"<{$personId}>",
+>>>>>>> 81e4ac305c03db035809b10001fb6d6279ed68ff
+"resume_id":"<{$resume_id}>"
+};  
+</script>
+<article id="vueApp"  class="linearLayout">
+  <section class="page_layout page_header">
+     <div class="zl_left">
+      <div class="name"><{$resume['name']}></div>
+      <!--<div class="day">已求职：5天</div>-->
+    <!--        <div class="date">最近更新：2016-03-30</div>-->
+      <div class="date">最近更新：<{$resume['updateDate']}></div>
+      <div class="addr">
+        <div class="item"><em class="icon"><img class="mr5" src="/Home/images/icon/14.png?v=<{$cssVersion}>" alt=""></em><{$resume['currentArea']}></div>
+        <div class="item"><em class="icon"><img class="mr5" src="/Home/images/icon/15.png?v=<{$cssVersion}>" alt=""></em><{$resume['workYear']}></div>
+        <div class="item"><em class="icon"><img class="mr5" src="/Home/images/icon/4.png?v=<{$cssVersion}>" alt=""></em><{$resume['degree']}></div>
+      </div>
+    </div>
+    <figure class="photo">
+      <if condition="!empty($resume['photo'])">
+      <img src="/Home/ResumeImage/image/path/<{$resume['photo']}>" id="logo" width="60" height="60" />
+      <else />
+      <img src="/Home/images/user.jpg" id="logo" width="60" height="60" />
+    </if>
+    <if condition="男 eq $resume['sex']">
+      <figcaption class="icon"><img src="/Home/images/boy.png?v=<{$cssVersion}>" width="22" height="22" /></figcaption>
+      <else/>
+      <figcaption class="icon"><img  src="/Home/images/girl.png?v=<{$cssVersion}>" width="22" height="22" /></figcaption>
+      </if>
+    </figure>
+  </section>
+  <nav class="page_nav mt15">
+    <ul>
+      <li v-bind:class="{ curr: style.resume}" v-on:click="click('resume')">简历详情</li>
+      <li v-bind:class="{ curr: style.job}" v-on:click="click('job')">求职信息</li>
+    </ul>
+  </nav>
+  <!-- 简历详情 -->
+  <article v-if="style.resume" class="page_resume_info" >
+    <if condition="$resume['jobIntension']['job'] neq false ">
+    <!-- 求职意向 -->
+    <section class="page_layout">
+      <hgroup class="hgroup">
+        <em class="icon"><img class="mr5" src="/Home/images/icon/20.png" alt=""></em>
+        <h3 class="tit">求职意向</h3>
+      </hgroup>
+      <section class="content">
+        <ul class="page_list">
+          <li class="f16 blue"><{$resume['jobIntension']['job']|implode=",",###}></li>
+          <if condition="$resume['jobIntension']['trade'][0] neq false ">
+            <li class="item">
+              <div>期望行业：</div>
+              <div><{$resume['jobIntension']['trade']|implode=",", ###}></div>
+            </li>
+          </if>
+          <if condition="$resume['jobIntension']['city'][0] neq false ">
+            <li class="item">
+              <div>期望地点：</div>
+              <div><{$resume['jobIntension']['city']|implode=",", ###}></div>
+            </li>
+        </if>
+        <if condition="$resume['salary'] neq false ">
+            <li class="item">
+              <div>期望薪资：</div>
+              <div><{$resume['salary']}></div>
+            </li>
+          </li>
+        </if>
+      <!-- 还没有推荐理由，暂时注释掉。 -->
+      <!--       <div class="tuijian">
+              <div class="c999">推荐理由:</div>
+              <div class="value">她最近投递了6个相同职位</div>
+            </div> -->
+      </section>
+    </section>
+    </if>
+    <!-- 求职意向 -->
+  <!-- 自我评价 -->
+  <if  condition="!empty($resume['selfIntroduction'][0]['content'])">
+  <section class="page_layout mt20">
+    <hgroup class="hgroup">
+      <em class="icon"><img src="/Home/images/icon/1.png" alt=""></em>
+      <h3 class="tit">自我评价</h3>
+    </hgroup>
+    <section class="content">
+      <pre><{$resume['selfIntroduction'][0]['content']}></pre>
+    </section>
+  </section>
+  </if>
+  
+    <section id="extend" class="zhedie" v-bind:style="{height:extendHeight}">
+    <!-- 工作经历 -->
+    <if condition="!empty($resume['workExperience'])">
+    <section class="page_layout mt20">
+      <hgroup class="hgroup">
+        <em class="icon"><img src="/Home/images/icon/2.png" alt=""></em>
+        <h3 class="tit">工作经历</h3>
+      </hgroup>
+      <section class="content">
+          
+        <volist name="resume['workExperience']" id="work" key="k">
+        <div class="item">
+            <if condition="0 eq $k">
+            <hgroup class="sub_hgroup mt5">
+            <else/>
+            <hgroup class="sub_hgroup mt20">
+            </if>
+            <h3 class="bg_tit"><{$work['company']}><if condition="!empty($work['trade'])"> | <{$work['trade']}></if></h3>
+              <h4 class="sub_tit blue f16 mt5"><{$work['job']}></h4>
+              <time class="time f14 c999 mt5" datetime="<{$work['stime']}> - <{$work['etime']}>（<{$work['work_time']}>）"><{$work['stime']}> - <{$work['etime']}>（<{$work['work_time']}>）</time>
+            </hgroup>
+            <div class="ctent">
+              <if condition="empty($work['job_description'])  or $work['job_description'] eq 'null'"><else /><{$work['job_description']}></if>
+            </div>
+        </div>
+        </volist>
+        
+      </section>
+    </section>
+    </if>
+    
+    <!-- 项目经历 -->
+    <if condition="!empty($resume['projectExperience'])">
+    <section class="page_layout mt20">
+      <hgroup class="hgroup">
+        <em class="icon"><img src="/Home/images/icon/3.png" alt=""></em>
+        <h3 class="tit">项目经历</h3>
+      </hgroup>
+      
+        <volist name="resume['projectExperience']" id="project">
+        <section class="content">
+          <div class="item">
+            <hgroup class="sub_hgroup">
+              <h4 class="sub_tit blue f16 mt5"><{$project['project_name']}></h4>
+              <time class="time f14 c999 mt5"  datetime="<{$project['stime']}> - <{$project['etime']}>（<{$project['project_time']}>）"><{$project['stime']}> - <{$project['etime']}>（<{$project['project_time']}>）</time>
+            </hgroup>
+            <div class="ctent">
+              <if condition="$project['env_software']">软件环境：<{$project['env_software']}><br/></if>
+              <if condition="$project['env_hardware']">硬件环境：<{$project['env_hardware']}><br/></if>
+              <if condition="$project['dev_tools']">开发工具：<{$project['dev_tools']}><br/></if>
+              <{$project['description']}>
+            </div>
+          </div>
+        </section>
+        </volist>
+    </section>
+    </if>
+    
+    <!-- 教育经历 -->
+    <if condition="!empty($resume['educationExperience'])">
+    <section class="page_layout mt20">
+      <hgroup class="hgroup">
+        <em class="icon"><img src="/Home/images/icon/4.png" alt=""></em>
+        <h3 class="tit">教育经历</h3>
+      </hgroup>
+        
+      <volist name="resume['educationExperience']" id="education">
+      <section class="content">
+        <div class="item">
+          <hgroup class="sub_hgroup">
+            <h3 class="bg_tit"><{$education['school']}></h3>
+            <h4 class="sub_tit f16 mt5"> <if condition="$education['speciality'] neq ''"><{$education['speciality']}> </if> - <if condition="!empty($education['degree'])"><{$education['degree']}></if></h4>
+            <time class="time f14 c999 mt5 tr"  d datetime="2011.7 - 2015.9"><{$education['stime']}> - <{$education['etime']}></time>
+          </hgroup>
+        </div>
+      </section>
+      </volist>
+        
+    </section>
+    </if>
+    
+    <!-- 培训经历 -->
+    <if condition="!empty($resume['trainExperience'])">
+    <section class="page_layout mt20">
+        <hgroup class="hgroup">
+          <em class="icon"><img src="/Home/images/icon/5.png" alt=""></em>
+          <h3 class="tit">培训经历</h3>
+        </hgroup>
+        
+        <volist name="resume['trainExperience']" id="train">
+        <section class="content">
+          <div class="item">
+            <hgroup class="sub_hgroup">
+              <h3 class="bg_tit"><{$train['agency']}>   <{$train['address']}></h3>
+              <h4 class="sub_tit f16 mt5"><{$train['course']}></h4>
+              <time class="time f14 c999 mt5 tr"   datetime="<{$train['stime']}>- <{$train['etime']}>"><{$train['stime']}> - <{$train['etime']}></time>
+            </hgroup>
+            <div class="ctent">
+                <{$train['description']}>
+            </div>
+          </div>
+        </section>
+        </volist>
+        
+    </section>
+    </if>
+    
+    <!-- 语言能力 -->
+        <if condition="!empty($lang)">
+    <section class="page_layout mt20">
+        <hgroup class="hgroup">
+            <em class="icon"><img src="/Home/images/icon/6.png" alt=""></em>
+            <h3 class="tit">语言能力</h3>
+        </hgroup>
+        
+        <volist name="resume['languageAbility']" id="lang">
+        <section class="content">
+            <div class="item">
+                <div class="ctent">
+                    <{$lang['language']}>能力：<if condition="!empty($lang['verbal'])">听说<{$lang['verbal']}></if> <if condition="!empty($lang['literacy'])">读写<{$lang['literacy']}></if>
+                </div>
+            </div>
+        </section>
+        </volist>
+            
+    </section>
+    </if>
+    <!-- IT技能 -->
+    <if condition="!empty($resume['skillAbility'])">
+    <section class="page_layout mt20">
+        <hgroup class="hgroup">
+          <em class="icon"><img src="/Home/images/icon/7.png" alt=""></em>
+          <h3 class="tit">职业技能</h3>
+        </hgroup>
+        
+        <volist name="resume['skillAbility']" id="skill">
+        <section class="content">
+          <div class="item">
+            <div class="ctent">
+              <{$skill['skill']}>：<{$skill['level']}>
+            </div>
+          </div>
+        </section>
+        </volist>
+            
+    </section>
+    </if>
+    
+      <!-- 证书 -->
+      <if condition="!empty($resume['certification'])">
+      <section class="page_layout mt10">
+          <hgroup class="hgroup">
+            <em class="icon"><img src="/Home/images/icon/22.png?v=<{$cssVersion}>" alt=""></em>
+            <h3 class="tit">证书</h3>
+          </hgroup>
+          
+          <volist name="resume['certification']" id="certification">
+            <if condition="!empty($certification['cer_name'])">
+              <section class="content">
+                 <hgroup class="sub_hgroup">
+                    <h4 class="sub_tit f16 mt5"><{$certification['cer_name']}> &nbsp; <{$certification['description']}></h4>
+                    <time class="time f14 c999 mt5 tr" datetime="<{$certification['issued']}>"><if condition="!empty($certification['issued'])"><{$certification['issued']}></if></time>
+                  </hgroup>
+              </section>
+            </if>
+          </volist>
+              
+      </section>
+      </if>
+    
+    <!-- 其他 -->
+<!--    <section class="page_layout mt20">
+      <hgroup class="hgroup">
+        <em class="icon"><img src="/Home/images/icon/9.png" alt=""></em>
+        <h3 class="tit">其他</h3>
+      </hgroup>
+      <section class="content">
+        <div class="ctent">
+          曾经在武当山外门弟子比武中取得第一名三次
+        </div>
+      </section>
+    </section>-->
+    <div class="extend" v-if="extend" v-on:click="extendClick">
+      <div class="btn">展开全部描述<em class="icon"></em></div>
+    </div>
+  </section>
+  <!-- 联系方式 -->
+  <section class="page_layout mt20">
+    <hgroup class="hgroup">
+      <em class="icon"><img src="/Home/images/icon/10.png" alt=""></em>
+      <h3 class="tit">联系方式</h3>
+      <h4 class="aside c999 f14">接受邀请, 获得联系方式</h4>
+    </hgroup>
+      
+    <if condition="1 != $inviteStatus">
+    <section class="content page_concat">
+          <if condition="!empty($resume['contact']['mobile'])">
+            <div class="mobile"><em class="icon"><img src="/Home/images/icon/11.png" alt=""></em><span class="tit"><{$resume['contact']['mobile']|substr_replace=###,"****",3, 4}></span></div>
+           </if>
+           <if condition="!empty($resume['contact']['email'])">
+            <div class="email"><em class="icon"><img src="/Home/images/icon/12.png" alt=""></em><span class="tit"><{$resume['contact']['email']|substr_replace=###,"****",3, 4}></span></div>
+          </if>
+    </section>
+    <else/>
+    <section class="content concat">
+      <if condition="!empty($resume['contact']['mobile'])">
+      <div class="mobile"><em class="icon"><img src="/Home/images/icon/11.png" alt=""></em><span class="tit"><{$resume['contact']['mobile']}></span></div>
+      </if>
+      <if condition="!empty($resume['contact']['email'])">
+      <div class="emial"><em class="icon"><img src="/Home/images/icon/12.png" alt=""></em><span class="tit"><{$resume['contact']['email']}></span></div>
+       </if>
+    </section>
+    </if>
+        
+  </section>
+</article>
+<!-- 求职信息 -->
+  <article v-else class="page_job_info">
+    <div v-if="jobDetail.error_code == 0">
+      <section class="page_tit">
+      <{$resume['name']}>已经连续求职<em class="orange">{{jobDetail.deliver_days}}</em>天,
+      <br/>共产生<em class="orange">{{jobDetail.deliver_count}}</em>次应聘行为：
+      </section>
+      <job-component 
+        v-bind:deliver_count="jobDetail.deliver_count"
+        v-for="(items, name) in jobDetail.detail"
+        v-bind:items="items"
+        v-bind:name="name"/>
+    </div>
+    <div v-if="jobDetail.error_code == 1" class="padding10 mt10 tc f18">暂无数据</div>
+    <div v-if="jobDetail.error_code != 1 && jobDetail.error_code != 0" class="padding10 mt10 tc f18">数据加载中...</div>
+  </article>
+</article>
+<script type="text/javascript">
+var seaConfig = {
+  personalResume:true
+};
+</script>
+<include file="include/footer"/>
+</body>
+</html>

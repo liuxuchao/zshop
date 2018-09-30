@@ -1,0 +1,95 @@
+1.创建索引
+curl -XPUT 'localhost:9200/deliver' -d '{
+    "settings": {
+    "analysis": {
+      "analyzer": {
+        "charSplit": {
+          "type": "custom",
+           "tokenizer": "ngram_tokenizer",
+           "filter" : ["lowercase"]
+        }
+      },
+    "tokenizer": {
+            "ngram_tokenizer": {
+                "type": "nGram",
+                "min_gram": "1",
+                "max_gram": "1",
+                "token_chars": [
+                    "letter",
+                    "digit",
+                    "punctuation"
+                ]
+            }
+        }
+      }
+    }
+}'
+删除索引
+curl -X DELETE 'http://localhost:9200/deliver'
+
+2.创建mapping
+curl -X POST http://localhost:9200/deliver/deliver_mapping/_mapping -d '{
+    "deliver_mapping" : {
+        "_timestamp": {
+            "enabled": true
+        },
+        "_all": {
+            "analyzer": "charSplit"
+        },
+        "properties": {
+            "deliver_time": {
+                "type": "long"
+            },
+            "city": {
+                "include_in_all": true,
+                "analyzer": "charSplit",
+                "term_vector": "with_positions_offsets",
+                "boost": 8,
+                "type": "string"
+            },
+            "company_name": {
+                "include_in_all": true,
+                "analyzer": "charSplit",
+                "term_vector": "with_positions_offsets",
+                "boost": 8,
+                "type": "string"
+            },
+            "mobile": {
+                "type": "string"
+            },
+            "name": {
+                "include_in_all": true,
+                "analyzer": "charSplit",
+                "term_vector": "with_positions_offsets",
+                "boost": 8,
+                "type": "string"
+            },
+            "resume_update_time": {
+                "type": "long"
+            },
+            "job": {
+                "include_in_all": true,
+                "analyzer": "charSplit",
+                "term_vector": "with_positions_offsets",
+                "boost": 8,
+                "type": "string"
+            },
+            "email": {
+                "type": "string"
+            },
+            "resume_id": {
+                "type": "long"
+            },
+            "person_id": {
+                "type": "string"
+            },
+            "trade_name": {
+                "include_in_all": true,
+                "analyzer": "charSplit",
+                "term_vector": "with_positions_offsets",
+                "boost": 8,
+                "type": "string"
+            }
+        }
+    }
+}'

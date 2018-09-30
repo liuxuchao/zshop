@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>才秀秀_职位详情</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<!-- 百度站长验证代码-->
+<meta name="baidu-site-verification" content="5Ybr8YFXyB" />
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui" />
+<meta content="telephone=no,email=no" name="format-detection" />
+<meta name="full-screen" content="yes">
+<meta name="x5-fullscreen" content="true"/>
+<meta name="360-fullscreen" content="true"/>
+<meta name="x5-page-mode" content="app"/>
+<meta name="browsermode" content="application"/>
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="apple-mobile-web-app-title" content="kuaihuojian.com" />
+<link rel="stylesheet" href="/Home/css/lib/base.css?v=<{$cssVersion}>" />
+<link rel="stylesheet" href="/Home/css/lib/common.css?v=<{$cssVersion}>" />
+<link rel="stylesheet" href="/Home/css/resume.css?v=<{$cssVersion}>" />
+</head>
+<body>
+<article class="linearLayout " style="padding:0;">
+  <section class="work">
+    <div class="title">
+      <div class="work_name"><{$jobDetail['job_name']}></div>
+      <div class="pay">
+        <em class="icon">&#xe600;</em>
+        <{$jobDetail['job_salary']}>
+      </div>
+    </div>
+    <div class="work_info">
+     
+      <span>
+        <em class="icon">&#xe619;</em><{$jobDetail['job_workplace']?$jobDetail['job_workplace']:'不限'}>
+      </span>
+      <span>
+        <em class="icon">&#xe6ad;</em><{$jobDetail['job_experience']?$jobDetail['job_experience']:'不限'}>
+      </span>
+      <span>
+        <em class="icon">&#xe612;</em><{$jobDetail['job_education']?$jobDetail['job_education']:'不限'}>
+      </span>
+    </div>
+    <div class="work_sort">
+      <em class="c999">职位类别：</em><php>echo trim($jobDetail['job_category'],',');</php>
+    </div>
+    <div class="treatment">
+      <{$jobDetail['job_welfare']}>
+    </div>
+
+  </section>
+
+  <section class="tab">
+    <ul class="tab_nav">
+      <li class="curr">职位描述</li>
+      <li>公司介绍</li>
+    </ul>
+    <ul class="tab_list">
+      <li class="tab_item">
+        <{$jobDetail['job_descrip']}>
+      </li>
+      <li class="tab_item hide"><{$companyInfo['company_description']}></li>
+    </ul>
+    <div class="extend">
+      <div class="btn" data-bind="extend_open_btn">展开全部描述<em class="icon"></em></div>
+    </div>
+  </section>
+  <div class="clearfix"></div>
+  <section class="company">
+    <figure>
+      <figcaption><{$companyInfo['company_name']}></figcaption>
+      <if  condition="!empty($companyInfo['company_size'])">
+      <span>
+        <em class="icon">&#xe722;</em><{$companyInfo['company_size']}>
+      </span>
+    </if>
+    <if  condition="!empty($companyInfo['company_nature'])">
+      <span>
+        <em class="icon">&#xe6f6;</em> <{$companyInfo['company_nature']}>
+      </span>
+    </if>
+    <if  condition="!empty($companyInfo['company_trade'])">
+      <span>
+        <em class="icon">&#xe638;</em> <{$companyInfo['company_trade']}>
+      </span>
+    </if>
+    </figure>  
+    <if  condition="!empty($companyInfo['company_address'])">
+    <address>
+      <em class="icon">&#xe63a;</em>
+      <{$companyInfo['company_address']}>
+    </address>
+  </if>
+  </section>
+
+</article>
+
+<script src="/Home/js/lib/zepto.js"></script>
+<script type="text/javascript">
+$(function(){
+
+  $(function(){
+   // 展开查看更多职位和企业资料
+  $('[data-bind="extend_open_btn"]').click(function() {
+    $(".tab").css({
+      "height": "auto"
+    });
+    $(".extend >.btn").eq(0).hide();
+  });
+
+  var work = $(".tab_item").eq(0).height();
+  var company = $(".tab_item").eq(1).height();
+  if ( work > 215 ) {
+    $(".extend").show();
+  } else {
+     $(".extend").hide();
+  }
+
+  $(".tab_nav").find("li").click(function() {
+    var that = $(this);
+    var index = $(".tab_nav").find("li").index(that);
+    $(".tab_nav").find("li").removeClass("curr");
+    that.addClass("curr");
+    $(".tab_list").find("li").hide();
+    $(".tab_list").find("li").eq(index).show();
+
+    var work = $(".tab_item").eq(0).height();
+    var company = $(".tab_item").eq(1).height();
+    if ( index == 0 && work > 215 || index == 1 && company > 215 ) {
+      $(".extend").show();
+    } else {
+       $(".extend").hide();
+    }
+
+  });
+});
+
+  
+});
+</script>
+</body>
+</html>

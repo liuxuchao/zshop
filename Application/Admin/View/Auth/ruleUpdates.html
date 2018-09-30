@@ -1,0 +1,103 @@
+<extend name="../Application/Admin/View/base.html" />
+
+    <block name="title"><title>Zshop商城-管理-添加角色</title></block>
+    <block name="style">
+    <link href="/Admin/assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link href="/Admin/assets/jquery-easy-pie-chart/jquery.easy-pie-chart.css" rel="stylesheet" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="/Admin/css/owl.carousel.css" type="text/css">
+    </block>
+<block name="content">
+      <section class="wrapper">
+              <div class="row">
+                  <div class="col-lg-12">
+                      <!--breadcrumbs start -->
+                      <ul class="breadcrumb">
+                          <li><a href="/Admin/Index"><i class="icon-home"></i> 主面板</a></li>
+                          <li><a href="/Admin/Auth">权限组管理</a></li>
+                          <li class="active">修改权限规则</li>
+                      </ul>
+                      <!--breadcrumbs end -->
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-lg-12">
+                      <section class="panel">
+                          <header class="panel-heading">
+                              修改权限规则
+                          </header>
+                          <div class="panel-body">
+                              <form class="form-horizontal" role="form" method="post" action="/Admin/Auth/ruleDoUpdates" id="addRuleForm">
+                                  <div class="form-group">
+                                      <label for="title" class="col-lg-2 col-sm-2 control-label">权限规则唯一标识</label>
+                                      <div class="col-lg-6">
+                                          <input type="text" name="name" class="form-control" id="name" placeholder="权限规则唯一标识" value="<{$data.name}>">
+                                      </div>
+                                  </div>
+                                  <div class="form-group">
+                                      <label for="title" class="col-lg-2 col-sm-2 control-label">规则中文名称</label>
+                                      <div class="col-lg-6">
+                                          <input type="text" name="title" class="form-control" id="title" placeholder="规则中文名称" value="<{$data.title}>">
+                                      </div>
+                                  </div>
+                                  <div class="form-group">
+                                      <div class="col-lg-offset-2 col-lg-6">
+                                        <input type="hidden" name="id" value="<{$data.id}>">
+                                          <button type="submit" class="btn btn-danger">提交</button>
+                                      </div>
+                                  </div>
+                              </form>
+                          </div>
+                      </section>
+                  </div>
+              </div>
+       </section>
+</block>
+    <block name="script">
+    <!-- 表单验证 -->
+    <script src="/Admin/js/bootstrapValidator.min.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            $('#addRuleForm').bootstrapValidator({
+                message: 'This value is not valid',  
+                fields: {
+                    name: {
+                        validators: {
+                            notEmpty: {message: '权限标识不能为空'},
+                            stringLength: {min: 2,max: 30,message: '权限标识长度必须在2到30之间'},
+                            remote: {//ajax验证。
+                                url: '/Admin/Auth/ajaxCheckRuleName',
+                                type: 'post',
+                                data:{title:function() {
+                                    return $('input[name="name"]').val() }
+                                },
+                                delay :  2000,
+                                dataFilter:function(data,type){
+                                    return data;
+                                },
+                                message: '权限标识名称已存在',//提示消息
+                            }
+                        }
+                    },
+                    title: {
+                        validators: {
+                            notEmpty: {message: '权限规则标题不能为空'},
+                            stringLength: {min: 2,max: 30,message: '权限规则标题长度必须在2到30之间'},
+                            remote: {//ajax验证。
+                                url: '/Admin/Auth/ajaxCheckRuleName',
+                                type: 'post',
+                                data:{title:function() {
+                                    return $('input[name="title"]').val() }
+                                },
+                                delay :  2000,
+                                dataFilter:function(data,type){
+                                    return data;
+                                },
+                                message: '权限规则标题已存在',//提示消息
+                            }
+                        }
+                    }
+                }
+            })
+       });
+    </script> 
+    </block>

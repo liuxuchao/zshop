@@ -1,0 +1,239 @@
+1.创建索引
+curl -XPUT 'localhost:9200/uu_tuijian_job' -d '{
+    "settings": {
+    "analysis": {
+      "analyzer": {
+        "charSplit": {
+          "type": "custom",
+           "tokenizer": "ngram_tokenizer",
+	   "filter" : ["lowercase"]
+
+        }
+      },
+    "tokenizer": {
+            "ngram_tokenizer": {
+                "type": "nGram",
+                "min_gram": "1",
+                "max_gram": "1",
+                "token_chars": [
+                    "letter",
+                    "digit",
+                    "punctuation"
+                ]
+            }
+        }
+      }
+    }
+}'
+删除索引
+curl -X DELETE 'http://localhost:9200/uu_tuijian_job'
+
+2.mapping
+curl -X POST http://localhost:9200/uu_tuijian_job/uu_tuijian_job_mapping/_mapping -d '{
+    "uu_tuijian_job_mapping" :{
+        "_all": {
+            "analyzer": "charSplit",
+            "term_vector": "no",
+            "store": "false"
+        },
+        "_timestamp": {
+            "enabled": true
+        },
+        "properties" : {
+            "id" : {
+                "type" : "long"
+            },
+            "user_id" : {
+                "type" : "long"
+            },
+            "channel_id" : {
+                "type" : "long"
+            },
+            "original_publish_status" : {
+                "type" : "long"
+            },
+            "is_recommend" : {
+                "type" : "long"
+            },
+            "name" : {
+                "type" : "string",
+                "store" : "no",
+                "term_vector": "with_positions_offsets",
+                "analyzer": "charSplit",
+                "include_in_all": "true",
+                "boost": 8
+            },
+            "short_name" : {
+                "type" : "string",
+                "store" : "no",
+                "term_vector": "with_positions_offsets",
+                "analyzer": "charSplit",
+                "include_in_all": "true",
+                "boost": 8
+            },
+            "job_trade" : {
+                "type" : "string",
+                "store" : "no",
+                "term_vector": "with_positions_offsets",
+                "analyzer": "charSplit",
+                "include_in_all": "true",
+                "boost": 8
+            },
+            "salary" : {
+                "type" : "string",
+                "store" : "no",
+                "term_vector": "with_positions_offsets",
+                "analyzer": "charSplit",
+                "include_in_all": "true",
+                "boost": 8
+            },
+            "salary_from" : {
+                "type" : "long"
+            },
+            "salary_to" : {
+                "type" : "long"
+            },
+            "work_address" : {
+                "type" : "string",
+                "store" : "no",
+                "term_vector": "with_positions_offsets",
+                "analyzer": "charSplit",
+                "include_in_all": "true",
+                "boost": 8
+            },
+            "work_years" : {
+                "type" : "string",
+                "store" : "no",
+                "term_vector": "with_positions_offsets",
+                "analyzer": "charSplit",
+                "include_in_all": "true",
+                "boost": 8
+            },
+            "work_years_from" : {
+                "type" : "integer"
+            },
+            "work_years_to" : {
+                "type" : "integer"
+            },
+            "degree" : {
+                "type" : "string",
+                "store" : "no",
+                "term_vector": "with_positions_offsets",
+                "analyzer": "charSplit",
+                "include_in_all": "true",
+                "boost": 8
+            },
+            "refresh_time" : {
+                "type" : "long"
+            },
+            "job_description" : {
+                "type" : "string",
+                "store" : "no",
+                "term_vector": "with_positions_offsets",
+                "analyzer": "charSplit",
+                "include_in_all": "true",
+                "boost": 8
+            },
+            "company_name" : {
+                "type" : "string",
+                "store" : "no",
+                "term_vector": "with_positions_offsets",
+                "analyzer": "charSplit",
+                "include_in_all": "true",
+                "boost": 8
+            },
+            "company_size": {
+                "type" : "string",
+                "store" : "no",
+                "term_vector": "with_positions_offsets",
+                "analyzer": "charSplit",
+                "include_in_all": "true",
+                "boost": 8
+            },
+            "company_size_from" : {
+                "type" : "integer"
+            },
+            "company_nature" : {
+                "type" : "string",
+                "store" : "no",
+                "term_vector": "with_positions_offsets",
+                "analyzer": "charSplit",
+                "include_in_all": "true",
+                "boost": 8
+            },
+            "company_trade" : {
+                "type" : "string",
+                "store" : "no",
+                "term_vector": "with_positions_offsets",
+                "analyzer": "charSplit",
+                "include_in_all": "true",
+                "boost": 8
+            },
+	    "refresh_end_time" : {
+                "type" : "long"
+            },
+            "recommended_time" : {
+                "type" : "long"
+            },
+            "create_time" : {
+                "type" : "long"
+            },
+            "update_time" : {
+                "type" : "long"
+            },
+            "is_default" : {
+                "type" : "integer"
+            },
+	    "work_address_detail" : {
+                "type" : "string"
+            },
+            "city" : {
+                "type" : "string"
+            },
+            "district" : {
+                "type" : "string"
+            },
+            "province":{
+                "type" : "string"
+            },
+            "recommend_sort_id":{
+                "type" : "long"
+            }
+
+        }
+    }
+}'
+
+mapping 添加字段
+curl -X PUT http://localhost:9200/uu_tuijian_job/uu_tuijian_job_mapping/_mapping -d '{
+  "properties": {
+    "recommend_sort_id":{
+            "type" : "long"
+        }
+  }
+}'
+mapping 添加字段
+curl -X PUT http://localhost:9200/uu_tuijian_job/uu_tuijian_job_mapping/_mapping -d '{
+  "properties": {
+    "default_recommend":{
+            "type" : "long"
+        }
+  }
+}'
+
+mapping 添加字段
+curl -X PUT http://localhost:9200/uu_tuijian_job/uu_tuijian_job_mapping/_mapping -d '{
+  "properties": {
+    "change_top_time":{
+        "type" : "long"
+    }
+  }
+}'
+mapping 添加字段
+curl -X PUT http://localhost:9200/uu_tuijian_job/uu_tuijian_job_mapping/_mapping -d '{
+  "properties": {
+    "is_top":{
+        "type" : "long"
+    }
+  }
+}'

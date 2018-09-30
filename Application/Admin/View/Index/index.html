@@ -1,0 +1,143 @@
+<extend name="../Application/Admin/View/base.html" />
+
+    <block name="title"><title>Zshop-管理-用户列表-第<{$currentPage}>页</title></block>
+    <block name="style">
+    <link href="/Admin/assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link href="/Admin/assets/jquery-easy-pie-chart/jquery.easy-pie-chart.css" rel="stylesheet" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="/Admin/css/owl.carousel.css" type="text/css">
+    </block>
+<block name="content">
+      <section class="wrapper">
+              <div class="row">
+                  <div class="col-lg-12">
+                      <!--breadcrumbs start -->
+                      <ul class="breadcrumb">
+                          <li><a href="/Admin/Index"><i class="icon-home"></i> 主面板</a></li>
+                      </ul>
+                      <!--breadcrumbs end -->
+                  </div>
+              </div>
+              <!-- page start-->
+              <div class="row">
+                  <div class="col-lg-12">
+                      <div class="col-sm-12" style="padding-left:0px;padding-right:0px;">
+                      <section class="panel">
+                          <header class="panel-heading">
+                            <div class="border-head">
+                              <h3> 数据概览</h3>
+                            </div>
+                              
+                          </header>
+                          <div class="panel-body">
+                              <form class="form-horizontal" role="form" id="search" method="post" action="/Admin/index/index">
+                              <div class="col-md-6 alltimesof">
+                                  <button type="button" class='btn timesof <if condition="today eq $date" >btn-primary</if>'>今天</button>
+                                  <button type="button" class='btn timesof <if condition="yesterday eq $date" >btn-primary</if>'>昨天</button>
+                                  <button type="button" class='btn timesof <if condition="week eq $date" >btn-primary</if>'>本周</button>
+                                  <button type="button" class='btn timesof <if condition="month eq $date" >btn-primary</if>'>本月</button>
+                                  <button type="button" class='btn timesof <if condition="all eq $date">btn-primary</if>'>全部</button>
+                                  </div>
+
+                                  <div class="col-md-6">
+                                        <div class="input-group input-large" >
+                                         
+                                            <input id="d4311" type="text" class="form-control "  onClick="WdatePicker({skin:'whyGreen',minDate:'2006-09-10',maxDate:'#F{$dp.$D(\'d4312\')||\'<{$today}>\'}'})" value="<{$srtime|date='Y-m-d',###}>" name="srtime">
+                                            <span class="input-group-addon">To</span>
+                                            <input id="d4312" type="text" class="form-control "  onClick="WdatePicker({skin:'whyGreen',minDate:'#F{$dp.$D(\'d4311\')}',maxDate:'<{$today}>'})" value="<{$ertime|date='Y-m-d',###}>" name="ertime">
+                                        </div>
+                                        <span class="help-block">按时间查询</span>
+                                    </div>
+                                        <button type="button" class="btn btn-info submit">查询</button>
+
+                              </form>
+                          </div>
+                          <div class="border-head">
+                          <h3> <{$day['day']}> 的数据概况如下：</h3>
+                          </div>
+                          <h3>宏观统计</h3>
+                          <table class="table table-hover personal-task">
+                             <table class="table table-hover personal-task">
+                              <tbody>
+                             <foreach name="countinfo.hgtj" key="k" item="vo">
+                                <tr>
+                                    <td><{$vo.label}></td>
+                                    <td>
+                                      <span class="badge bg-important"><{$vo.value}></span>
+                                    </td>
+                                </tr>
+                              </foreach>
+                              </tbody>
+                          </table>
+                               
+                           <h3>使用统计</h3>
+                            <table class="table table-hover personal-task">
+                              <tbody>
+                             <foreach name="countinfo.sytj" key="k" item="vo">
+                                <tr>
+                                    <td><{$vo.label}></td>
+                                    <td>
+                                      <span class="badge bg-important"><{$vo.value}></span>
+                                    </td>
+                                </tr>
+                              </foreach>
+                              </tbody>
+                          </table>
+
+                      </section>
+
+                    </div>
+
+
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-lg-12">
+                      <section class="panel">
+                          <table class="table table-striped table-advance table-hover">
+                              <thead>
+                              <tr>
+                                  
+                              </tr>
+                              </thead>
+                              <tbody>
+                             
+                              </tbody>
+                          </table>
+                      </section>
+                  </div>
+              </div>
+              
+                        
+              <!-- page end-->
+       </section>
+</block>
+<block name="script">
+
+    <script src="/Admin/js/My97DatePicker/WdatePicker.js"></script>
+      <script src="/Admin/js/advanced-form-components.js"></script>
+      <script type="text/javascript" src="/Admin/assets/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            $(".timesof").click(function(){
+              var dates = new Array();
+              dates[0] = 'today';
+              dates[1] = 'yesterday';
+              dates[2] = 'week';
+              dates[3] = 'month';
+              dates[4] = 'all';
+              var  values = $(this).index();
+              date = dates[values];
+              $("#value_timesof").val(values+1);
+              $(".timesof").removeClass("btn-primary");
+              $(this).addClass("btn-primary");
+              window.location.href="/admin/index/index/date/"+date;
+            });
+            
+            $(".submit").click(function(){
+              $("#search").submit();
+            });
+        });
+      </script>
+    </block>
+    

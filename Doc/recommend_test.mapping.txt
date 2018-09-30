@@ -1,0 +1,206 @@
+﻿1.创建索引
+curl -XPUT 'localhost:9200/uu_tuijian_test' -d '{
+    "settings": {
+        "analysis": {
+            "analyzer": {
+                "charSplit": {
+                    "filter": [
+                        "lowercase"
+                    ],
+                    "type": "custom",
+                    "tokenizer": "ngram_tokenizer"
+                },
+                "ik_max_word": {
+                    "type": "ik",
+                    "use_smart": "false"
+                },
+                "ik_syno_smart": {
+                    "filter": [
+                        "jt_sfr",
+                        "lowercase"
+                    ],
+                    "type": "custom",
+                    "use_smart": "true",
+                    "tokenizer": "ik_smart"
+                },
+                "ik_smart": {
+                    "type": "ik",
+                    "use_smart": "true"
+                }
+            },
+            "filter": {
+                "jt_sfr": {
+                    "type": "synonym",
+                    "synonyms_path": "analysis/synonym.txt"
+                }
+            },
+            "tokenizer": {
+                "ngram_tokenizer": {
+                    "token_chars": [
+                        "letter",
+                        "digit",
+                        "punctuation"
+                    ],
+                    "min_gram": "1",
+                    "type": "nGram",
+                    "max_gram": "1"
+                }
+            }
+        }
+    }
+}'
+删除索引
+
+curl -X DELETE 'http://localhost:9200/uu_tuijian_test'
+
+
+
+curl -XPUT 'http://localhost:9200/uu_tuijian_test/_settings' -d '{
+"index":{
+"number_of_replicas":0
+}
+}'
+ 
+
+2.mapping
+curl -X POST http://localhost:9200/uu_tuijian_test/uu_tuijian_test_mapping/_mapping -d '{
+    "uu_tuijian_test_mapping": {
+        "_timestamp": {
+            "enabled": true
+        },
+        "properties": {
+            "resume_id": {
+                "type": "long"
+            },
+            "person_id": {
+                "type": "string"
+            },
+            "gender": {
+                "type": "integer"
+            },
+            "birthday": {
+                "type": "string"
+            },
+            "birthday_timestamp": {
+                "type": "integer"
+            },
+            "current_city": {
+                "type": "string",
+                "store": "no",
+                "term_vector": "with_positions_offsets",
+                "analyzer": "charSplit",
+                "include_in_all": "true",
+                "boost": 5
+            },
+            "hope_job": {
+                "analyzer": "ik_syno_smart",
+                "term_vector": "with_positions_offsets",
+                "boost": 7,
+                "type": "string"
+            },
+            "hope_city": {
+                "type": "string",
+                "store": "no",
+                "term_vector": "with_positions_offsets",
+                "analyzer": "charSplit",
+                "include_in_all": "true",
+                "boost": 6
+            },
+            "intention_job_work_job": {
+                "analyzer": "ik_syno_smart",
+                "search_analyzer": "ik_syno_smart",
+                "term_vector": "with_positions_offsets",
+                "type": "string",
+                "boost": 8
+            },
+            "salary_from": {
+                "type": "long"
+            },
+            "salary_to": {
+                "type": "long"
+            },
+            "last_job": {
+                "analyzer": "ik_syno_smart",
+                "term_vector": "with_positions_offsets",
+                "boost": 4,
+                "type": "string"
+            },
+            "last_company": {
+                "type": "string"
+            },
+            "first_work_time": {
+                "type": "long"
+            },
+            "first_work_date": {
+                "type": "string"
+            },
+            "degree_id": {
+                "type": "integer"
+            },
+            "top_degree_school": {
+                "type": "string"
+            },
+            "top_degree_major": {
+                "type": "string"
+            },
+            "update_time": {
+                "type": "date"
+            },
+            "name": {
+                "type": "string"
+            },
+            "mobile": {
+                "type": "string"
+            },
+            "email": {
+                "type": "string"
+            },
+            "picture": {
+                "type": "string"
+            },
+            "work_and_project_description": {
+                "analyzer": "charSplit",
+                "term_vector": "with_positions_offsets",
+                "boost": 8,
+                "type": "string"
+            },
+            "resume_update_time": {
+                "type": "long"
+            },
+            "hope_trade": {
+                "type": "string",
+                "store": "no",
+                "term_vector": "with_positions_offsets",
+                "analyzer": "charSplit",
+                "include_in_all": "true",
+                "boost": 3
+            },
+            "current_trade": {
+                "type": "string",
+                "store": "no",
+                "term_vector": "with_positions_offsets",
+                "analyzer": "charSplit",
+                "include_in_all": "true",
+                "boost": 2
+            },
+            "education_str": {
+                "type": "string"
+            },
+            "training_str": {
+                "type": "string"
+            },
+            "skill_str": {
+                "type": "string"
+            },
+            "certification_str": {
+                "type": "string"
+            },
+            "language_str": {
+                "type": "string"
+            },
+            "project_str": {
+                "type": "string"
+            }
+        }
+    }
+}'

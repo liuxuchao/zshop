@@ -1,0 +1,111 @@
+<extend name="../Application/Admin/View/base.html" />
+
+    <block name="title"><title>Zshop商城-管理-组权限列表</title></block>
+    <block name="style">
+    <!-- 嵌套树 -->
+    <link rel="stylesheet" type="text/css" href="/Admin/assets/nestable/jquery.nestable.css" />
+    </block>
+    <block name="content">
+        <section class="wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <!--breadcrumbs start -->
+                    <ul class="breadcrumb">
+                        <li><a href="/Admin/Index"><i class="icon-home"></i> 主面板</a></li>
+                        <li><a href="/Admin/Auth">权限组管理</a></li>
+                        <li class="active">组权限列表</li>
+                    </ul>
+                    <!--breadcrumbs end -->
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <section class="panel">
+                        <header class="panel-heading">
+                            <{$groupRules.title}> 组权限设置
+                        </header>
+                        <div class="panel-body">
+                            <div class="row">
+                              <div class="col-lg-12">
+                                  <div class="text-center" id="nestable_list_menu">
+                                      <button type="button" class="btn btn-success" data-action="expand-all">展开</button>
+                                      <button type="button" class="btn btn-warning" data-action="collapse-all">关闭</button>
+                                  </div>
+                              </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <form class="form-horizontal" role="form" method="post" action="/Admin/Auth/ruleDoUpdates" id="addRuleForm">
+                                    <div class="dd" id="nestable_list_3">
+                                        <ol class="dd-list">
+
+                                            <volist name="resTree" id="resTree">
+                                            <if condition="($resTree['lv'] eq 0) and ($resTree['parent_id'] eq 0)">
+												<li class="dd-item dd-nodrag dd3-item">
+												  <div class="dd-handle dd-nodrag dd3-handle"></div>
+												  <div class="dd3-content"><{$resTree.title}>
+													<div class="checkbox pull-right" style="padding-top: 0">
+														<if condition="$resTree['is_access'] eq 1">
+															<input type="checkbox" name='is_access' value="<{$resTree['id']}>" checked="checked">
+														<else />
+															<input type="checkbox" name='is_access' value="<{$resTree['id']}>">
+														</if>
+													</div>
+												  </div>
+												  <ol class="dd-list">
+														<volist name="resTree2" id="resTreeL2">
+															<if condition="($resTreeL2['lv'] eq 1) and ($resTreeL2['parent_id']==$resTree['id'])">
+															<li class="dd-item dd3-item">
+															  <div class="dd-handle dd-nodrag dd3-handle"></div>
+															  <div class="dd3-content"><{$resTreeL2.title}>
+																<div class="checkbox pull-right" style="padding-top: 0">
+																	<if condition="($resTreeL2['is_access'] eq 1) or ($resTree[$resTreeL2['parent_id']]['is_access'] eq 1)">
+																		<input type="checkbox" name='is_access' value="<{$resTree2['id']}>" checked="checked">
+																	<else />
+																		<input type="checkbox" name='is_access' value="<{$resTree2['id']}>">
+																	</if>
+																</div>
+															  </div>
+															  <ol class="dd-list">
+																  <volist name="resTree3" id="resTreeL3">
+																	  <if condition="($resTreeL3['lv'] eq 2) and ($resTreeL3['parent_id']==$resTreeL2['id'])">
+																		  <li class="dd-item dd3-item">
+																			  <div class="dd-handle  dd3-handle"></div>
+																			  <div class="dd3-content"><{$resTreeL3.title}>
+																					<div class="checkbox pull-right" style="padding-top: 0">
+																						<if condition="($resTreeL3['is_access'] eq 1) or ($resTreeL2[$resTreeL3['parent_id']]['is_access'] eq 1)">
+																							<input type="checkbox" name='is_access' value="<{$resTree3['id']}>" checked="checked">
+																						<else />
+																							<input type="checkbox" name='is_access' value="<{$resTree3['id']}>">
+																						</if>
+																					</div>
+																			  </div>
+																		  </li>
+																	  </if>
+																  </volist>
+															  </ol>
+															</li>
+															</if>
+													  </volist>
+												  </ol>
+												</li>
+                                            </if>
+                                            </volist> 
+                                        </ol>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-lg-6">
+                                
+                            </div>
+                            
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </block>
+    <block name="script">
+    <!-- 嵌套树 -->
+    <script src="/Admin/assets/nestable/jquery.nestable.js"></script>
+    <script src="/Admin/js/nestable.js"></script>
+    </block>

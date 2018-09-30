@@ -1,0 +1,359 @@
+<extend name="../Application/Admin/View/base.html" />
+    <block name="title"><title>Zshop商城-商品管理-添加商品</title></block>
+    <block name="style">
+    <!--文件上传-->
+    <link rel="stylesheet" href="/Admin/plugins/webuploader/css/webuploader.css" type="text/css">
+    <link rel="stylesheet" href="/Admin/plugins/webuploader/css/demo.css" type="text/css">
+    <style>
+        th{text-align: center !important;}
+        td{padding:3px !important;vertical-align: middle !important;text-align: center !important;}
+        td input{height:28px !important;}
+    </style>
+    </block>
+    <block name="content">
+        <section class="wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <!--breadcrumbs start -->
+                    <ul class="breadcrumb">
+                        <li><a href="/Admin/Index"><i class="icon-home"></i> 主面板</a></li>
+                        <li><a href="/Admin/Product">商品管理</a></li>
+                        <li class="active">添加商品</li>
+                    </ul>
+                    <!--breadcrumbs end -->
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <section class="panel">
+                        <header class="panel-heading">
+                            添加商品<a href="/Admin/Product/index" class="btn btn-success pull-right btn-sm">返回列表</a>
+                        </header>
+                        <div class="panel-body">
+                            <form class="form-horizontal" role="form" method="post" action="/Admin/Product/doAdd" id="addForm">
+                                <div class="col-lg-10 col-md-10">
+                                    <div class="form-group">
+                                        <label for="cate_id" class="col-lg-2 col-md-2 col-sm-2 control-label text-right">选择分类</label>
+                                        <div class="col-lg-5 col-md-5">
+                                            <select class="form-control" name="cate_id" id="cate_id">
+                                                <option value="0">请选择分类</option>
+                                                <volist name="tree" id="cattree">
+                                                <option value="<{$cattree.id}>" <if condition="$cattree['has_child'] eq '1'"> disabled="disabled" </if> >
+                                                <?php if($cattree['lv']==1){?>&nbsp;&nbsp;&nbsp; 
+                                                  <?php }elseif($cattree['lv']==2){?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                  <?php } ?>├ <{$cattree.cate_name}> 
+                                                </option>
+                                                </volist>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="product_name" class="col-lg-2 col-sm-2 control-label">商品名称</label>
+                                        <div class="col-lg-5 col-md-5">
+                                            <input type="text" name="product_name" class="form-control" id="product_name" value="" placeholder="商品名称">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="small_title" class="col-lg-2 col-sm-2 control-label">商品小标题</label>
+                                        <div class="col-lg-5 col-md-5">
+                                            <input type="text" name="small_title" class="form-control" id="small_title" value="" placeholder="商品小标题(如果要折行显示用英文逗号隔开)">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="price" class="col-lg-2 col-sm-2 control-label">商品价格</label>
+                                        <div class="col-lg-5 col-md-5 input-group">
+                                           <input type="text" name="price" class="form-control" id="price" value="" placeholder="商品价格">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="market_price" class="col-lg-2 col-sm-2 control-label">市场价格</label>
+                                        <div class="col-lg-5 col-md-5 input-group">
+                                           <input type="text" name="market_price" class="form-control" id="market_price" value="" placeholder="市场价格">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="commodity_number" class="col-lg-2 col-sm-2 control-label">商品编号</label>
+                                        <div class="col-lg-5 col-md-5 input-group">
+                                           <input type="text" name="commodity_number" class="form-control" id="commodity_number" value="" placeholder="商品编号">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="stock_number" class="col-lg-2 col-sm-2 control-label">库存量</label>
+                                        <div class="col-lg-5 col-md-5 input-group">
+                                           <input type="text" name="stock_number" class="form-control" id="stock_number" value="" placeholder="库存量">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="integral" class="col-lg-2 col-sm-2 control-label">积分</label>
+                                        <div class="col-lg-5 col-md-5 input-group">
+                                           <input type="text" name="integral" class="form-control" id="integral" value="" placeholder="购买此商品所得的积分">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="template_style" class="col-lg-2 col-md-2 col-sm-2 control-label text-right">前台模板样式</label>
+                                        <div class="col-lg-5 col-md-5">
+                                            <select class="form-control" name="template_style" id="template_style">
+                                                <option value="0">请选择模板样式</option>
+                                                <option value="1">背景通栏居中</option>
+                                                <option value="2">居中左图右文</option>
+                                                <option value="3">居中左文右图</option>
+                                                <option value="4">居中背景文字左</option>
+                                                <option value="5">居中背景文字右</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="description" class="col-lg-2 col-sm-2 control-label text-right">商品缩略图</label>
+                                        <div class="col-lg-5 col-md-5">
+                                            <div id="uploader" class="wu-example">
+                                                <div class="queueList">
+                                                    <div id="dndArea" class="placeholder">
+                                                        <div id="filePicker"></div>
+                                                        <p>请为该商品选1张缩略图</p>
+                                                    </div>
+                                                </div>
+                                                <div class="statusBar" style="display:none;">
+                                                    <div class="progress">
+                                                        <span class="text">0%</span>
+                                                        <span class="percentage"></span>
+                                                    </div>
+                                                    <div class="info"></div>
+                                                    <div class="btns">
+                                                        <div id="filePicker2"></div>
+                                                        <div class="uploadBtn">开始上传</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <input type="hidden" name="thumb" id="thumb" class="form-control" value="">
+                                        </div>
+                                    </div>
+                                    <div class="form-group" style="display: none" id="product_attributes">
+                                        <label for="integral" class="col-lg-2 col-sm-2 control-label">该类商品属性组</label>
+                                        <div class="col-lg-10 col-md-10 input-group" id="attr_values"></div>
+                                    </div>
+                                    <div class="form-group" style="display: none" id="product_attributes_sku">
+                                        <label for="integral" class="col-lg-2 col-sm-2 control-label">该类商品SKU属性组</label>
+                                        <div class="col-lg-6 col-md-6 input-group" id="attr_values_sku"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="description" class="col-lg-2 col-sm-2 control-label text-right">商品描述</label>
+                                        <div class="col-lg-10">
+                                            <textarea class="form-control" rows="3" name="description" id="description" style="resize:none" placeholder="商品描述"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="content" class="col-lg-2 col-sm-2 control-label text-right">商品详情</label>
+                                        <div class="col-lg-10">
+                                          <script id="editor" type="text/plain" name="contents" style="width:100%;min-height:320px;"></script>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 col-md-2">
+                                    <div class="form-group">
+                                        <p>上传相册组图</p>
+                                    </div>
+                                    <textarea id="uploadEditor" name="unableueditor" style="display: none;"></textarea>
+                                    <button type="button" class="btn btn-primary" id="j_upload_img_btn">多图上传</button>
+                                    <ul id="upload_img_wrap"></ul>
+                                    <input type="hidden" name="group_img" id="group_img" value="">
+                                </div>
+                                <div class="col-lg-10">
+                                    <div class="form-group">
+                                        <div class="col-lg-offset-2 col-lg-6">
+                                            <button type="reset" id="resetBtn" class="btn btn-default">取消</button>
+                                            <button type="submit" class="btn btn-danger">提交</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </block>
+    <block name="script">
+    <!--百度编辑器-->
+    <script type="text/javascript" charset="utf-8" src="/Ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/Ueditor/ueditor.all.min.js"> </script>
+    <!--文件上传-->
+    <script type="text/javascript" charset="utf-8" src="/Admin/plugins/webuploader/js/webuploader.min.js"> </script>
+    <script type="text/javascript">
+        var BASE_URL = '/Admin/plugins/webuploader';
+    </script>
+    <script type="text/javascript" charset="utf-8" src="/Admin/plugins/webuploader/js/demo.js"> </script>
+    <!-- 表单验证 -->
+    <script src="/Admin/js/bootstrapValidator.min.js"></script>
+    <!-- 表单验证 -->
+    <script src="/layer/layer.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            //调用百度编辑器
+            var ue = UE.getEditor('editor');
+            //当选择商品分类后获取该类的商品属性
+            $("#cate_id").on("change",function(){
+                $("#attr_values").html(" ");
+                $("#attr_values_sku").html(" ");
+                var _cateId = $(this).val();
+                if(_cateId !='0'){
+                     $.ajax({
+                         url: '/Admin/Product/ajaxgetAttrByCate',
+                         type: 'post',
+                         data: {"cate_id":_cateId},
+                         dateType:"json",
+                         success:function(data){
+                            var data = eval("("+data+")");
+                            if(data.error_code == '0'){
+                                $("#attr_values").html(data.input);
+                                $("#attr_values_sku").html(data.sku);
+                                $("#product_attributes,#product_attributes_sku").css("display","block");
+                                
+                            }else if(data.error_code == '1'){
+                                $("#product_attributes,#product_attributes_sku").css("display","none");
+                            }
+                         },
+                         error:function(){},
+                     });
+                 }
+            });
+            //表单验证开始
+            $('#addForm').bootstrapValidator({
+                message: 'This value is not valid',
+                excluded: [':disabled', ':hidden', ':not(:visible)'],//排除无需验证的控件，比如被禁用的或者被隐藏的  
+                submitButtons: 'button[type="submit"]',
+                fields: {
+                    parent_id:{
+                        validators: {
+                            notEmpty: {message: '分类不能为空'},
+                            callback: {
+                                message: '必须选择一个分类',
+                                callback: function(value, validator) {
+                                    if (value == 0) {
+                                        return false;
+                                    }else{
+                                        return true;
+                                    }
+                                }
+                            }
+                        } 
+                    },
+                    product_name:{
+                        validators: {
+                            notEmpty: {message: '商品名称不能为空'},
+                            stringLength: {min: 2,max: 30,message: '商品名长度必须在2到30之间'},
+                            remote: {//ajax验证。
+                                url: '/Admin/Product/ajaxCheckProductName',
+                                type: 'post',
+                                data:{name:function() {
+                                     return $('input[name="product_name"]').val() }
+                                },
+                                delay :  2000,
+                                dataFilter:function(data,type){
+                                     return data;
+                                },
+                                message: '商品名称已存在',//提示消息
+                            }
+                        }
+                    },
+                    price:{
+                        validators:{
+                            notEmpty:{message: '商品价格不能为空'},
+                            stringLength: {min: 1, max: 30,message: '商品价格长度必须在2到20之间'},
+                            regexp: { regexp:  /(^[1-9]\d*(\.\d{1,2})?$)|(^0(\.\d{1,2})?$)/,message: '价格为非负数整数或小数点2位'}, 
+                        }, 
+                    },
+                    market_price:{
+                        validators:{
+                            notEmpty:{message: '市场价格不能为空'},
+                            stringLength: {min: 1, max: 30,message: '市场价格长度必须在2到20之间'},
+                            regexp: { regexp:  /(^[1-9]\d*(\.\d{1,2})?$)|(^0(\.\d{1,2})?$)/,message: '市场价格为非负数整数或小数点2位'}, 
+                        }, 
+                    },
+                    commodity_number: {
+                        validators: {
+                            notEmpty: {message: '商品编号不能为空'},
+                            stringLength: {min: 1,max: 30,message: '商品编号长度必须在1到20之间'},
+                        }
+                    },
+                    stock_number: {
+                        validators: {
+                            notEmpty: {message: '库存量不能为空'},
+                            stringLength: {min: 1,max: 11,message: '库存量必须在1到11位之间'},
+                            regexp: {regexp:/^\+?[1-9]\d*/,message: '库存量为正整数'}, 
+                        }
+                    },
+                    integral: {
+                        validators: {
+                            notEmpty: {message: '积分不能为空'},
+                            stringLength: {min: 1,max: 8,message: '积分必须在1到8位之间'},
+                            regexp: { regexp:/^\+?[1-9]\d*/,message: '积分为正整数'}, 
+                        }
+                    },
+                    template_style:{
+                        validators: {
+                            notEmpty: {message: '模板样式不能为空'},
+                            callback: {
+                                message: '必须选择一个模板样式',
+                                callback: function(value, validator) {
+                                    if (value == 0) {
+                                        return false;
+                                    }else{
+                                        return true;
+                                    }
+                                }
+                            }
+                        } 
+                    },
+                    contents: {
+                        validators: {
+                            notEmpty: {message: '内容不能为空'},
+                        }
+                    },
+                 }               
+             });     
+        });
+    </script>
+    <!-- 加载编辑器的容器 -->
+    <style>
+        ul#upload_img_wrap{display: inline-block;width: 100%;margin: 0;padding-top: 5px;}
+        ul#upload_img_wrap>li{float:left;list-style-type: none;margin: 5px;padding: 0;}
+    </style>
+    <!-- 使用ue -->
+    <script type="text/javascript">
+        // 实例化编辑器，这里注意配置项隐藏编辑器并禁用默认的基础功能。
+        var uploadEditor = UE.getEditor("uploadEditor", {
+            isShow: false,
+            focus: false,
+            enableAutoSave: false,
+            autoSyncData: false,
+            autoFloatEnabled:false,
+            wordCount: false,
+            sourceEditor: null,
+            scaleEnabled:true,
+            toolbars: [["insertimage", "attachment"]]
+        });
+        // 监听多图上传和上传附件组件的插入动作
+        uploadEditor.ready(function () {
+            uploadEditor.addListener("beforeInsertImage", _beforeInsertImage);
+        });
+        // 自定义按钮绑定触发多图上传和上传附件对话框事件
+        document.getElementById('j_upload_img_btn').onclick = function () {
+           var dialog = uploadEditor.getDialog("insertimage");
+           dialog.title = '多图上传';
+           dialog.render();
+           dialog.open();
+        };
+        // 多图上传动作
+        function _beforeInsertImage(t, result) {
+            var imageHtml = '';
+            var imageFiles = '';
+            for(var i in result){
+                imageHtml += '<li><img src="'+result[i].src+'" alt="'+result[i].alt+'" height="150"></li>';
+                imageFiles += result[i].src+',';
+            }
+            document.getElementById('upload_img_wrap').innerHTML = imageHtml;
+            $("#group_img").val(imageFiles);
+        }
+    </script>
+    </block>
+    

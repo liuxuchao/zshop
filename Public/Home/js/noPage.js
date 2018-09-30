@@ -1,0 +1,1 @@
+webpackJsonp([11],[function(module,exports){"use strict";$(document).on("click","body",function(){window.MYOBJECT&&window.MYOBJECT.showSource?window.MYOBJECT.showSource():window.share&&share("分享的标题","分享的内容","图片地址")})}]);

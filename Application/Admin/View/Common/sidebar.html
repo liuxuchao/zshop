@@ -1,0 +1,118 @@
+      <!--sidebar start-->
+      <aside>
+        <div id="sidebar"  class="nav-collapse ">
+          <!-- sidebar menu start-->
+          <ul class="sidebar-menu  dcjq-parent-li" id="nav-accordion">
+            <li>
+              <a href="/Admin/Index" <if condition="'Index' eq $controllerName" >class="active dcjq-parent"</if>>
+                <i class="icon-dashboard"></i>
+                <span>主面板</span>
+              </a>
+            </li>
+          <li class="sub-menu  dcjq-parent-li">
+                <a href="javascript:;" <if condition="'Users' eq $controllerName" >class="active dcjq-parent"</if>>
+                 <i class="icon-user"></i>
+                 <span>用户管理</span>
+               </a>
+            <ul class="sub  dcjq-parent-li">
+             <li <if condition="'index' eq $actionName and 'Users' eq $controllerName" >class="active"</if>><a href="/Admin/Users/index" >用户列表</a></li>
+           </ul>
+         </li>
+         <li class="sub-menu  dcjq-parent-li">
+                <a href="javascript:;" <if condition="'Order' eq $controllerName or 'UsersBalanceLog' eq $controllerName" >class="active dcjq-parent"</if>>
+                 <i class="icon-user"></i>
+                 <span>订单管理</span>
+               </a>
+            <ul class="sub  dcjq-parent-li">
+             <li <if condition="'index' eq $actionName and 'Users' eq $controllerName" >class="active"</if>><a href="/Admin/Users/index" >商城订单列表</a></li>
+             <li <if condition="'index' eq $actionName and 'Users' eq $controllerName" >class="active"</if>><a href="/Admin/Users/index" >服务订单列表</a></li>
+             <li <if condition="'index' eq $actionName and 'Users' eq $controllerName" >class="active"</if>><a href="/Admin/Users/index" >活动订单列表</a></li>
+           </ul>
+         </li>
+        
+		<li class="sub-menu  dcjq-parent-li">
+          <a href="javascript:;" <if condition="'Product' eq $controllerName or 'ProductCate' eq $controllerName" >class="active dcjq-parent"</if>>
+            <i class="icon-btc"></i>
+            <span>商品服务活动管理</span>
+          </a>
+          <ul class="sub">
+            <li <if condition="'Product' eq $controllerName">class="active"</if>><a href="/Admin/Product">商品列表</a></li>
+            <li <if condition="'ProductCate' eq $controllerName">class="active"</if>><a href="/Admin/ProductCate" >商品分类</a></li>
+            <li <if condition="'ProductCate' eq $controllerName">class="active"</if>><a href="/Admin/ProductCate" >服务分类</a></li>
+            <li <if condition="'ProductCate' eq $controllerName">class="active"</if>><a href="/Admin/ProductCate" >服务列表</a></li>
+            <li <if condition="'ProductCate' eq $controllerName">class="active"</if>><a href="/Admin/ProductCate" >活动分类</a></li>
+            <li <if condition="'ProductCate' eq $controllerName">class="active"</if>><a href="/Admin/ProductCate" >活动列表</a></li>
+          </ul>
+        </li>
+		
+		<li class="sub-menu  dcjq-parent-li">
+          <a href="javascript:;" <if condition="'Article' eq $controllerName or 'ArticleCate' eq $controllerName" >class="active dcjq-parent"</if>>
+            <i class="icon-btc"></i>
+            <span>文章管理</span>
+          </a>
+          <ul class="sub">
+            <li <if condition="'index' eq $actionName and 'Article' eq $controllerName" >class="active"</if>>
+				<a href="/Admin/Article/index">文章列表</a></li>
+            <li <if condition="'ArticleCate' eq $actionName and 'Article' eq $controllerName" >class="active"</if>>
+				<a href="/Admin/ArticleCate/index" >文章分类</a></li>
+          </ul>
+        </li>
+		<li class="sub-menu  dcjq-parent-li">
+          <a href="javascript:;" <if condition="'Product' eq $controllerName or 'ProductCate' eq $controllerName" >class="active dcjq-parent"</if>>
+            <i class="icon-btc"></i>
+            <span>其他管理</span>
+          </a>
+          <ul class="sub">
+            <li <if condition="'Product' eq $controllerName">class="active"</if>><a href="/Admin/Product">广告列表</a></li>
+            <li <if condition="'ProductCate' eq $controllerName">class="active"</if>><a href="/Admin/ProductCate" >优惠券列表</a></li>
+            <li <if condition="'ProductCate' eq $controllerName">class="active"</if>><a href="/Admin/ProductCate" >发票列表</a></li>
+            <li <if condition="'ProductCate' eq $controllerName">class="active"</if>><a href="/Admin/ProductCate" >任务列表</a></li>
+          </ul>
+        </li>
+        <li><a href="/Admin/Source" <if condition="'Source' eq $controllerName" >class="active dcjq-parent"</if>> <i class="icon-dashboard"></i><span>附件管理</span></a></li>
+         <li class="sub-menu">
+          <a href="javascript:;" <if condition="'SmsLog' eq $controllerName or 'LoginLog' eq $controllerName or 'RecommendStatistical' eq $controllerName or 'ResumeSearchLog' eq $controllerName" >class="active dcjq-parent"</if>>
+            <i class=" icon-pencil"></i>
+            <span>日志</span>
+          </a>
+          <ul class="sub">
+            <li <if condition="'index' eq $actionName and 'SmsLog' eq $controllerName" >class="active"</if>><a href="/Admin/SmsLog/index">短信发送日志</a></li>
+            <li <if condition="'index' eq $actionName and 'LoginLog' eq $controllerName" >class="active"</if>><a href="/Admin/LoginLog/index">登陆日志</a></li>
+            <li <if condition="'index' eq $actionName and 'RecommendStatistical' eq $controllerName" >class="active"</if>><a href="/Admin/RecommendStatistical/index">支付请求日志</a></li>
+          </ul>
+        </li>
+        <li class="sub-menu  dcjq-parent-li" >
+                <a href="javascript:;"  <if condition="'Admin' eq $controllerName or 'Role' eq $controllerName" >class="active dcjq-parent"</if>>
+                <i class="icon-laptop"></i>
+                <span>后台管理</span>
+                </a>
+                <ul class="sub">
+                  <li <if condition="'Admin' eq $controllerName and 'index' eq $actionName" >class="active"</if>><a href="/Admin/Admin" >管理员列表</a></li>
+                  <li <if condition="'Role' eq $controllerName and 'index' eq $actionName" >class="active"</if>><a href="/Admin/Role">角色管理</a></li>
+                </ul>
+            </li>
+        <li class="sub-menu  dcjq-parent-li" >
+            <a href="javascript:;"  <if condition="'Auth' eq $controllerName" >class="active dcjq-parent"</if>>
+            <i class="icon-laptop"></i>
+            <span>权限管理</span>
+            </a>
+            <ul class="sub">
+              <li <if condition="'index' eq $actionName and 'Auth' eq $controllerName" >class="active"</if>><a href="/Admin/Auth/index" >权限组列表</a></li>
+              <li <if condition="'ruleIndex' eq $actionName and 'Auth' eq $controllerName" >class="active"</if>><a href="/Admin/Auth/ruleIndex">权限规则列表</a></li>
+            </ul>
+        </li>
+	<li class="sub-menu  dcjq-parent-li" >
+             <a href="javascript:;"  <if condition="'Version' eq $controllerName" >class="active dcjq-parent"</if>>
+              <i class="icon-flag-alt"></i>
+              <span>系统设置</span>
+            </a>
+            <ul class="sub">
+              <li <if condition="'add' eq $actionName" >class="active"</if>><a href="/Admin/Version/add">基本设置</a></li>
+              <li <if condition="'add' eq $actionName" >class="active"</if>><a href="/Admin/Version/add">字典管理</a></li>
+            </ul>
+          </li>
+      </ul>
+      <!-- sidebar menu end-->
+    </div>
+  </aside>
+      

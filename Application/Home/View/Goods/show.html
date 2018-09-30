@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>钛逅商城-购买页</title>
+    <link rel="bookmark" href="img/favicon.ico" type="image/x-icon" />
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link href="/Home/css/bootstrap.css" rel="stylesheet">
+    <link href="/Home/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/Home/css/common.css" rel="stylesheet">
+    <link href="/Home/css/buy.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.min.js"></script>
+      <script src="js/respond.min.js"></script>
+    <![endif]-->
+    <script src="/Home/js/jquery-1.11.3.min.js"></script>
+    <script src="/Home/js/bootstrap.min.js"></script>
+    <!-- <script src="js/bootstrap-collapse.js"></script> -->
+    </head>
+    <body class="htmlbody">
+    <block name="header"><include file="Common:header" /></block>
+    <!-- main start -->
+    <div class="container-fluid page_top">
+    	<div class="container">
+            <div class="row">
+		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                    <h3 class="pro_name"><{$data.product_name}></h3>
+		</div>
+		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                    <a href=""><button class="btn btn-primary pull-right go_list">概览</button></a>
+		</div>
+	    </div>
+    	</div>
+    </div>
+    <div class="container goodsContent">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <img src="<{$data.thumb}>" alt="" class="img-responsive center-block">
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <div class="attrs">
+                    <ul>
+                        <foreach name="AttrData" item="vo" key="k" >
+                        <li> <b> <{$k}> </b>:<{$vo}></li>
+                        </foreach>	
+                    </ul>
+                </div>
+                <div class="price">
+                    <ul>
+                        <li class="market_price">市场价：<{$data.market_price}>元</li>
+                        <li class="myprice">本店价：<span id="myprice"><{$data.price}></span>元</li>
+                    </ul>
+                </div>
+                <div class="style_num">
+                    <ul class="btn-numbox">
+                        <li><span class="number">数量</span></li>
+                        <li>
+                            <ul class="count">
+                                <li><span id="num-jian" class="num-jian">-</span></li>
+                                <li><input type="text" class="input-num" id="input-num" value="1" /></li>
+                                <li><span id="num-jia" class="num-jia">+</span></li>
+                            </ul>
+                        </li>
+                        <li><span class="kucun">（库存:<i id="kucun"><{$data.stock_number}></i>）</span></li>
+                    </ul>
+                </div>
+                <div class="skus">   
+                    <ul class="row">
+                        <div class="col-lg-2 col-md-2">
+                        <volist name="sku_type" id="sku_type_name">
+                            <{$sku_type_name.attr_cn}>
+                        </volist>
+                        </div>
+                        <div class="col-lg-10 col-md-10 ">
+                        <volist name="skus" id="skus">
+                            <div class="col-lg-6 col-md-6 sku_itme">
+                                <a data-id="<{$skus.id}>" onclick="getSkuid();" class="sku" data-price="<{$skus.price}>" data-stock_number="<{$skus.stock_number}>"><{$skus.sku_key}></a>
+                            </div>
+                        </volist>
+                        </div>
+                    </ul>
+                </div>
+                <div class="cart_buy">
+                    <div class="inlin-block">
+                        <div class="btn-group">
+                            <if condition="$loginInfo eq null">
+                            <button class="btn btn-info" id="addTocartBtn" data-toggle="modal" data-target="#ModalLogin">加入购物车</button>
+                            <button class="btn btn-danger" id="buyNowBtn" data-toggle="modal" data-target="#ModalLogin">立即购买</button>
+                            <else />
+                            <button class="btn btn-info" id="addTocartBtn">加入购物车</button>
+                            <button class="btn btn-danger" id="buyNowBtn">立即购买</button>
+                            </if>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row details">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 top_title">
+                        <h4>商品详情</h4>
+                </div>
+                <div class="content" style="min-height: 500px;">
+                    <{$data.contents}>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- main end -->
+    <script>
+		
+        //购物数量加减 start
+	var num_jia = document.getElementById("num-jia");
+        var num_jian = document.getElementById("num-jian");
+        var input_num = document.getElementById("input-num");
+        num_jia.onclick = function() {
+            var attr_id = $(".sku_itme").find("a.checked").attr("data-id");
+            if(attr_id==null){
+                layer.alert("请选择对应的属性");
+                return false
+            };
+            input_num.value = parseInt(input_num.value) + 1;
+            var buy_num =  parseInt(input_num.value);
+            //ajax 检验库存
+            $.ajax({
+                url: '/Home/Goods/ajaxCheckStockBySku',
+                type: 'post',
+                data: {"skuid":attr_id},
+                dateType:"json",
+                success:function(data){
+                   var d = JSON.parse(data);
+                   if(d.status == '1'){
+                        if(buy_num > parseInt(d.num)){
+                            //$(".sku_itme").find("a.checked").attr("data-id") = d.num; 
+                            layer.alert('购买数量不能大于库存数量');
+                        }
+                   }else if(d.status == '0'){
+                       layer.alert('参数错误');
+                   }
+                },
+                error:function(){},
+            });
+        };
+        num_jian.onclick = function() {
+            if(input_num.value <= 1) {
+                layer.alert("数量为大于0的数字");
+                return false;
+            } else {
+                input_num.value = parseInt(input_num.value) - 1;
+            }
+        };
+        //购物数量加减 end
+        
+        //选择sku属性改变商品价格库存
+        $(".sku").on("click",function(){
+           var sku_price =$(this).attr("data-price");
+           var sku_stock_number =$(this).attr("data-stock_number");
+           $("#myprice").text(sku_price);
+           $("#kucun").text(sku_stock_number);
+           $(this).parent().parent().find("a.checked").removeClass("checked");
+           $(this).addClass("checked");
+        });
+        
+        //获取skuid
+        function getSkuid(obj){
+            
+        }
+        
+        
+        
+       
+        //加入购物车 按钮
+        $("#addTocartBtn").on("click",function(){
+            $(this).css("outline","0");//样式点击后outline为0
+            //准备商品信息加入购物车
+            var user_id = "<{$loginInfo[0]}>";
+            var proid = "<{$data.id}>";
+            var skuid = $(".sku_itme").find("a.checked").attr("data-id");
+            var num = $("#input-num").val();
+//            if(skuid !=''){
+//                layer.alert("请选择属性");
+//                return false
+//            };
+            if(user_id!='' && proid!='' && skuid !='' && num!=''){
+                $.ajax({
+                    url: '/Home/Cart/addToCart',
+                    type: 'post',
+                    data: {"proid":proid,"skuid":skuid,"num":num,"user_id":user_id},
+                    dateType:"json",
+                    success:function(data){
+                        var d = JSON.parse(data);
+                        if(d.status == '1'){
+
+                            layer.alert(d.msg);
+
+
+                        }else if(data.status == '0'){
+                            layer.alert(d.msg);
+                        }
+                    },
+                    error:function(){}
+                });
+            }
+//            else{
+//                layer.alert("添加购物车失败");
+//                return false;
+//            }
+            
+        });
+    </script>
+    <block name="footer"><include file="Common:footer" /></block>
+</html>

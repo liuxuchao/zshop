@@ -1,0 +1,153 @@
+<extend name="../Application/Admin/View/base.html" />
+    <block name="title"><title>Zshop商城-商品分类管理-修改分类</title></block>
+    <block name="content">
+        <section class="wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <!--breadcrumbs start -->
+                    <ul class="breadcrumb">
+                        <li><a href="/Admin/Index"><i class="icon-home"></i> 主面板</a></li>
+                        <li><a href="/Admin/ProductCate">商品分类属性管理</a></li>
+                        <li class="active">修改分类属性</li>
+                    </ul>
+                    <!--breadcrumbs end -->
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <section class="panel">
+                        <header class="panel-heading">
+                            修改分类【<{$cateInfo.cate_name}>】属性<a href="/Admin/ProductAttr/index/cate_id/<{$cateInfo.id}>" class="btn btn-success pull-right btn-sm">返回列表</a>
+                        </header>
+                        <div class="panel-body">
+                            <form class="form-horizontal" role="form" method="post" action="/Admin/ProductAttr/doUpdate" id="updateForm">
+                                <div class="form-group">
+                                    <label for="attr_cn" class="col-lg-2 col-sm-2 control-label text-center">属性中文名称</label>
+                                    <div class="col-lg-6">
+                                        <input type="text" name="attr_cn" class="form-control" id="attr_cn" value="<{$attrData.attr_cn}>" placeholder="属性中文名称 (唯一不重复)">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="attr_en" class="col-lg-2 col-sm-2 control-label text-center">属性英文名称</label>
+                                    <div class="col-lg-6">
+                                        <input type="text" name="attr_en" class="form-control" id="attr_en" value="<{$attrData.attr_en}>" placeholder="属性英文名称 (唯一不重复)">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="types" class="col-lg-2 col-sm-2 control-label text-center">属性填值类型</label>
+                                    <div class="col-lg-6">
+                                        <select class="form-control" name="types" id="types">
+                                            <if condition="$attrData['types'] eq 0">
+                                            <option value="0" selected="selected">单行文本框</option>
+                                            <else /><option value="0">单行文本框</option>
+                                            </if>
+                                            <if condition="$attrData['types'] eq 1">
+                                            <option value="1" selected="selected">下拉选项</option>
+                                            <else /><option value="1">下拉选项</option>
+                                            </if>
+                                            <if condition="$attrData['types'] eq 2">
+                                            <option value="2" selected="selected">单选按钮</option>
+                                            <else /><option value="2">单选按钮</option>
+                                            </if>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group" id="opt_vals_is_sku" style="display:none">
+                                    <label for="attr_en" class="col-lg-2 col-sm-2 control-label text-center">是否为关键属性</label>
+                                    <div class="col-lg-6">
+                                        
+                                        <label for="is_sku_yes"><input type="radio" name="is_sku" value="1" id="is_sku_yes" <if condition="$attrData['is_sku'] eq 1">checked="checked"</if> >&nbsp;&nbsp;是&nbsp;&nbsp;</label>
+                                        <label for="is_sku_no"><input type="radio" name="is_sku" value="0" id="is_sku_no" <if condition="$attrData['is_sku'] eq 0">checked="checked"</if> >&nbsp;&nbsp;否</label>
+                                        
+                                    </div>
+                                </div>
+                                <div class="form-group" id="opt_vals">
+                                    <label for="attr_en" class="col-lg-2 col-sm-2 control-label text-center">选项值</label>
+                                    <div class="col-lg-6">
+                                        <textarea name="json_values" id="json_values" class="form-control" rows="3"  style="resize:none" ><{$attrData['json_values']}></textarea>
+                                        <p style="margin-top:3px;">请按照这种格式填选项值： 选项值1,选项值2, 选项值3【多项之间用英文逗号隔开】</p>
+                                    </div>
+                                </div>
+                                <div class="form-group" id="opt_vals">
+                                    <label for="unit" class="col-lg-2 col-sm-2 control-label text-center">属性单位</label>
+                                    <div class="col-lg-6">
+                                        <input type="text" name="unit" class="form-control" id="attr_en" value="<{$attrData.unit}>" placeholder="属性单位如(cm/kg)，不需要单位请省略">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-lg-offset-2 col-lg-6">
+                                        <input type="hidden" name="id" value="<{$attrData.id}>">
+                                        <input type="hidden" name="cate_id" value="<{cateInfo.id}>">
+                                        <button type="submit" class="btn btn-danger">提交</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </block>
+    <block name="script">
+    <!-- 表单验证 -->
+    <script src="/Admin/js/bootstrapValidator.min.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            //初始化
+            var _type = $("#types").val();
+            if(_type ==1 || _type ==2 || _type==3){
+                $("#opt_vals,#opt_vals_is_sku").css("display","block");
+            }else{
+                $("#opt_vals,#opt_vals_is_sku").css("display","none");
+            }
+            //当属性填值类型为下拉选框，单选按钮，复选框时候 需要给 属性填上值
+            $("#types").on("change",function(){
+               var v=$(this).val();
+               if(v ==1 || v ==2 || v ==3){
+                   $("#opt_vals,#opt_vals_is_sku").css("display","block");
+               }else{
+                   $("#opt_vals,#opt_vals_is_sku").css("display","none");
+               }
+            });
+           
+            $('#updateForm').bootstrapValidator({
+                message: 'This value is not valid',
+                fields: {
+                    attr_cn: {
+                        validators: {
+                            notEmpty: {message: '属性中文名称不能为空'},
+                            stringLength: {min: 2,max: 30,message: '属性中文名称长度必须在2到30之间'},
+                            remote: {//ajax验证。
+                                url: '/Admin/ProductAttr/ajaxCheckAttrNameOfCn',
+                                type: 'post',
+                                data:{attr_cn:function() {return $('input[name="attr_cn"]').val()},type:'1'},
+                                delay :  2000,
+                                dataFilter:function(data,type){
+                                    return data;
+                                },
+                                message: '属性中文名称已存在',//提示消息
+                            }
+                        }
+                    },
+                    attr_en: {
+                        validators: {
+                            notEmpty: {message: '属性英文名称不能为空'},
+                            stringLength: {min: 2,max: 30,message: '属性英文名称长度必须在2到30之间'},
+                            remote: {//ajax验证。
+                                url: '/Admin/ProductAttr/ajaxCheckAttrNameOfEn',
+                                type: 'post',
+                                data:{attr_en:function() {return $('input[name="attr_en"]').val()},type:'1'},
+                                delay :  2000,
+                                dataFilter:function(data,type){
+                                    return data;
+                                },
+                                message: '属性英文名称已存在',//提示消息
+                            }
+                        }
+                    },
+                }
+            });
+       });
+    </script>  
+    </block>
+    
