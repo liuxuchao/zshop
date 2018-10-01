@@ -51,4 +51,23 @@ class OrderService extends BaseService
         return $result;
     }
 
+
+
+    /**
+     *订单列表
+     * @auther caizhaun
+     * @param $order_type 订单分类
+     * return array | false
+     */
+    public function getOrderList($order_type = 0){
+
+        $order_type = intval($order_type);
+
+        if ($order_type == 0) {
+            return false;
+        }
+
+        $return $this->model->getOrderList($order_type);
+    }
+
 }

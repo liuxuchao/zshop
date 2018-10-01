@@ -48,5 +48,20 @@ class OrderModel extends BaseModel
     {
         parent::__construct();
     }    
+
+
+    /**
+     * @auther caizhuan
+     * @param $order_type 订单分类
+     * return array | false
+     */
+    public function getOrderList($order_type = 0){
+
+        if ( empty($order_type) ) {
+            return false;
+        }
+
+        return $this->where(['order_type'=>$order_type])->select();
+    }
 }
 
