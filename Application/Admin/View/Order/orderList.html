@@ -36,7 +36,7 @@
                               活动订单列表
                           </header>
                           <div class="panel-body">
-                              <form class="form-horizontal" role="form" id="search" method="post" action="/Admin/Users/index" >
+                              <form class="form-horizontal" role="form" id="search" method="post" action="/Admin/Order/orderList" >
                               <div class="col-md-6 alltimesof">
                                   <button type="button" class='btn timesof <if condition="today eq $param['date']" >btn-primary</if>'>今天</button>
                                   <button type="button" class='btn timesof <if condition="yesterday eq $param['date']" >btn-primary</if>'>昨天</button>
@@ -208,7 +208,7 @@
               $("#value_timesof").val(values+1);
               $(".timesof").removeClass("btn-primary");
               $(this).addClass("btn-primary");
-              window.location.href="/admin/Users/index/date/"+date;
+              window.location.href="/admin/Order/orderList/date/"+date+"/orderType/"+<{$Think.get.orderType}>;
 
             });
             $("#phone").change(function(){
