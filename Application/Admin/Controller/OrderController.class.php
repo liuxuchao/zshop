@@ -28,11 +28,16 @@ class OrderController extends AdminBaseController
 	 */
 	public function orderList(){
 
+		$param = parent::_handleTime(I());
 		$tPage = I('page', 1, 'intval');
         $tPageSize = I('page_size', 10, 'intval');
 
         $where = array();
         $where['sorder.order_type'] = $this->orderType;
+
+        if ($param['date'] == 'today') {
+        	$where["to_days('sorder.create_time')"] = to_days(now());
+        }
 
         $orderBy = 'sorder.id DESC';
 
