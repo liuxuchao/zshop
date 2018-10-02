@@ -52,16 +52,52 @@ class OrderModel extends BaseModel
 
     /**
      * @auther caizhuan
-     * @param $order_type 订单分类
+     * @param string $page 页码
+     * @param array $pageSize 页数
+     * @param array $order 排序
      * return array | false
      */
-    public function getOrderList($order_type = 0){
+    public function getOrder($page, $pageSize,$orderBy, $where){
 
-        if ( empty($order_type) ) {
+        if ( empty($where) ) {
             return false;
         }
 
-        return $this->where(['order_type'=>$order_type])->select();
+        $page = intval( $page );
+        $pageSize = intval($pageSize);
+        if ( 0 >= $page || 0>=$pageSize ) {
+            return false;
+        }
+        if ( 0 < $page ) {
+            $offset = ($page - 1) * $pageSize;
+        }
+
+        return $this->alias('sorder')
+                    ->join('left join zs_users users on sorder.UID = users.id')
+                    ->join('left join zs_product product on sorder.product_id = product.pro_id')
+                    ->where($where)
+                    ->field('sorder.order_code,sorder.create_time,sorder.pay_status,sorder.pay_type,sorder.pay_time,sorder.totalPrice,sorder.couponPrice,sorder.payPrice,product.name,users.username')
+                    ->order($orderBy)
+                    ->limit($offset, $pageSize)
+                    ->select();
+    }
+
+
+    /**
+     *订单统计
+     * @auther caizhuan
+     * @param array $where 
+     * return array | false
+     */
+    public function countByCondition($where){
+        if ( empty($where) ) {
+            return false;
+        }
+        return $this->alias('sorder')
+                    ->join('left join zs_users users on sorder.UID = users.id')
+                    ->join('left join zs_product product on sorder.product_id = product.pro_id')
+                    ->where($where)
+                    ->count();
     }
 }
 

@@ -56,18 +56,26 @@ class OrderService extends BaseService
     /**
      *订单列表
      * @auther caizhaun
-     * @param $order_type 订单分类
+     * @param string $page 页码
+     * @param array $pageSize 页数
+     * @param array $order 排序
      * return array | false
      */
-    public function getOrderList($order_type = 0){
+    public function getOrderList($page, $pageSize,$orderBy,$where){
 
-        $order_type = intval($order_type);
+        return $this->model->getOrder($page, $pageSize,$orderBy,$where);
 
-        if ($order_type == 0) {
-            return false;
-        }
+    }
 
-        $return $this->model->getOrderList($order_type);
+
+    /**
+     *订单统计
+     * @auther caizhuan
+     * @param array $where 
+     * return array | false
+     */
+    public function countByCondition($where){
+        return $this->model->countByCondition($where);
     }
 
 }

@@ -24,9 +24,9 @@
                  <span>订单管理</span>
                </a>
             <ul class="sub  dcjq-parent-li">
-             <li <if condition="'index' eq $actionName and 'Users' eq $controllerName" >class="active"</if>><a href="/Admin/Users/index" >商城订单列表</a></li>
-             <li <if condition="'index' eq $actionName and 'Users' eq $controllerName" >class="active"</if>><a href="/Admin/Users/index" >服务订单列表</a></li>
-             <li <if condition="'index' eq $actionName and 'Users' eq $controllerName" >class="active"</if>><a href="/Admin/Users/index" >活动订单列表</a></li>
+             <li <if condition="'orderList' eq $actionName and 'Order' eq $controllerName and '1' eq $orderType " >class="active"</if>><a href="/Admin/Order/orderList?orderType=1" >商城订单列表</a></li>
+             <li <if condition="'orderList' eq $actionName and 'Order' eq $controllerName and '2' eq $orderType" >class="active"</if>><a href="/Admin/Order/orderList?orderType=2" >服务订单列表</a></li>
+             <li <if condition="'orderList' eq $actionName and 'Order' eq $controllerName and '3' eq $orderType" >class="active"</if>><a href="/Admin/Order/orderList?orderType=3" >活动订单列表</a></li>
            </ul>
          </li>
         
