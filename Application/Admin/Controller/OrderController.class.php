@@ -36,7 +36,54 @@ class OrderController extends AdminBaseController
         $where['sorder.order_type'] = $this->orderType;
 
         if ($param['date'] == 'today') {
-        	$where["to_days('sorder.create_time')"] = to_days(now());
+        	//php获取今日开始时间戳和结束时间戳
+			$beginToday=mktime(0,0,0,date('m'),date('d'),date('Y'));
+			$endToday=mktime(0,0,0,date('m'),date('d')+1,date('Y'))-1;
+        	$where['sorder.create_time'] = array('egt',$beginToday);
+        	$where['sorder.create_time'] = array('elt',$endToday);
+        }
+        	
+		if ($param['date'] == 'yesterday') {
+        	//php获取昨日起始时间戳和结束时间戳
+			$beginYesterday=mktime(0,0,0,date('m'),date('d')-1,date('Y'));
+			$endYesterday=mktime(0,0,0,date('m'),date('d'),date('Y'))-1;
+        	$where['sorder.create_time'] = array('egt',$beginYesterday);
+        	$where['sorder.create_time'] = array('elt',$endYesterday);
+        }
+
+        if ($param['date'] == 'week') {
+        	//php获取本周起始时间戳和结束时间戳
+			$beginWeek = strtotime(date('Y-m-d', strtotime("this week Monday", time())));
+			$endWeek = strtotime(date('Y-m-d', strtotime("this week Sunday", time()))) + 24 * 3600 - 1;
+        	$where['sorder.create_time'] = array('egt',$beginWeek);
+        	$where['sorder.create_time'] = array('elt',$endWeek);
+        }
+
+        if ($param['date'] == 'month') {
+        	//php获取本周起始时间戳和结束时间戳
+			$beginThismonth=mktime(0,0,0,date('m'),1,date('Y'));
+			$endThismonth=mktime(23,59,59,date('m'),date('t'),date('Y'));
+        	$where['sorder.create_time'] = array('egt',$beginThismonth);
+        	$where['sorder.create_time'] = array('elt',$endThismonth);
+        }
+
+        //开始时间
+        if (!empty($param['srtime'])) {
+        	$where['sorder.pay_time'] = array('egt',strtotime($param['srtime'].' 00:00:00'));
+        }
+
+        //结束时间
+        if (!empty($param['ertime'])) {
+        	$where['sorder.pay_time'] = array('egt',strtotime($keyWord['ertime'].' 23:59:59'));
+        }
+
+        if (!empty($param['ordersn'])) {
+        	$where['sorder.order_code'] =  $param['ordersn'];
+        }
+
+        if (!empty($param['paytype'])) { 
+        	echo $param['paytype'];die();
+        	$where['sorder.pay_status'] =  $param['paytype'];
         }
 
         $orderBy = 'sorder.id DESC';

@@ -36,7 +36,7 @@
                               活动订单列表
                           </header>
                           <div class="panel-body">
-                              <form class="form-horizontal" role="form" id="search" method="post" action="/Admin/Order/orderList" >
+                              <form class="form-horizontal" role="form" id="search" method="post" action="/Admin/Order/orderList/orderType/<{$Think.get.orderType}>" >
                               <div class="col-md-6 alltimesof">
                                   <button type="button" class='btn timesof <if condition="today eq $param['date']" >btn-primary</if>'>今天</button>
                                   <button type="button" class='btn timesof <if condition="yesterday eq $param['date']" >btn-primary</if>'>昨天</button>
@@ -55,12 +55,12 @@
                                       </div>
                                       <div class="col-md-3">
                                       <div class="form-group">
-                                          <input type="text" name="mobile" class="form-control" id="phone" value="<{$param.mobile}>" placeholder="输入订单号搜索">
+                                          <input type="text" name="ordersn" class="form-control" value="<{$param.ordersn}>" placeholder="输入订单号搜索">
                                       </div>
                                       </div>
                                       <div class="col-md-3">
                                       <div class="form-group">
-                                          <select name="type">
+                                          <select name="paytype">
                                             <option value="0">请选择...</option>
                                             <option value="1">成功</option>
                                             <option value="2">失败</option>
