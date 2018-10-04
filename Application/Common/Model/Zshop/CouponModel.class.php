@@ -8,7 +8,7 @@ use Application\BaseModel;
  *
  * @author caizhuan  <zhuan1127@163.com>
  */
-class AdvertModel extends BaseModel
+class CouponModel extends BaseModel
 {
     
     /**
@@ -27,7 +27,7 @@ class AdvertModel extends BaseModel
      * 实际数据表名（包含表前缀）
      * @var string 
      */
-    protected $trueTableName = 'zs_ad';
+    protected $trueTableName = 'zs_coupons';
     
     /**
      * 数据表字段列表
@@ -36,12 +36,13 @@ class AdvertModel extends BaseModel
     protected $fields = [
         'id',
         'name',
-        'type_id',
-        'postion_desc',
+        'activity_id',
+        'amount',
+        'use_from_time',
+        'use_end_time',
         'status',
-        'ad_link',
-        'img_url',
         'create_time',
+        'limit_num',
     ];
     
     public function __construct()
@@ -68,10 +69,10 @@ class AdvertModel extends BaseModel
             $offset = ($page - 1) * $pageSize;
         }
 
-        return $this->alias('ad')
-                    ->join('left join zs_ad_category category on ad.type_id = category.id')
+        return $this->alias('coupon')
+                    ->join('left join zs_activities activities on coupon.activity_id = activities.id')
                     ->where($where)
-                    ->field('ad.id,ad.name,ad.postion_desc,ad.status,ad.ad_link,ad.img_url,ad.create_time,category.name cname')
+                    ->field('coupon.id,coupon.name,coupon.amount,coupon.use_from_time,coupon.use_end_time,coupon.create_time,coupon.status,coupon.limit_num,activities.name cname')
                     ->order($orderBy)
                     ->limit($offset, $pageSize)
                     ->select();

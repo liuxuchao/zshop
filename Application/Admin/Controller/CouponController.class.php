@@ -2,8 +2,7 @@
 namespace Admin\Controller;
 
 use Application\AdminBaseController;
-use Common\Service\Zshop\AdvertService;
-use Common\Service\Zshop\AdvertCateService;
+use Common\Service\Zshop\CouponService;
 
 /**
  * 管理员登陆
@@ -11,15 +10,13 @@ use Common\Service\Zshop\AdvertCateService;
  * @author caizhuan <zhuan1127@163.com>
  * @date 2018-10-1 21:20
  */
-class AdvertController extends AdminBaseController
+class CouponController extends AdminBaseController
 {
-	private $advertService = null;
-	private $advertCateService = null;
+	private $couponService = null;
 	function __construct()
 	{
 		parent::__construct();
-		$this->advertService = new AdvertService();
-		$this->advertCateService = new AdvertCateService();
+		$this->couponService = new CouponService();
 	}
 
 
@@ -56,12 +53,12 @@ class AdvertController extends AdminBaseController
         $orderBy = ' ad.create_time desc';
         
     	//获取总数
-        $tCount = $this->advertService->countByCondition($wheres); 
+        $tCount = $this->couponService->countByCondition($wheres); 
         $show = $this->page($tCount, $tPage, $tPageSize); // 分页显示输出
-		$advertList = $this->advertService->getAdvertList($tPage, $tPageSize,$orderBy,$where);
+		$advertList = $this->couponService->getAdvertList($tPage, $tPageSize,$orderBy,$where);
 
 		foreach ($advertList as $key => $value) {
-			$advertList[$key]['statusName'] = ($value['status'] == 1) ? '正常':'下架';
+			$advertList[$key]['statusName'] = ($value['status'] == 1) ? '正常':'禁用';
 			$advertList[$key]['creatime'] = date("Y-m-d",$value['create_time']) ;
 		}
 		
@@ -74,10 +71,10 @@ class AdvertController extends AdminBaseController
 
 
     /**
-     * 添加广告
+     * 添加优惠券
      *
      */
-    public function addAdv(){
+    public function addCoupon(){
     	$resTree = $this->advertCateService->getTree();
         $this->assign('tree',$resTree);
         $this->display();

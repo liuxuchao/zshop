@@ -45,22 +45,6 @@ class AdvertCateService extends BaseService
         $t = $this->model->gettree();
         return $t;
     }
-
-
-    /**
-     * 根据分类名称查找
-     * @param type $name
-     * @return array | bool
-     */
-    public function findByName(){
-        $name = trim($name);
-        if ( empty($name) ) {
-            return false;
-        }
-        $data = $this->model->findByName($name);
-        return $data;
-    }
-    
     
 
     /**根据UserId 渠道id 获取 用户信息
@@ -105,6 +89,55 @@ class AdvertCateService extends BaseService
      */
     public function countByCondition($where){
         return $this->model->countByCondition($where);
+    }
+
+
+    /**
+     * 根据商品分类名称查找
+     * @param type $name
+     * @param type $password
+     * @param type $nickname
+     * @return array | bool
+     */
+    public function findByName($name)
+    {
+        $name = trim($name);
+        if ( empty($name) ) {
+            return false;
+        }
+        $data = $this->model->findByName($name);
+        return $data;
+    }
+
+
+    /**
+     * 根据商品分类有无子分类
+     * @return array | bool
+     */
+    public function findChildCateById($name)
+    {
+        $name = trim($name);
+        if ( empty($name) ) {
+            return false;
+        }
+        $data = $this->model->findChildCateById($name);
+        return $data;
+    }
+
+
+    /**
+     * 根据商品分类ID删除操作
+     * @param type $catId
+     * @return array | bool
+     */
+    public function doDelete($catId)
+    {
+        $catId = intval($catId);
+        if ( 0>= $catId) {
+            return false;
+        }
+        $data = $this->model->doDelete($catId);
+        return $data;
     }
 
 }

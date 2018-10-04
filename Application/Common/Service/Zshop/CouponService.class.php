@@ -2,14 +2,14 @@
 namespace Common\Service\Zshop;
 
 use Application\BaseService;
-use Common\Model\Zshop\AdvertModel;
+use Common\Model\Zshop\CouponModel;
 
 /**
  * ti_order
  *
  * @author caizhuan
  */
-class AdvertService extends BaseService
+class CouponService extends BaseService
 {
     public function __construct()
     {
@@ -43,9 +43,9 @@ class AdvertService extends BaseService
      * @param array $order 排序
      * return array | false
      */
-    public function getAdvertList($page, $pageSize,$orderBy,$where){
+    public function getCouponList($page, $pageSize,$orderBy,$where){
 
-        return $this->model->getAdvert($page, $pageSize,$orderBy,$where);
+        return $this->model->getCoupon($page, $pageSize,$orderBy,$where);
 
     }
 

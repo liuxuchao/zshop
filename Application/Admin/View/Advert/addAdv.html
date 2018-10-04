@@ -1,0 +1,180 @@
+<extend name="../Application/Admin/View/base.html" />
+
+    <block name="title"><title>Zshop商城 广告管理-添加广告</title></block>
+    <block name="style">
+    <link href="/Admin/assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link href="/Admin/assets/jquery-easy-pie-chart/jquery.easy-pie-chart.css" rel="stylesheet" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="/Admin/css/owl.carousel.css" type="text/css">
+    </block>
+    <block name="content">
+        <section class="wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <!--breadcrumbs start -->
+                    <ul class="breadcrumb">
+                        <li><a href="/Admin/Index"><i class="icon-home"></i> 主面板</a></li>
+                        <li><a href="/Admin/Advert/index">广告管理</a></li>
+                        <li class="active">添加文章</li>
+                    </ul>
+                    <!--breadcrumbs end -->
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <section class="panel">
+                        <header class="panel-heading">
+                            添加分类<a href="/Admin/Advert/index" class="btn btn-success pull-right btn-sm">返回列表</a>
+                        </header>
+                        <div class="panel-body">
+                            <form class="form-horizontal" role="form" method="post" action="/Admin/Advert/doAdd" id="addForm">
+                                <div class="form-group">
+                                    <label for="parent_name" class="col-lg-2 col-sm-2 control-label text-center">上级分类</label>
+                                    <div class="col-lg-6">
+                                        <select class="form-control" name="cate_id" id="cate_id">
+                                            <option value="0">顶级分类</option>
+                                            <volist name="tree" id="cattree">
+                                            <option value="<{$cattree.id}>">
+                                            <?php if($cattree['lv']==1){?>&nbsp;&nbsp;&nbsp; 
+                                              <?php }elseif($cattree['lv']==2){?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                              <?php } ?>├ <{$cattree.name}> 
+                                              </option>
+                                          </volist>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="title" class="col-lg-2 col-sm-2 control-label text-center">广告名称</label>
+                                    <div class="col-lg-6">
+                                        <input type="text" name="name" class="form-control" id="name" value="" placeholder="广告名称">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="title" class="col-lg-2 col-sm-2 control-label text-center">位置描述</label>
+                                    <div class="col-lg-6">
+                                        <input type="text" name="postion_desc" class="form-control" id="postion_desc" value="" placeholder="位置描述">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="title" class="col-lg-2 col-sm-2 control-label text-center">链接地址</label>
+                                    <div class="col-lg-6">
+                                        <input type="text" name="ad_link" class="form-control" id="ad_link" value="" placeholder="链接地址">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                     <label for="title" class="col-lg-2 col-sm-2 control-label text-center">图片</label>
+                                    <textarea id="uploadEditor" name="unableueditor" style="display: none;"></textarea>
+                                    <button type="button" class="btn btn-primary" id="j_upload_img_btn">多图上传</button>
+                                    <ul id="upload_img_wrap"></ul>
+                                    <input type="hidden" name="group_img" id="group_img" value="">
+                                </div>
+                                <div class="form-group">
+                                    <label for="title" class="col-lg-2 col-sm-2 control-label text-center">状态</label>
+                                    <div class="col-lg-6">
+                                        <input type="radio" name="status" id="status" value="1" checked >正常
+                                        <input type="radio" name="status" id="status" value="2" >下架
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-lg-offset-2 col-lg-6">
+                                        <button type="submit" name="submit" id="Submit" class="btn btn-danger">提交</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </block>
+    <block name="script">
+    <!--百度编辑器-->
+    <script type="text/javascript" charset="utf-8" src="/Ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/Ueditor/ueditor.all.min.js"> </script>
+    <!--文件上传-->
+    <script type="text/javascript" charset="utf-8" src="/Admin/plugins/webuploader/js/webuploader.min.js"> </script>
+    <script type="text/javascript">
+        var BASE_URL = '/Admin/plugins/webuploader';
+    </script>
+    <script type="text/javascript" charset="utf-8" src="/Admin/plugins/webuploader/js/demo.js"> </script>
+    <!-- 表单验证 -->
+    <script src="/Admin/js/bootstrapValidator.min.js"></script>
+    <!-- 表单验证 -->
+    <script src="/layer/layer.js"></script>
+    <!-- 加载编辑器的容器 -->
+    <style>
+        ul#upload_img_wrap{display: inline-block;width: 100%;margin: 0;padding-top: 5px;}
+        ul#upload_img_wrap>li{float:left;list-style-type: none;margin: 5px;padding: 0;}
+    </style>
+    <!-- 使用ue -->
+    <script type="text/javascript"> 
+        $("#addForm").submit(function() { 
+            var name = $("#name").val(); 
+            if (name != "") {
+                return true;
+            } else {
+                layer.alert("请填写广告名称");
+                return false;
+            }
+
+            var cate_id = $("#cate_id").val(); 
+            if (cate_id != "") {
+                return true;
+            } else {
+                layer.alert("请选择一个分类");
+                return false;
+            }
+
+            var postion_desc = $("#postion_desc").val(); 
+            if (postion_desc != "") {
+                return true;
+            } else {
+                layer.alert("请填写位置描述");
+                return false;
+            }
+
+            // var group_img = $("#group_img").val(); 
+            // if (group_img != "") {
+            //     return true;
+            // } else {
+            //     layer.alert("请上传图片");
+            //     return false;
+            // }
+        });
+        var ue = UE.getEditor('editor');
+        // 实例化编辑器，这里注意配置项隐藏编辑器并禁用默认的基础功能。
+        var uploadEditor = UE.getEditor("uploadEditor", {
+            isShow: false,
+            focus: false,
+            enableAutoSave: false,
+            autoSyncData: false,
+            autoFloatEnabled:false,
+            wordCount: false,
+            sourceEditor: null,
+            scaleEnabled:true,
+            toolbars: [["insertimage", "attachment"]]
+        });
+        // 监听多图上传和上传附件组件的插入动作
+        uploadEditor.ready(function () {
+            uploadEditor.addListener("beforeInsertImage", _beforeInsertImage);
+        });
+        // 自定义按钮绑定触发多图上传和上传附件对话框事件
+        document.getElementById('j_upload_img_btn').onclick = function () {
+           var dialog = uploadEditor.getDialog("insertimage");
+           dialog.title = '多图上传';
+           dialog.render();
+           dialog.open();
+        };
+        // 多图上传动作
+        function _beforeInsertImage(t, result) {
+            var imageHtml = '';
+            var imageFiles = '';
+            for(var i in result){
+                imageHtml += '<li><img src="'+result[i].src+'" alt="'+result[i].alt+'" height="150"></li>';
+                imageFiles += result[i].src+',';
+            }
+            document.getElementById('upload_img_wrap').innerHTML = imageHtml;
+            $("#group_img").val(imageFiles);
+        }
+    </script>
+    </block>
+    

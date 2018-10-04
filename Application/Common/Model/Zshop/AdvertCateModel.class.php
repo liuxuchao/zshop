@@ -38,6 +38,8 @@ class AdvertCateModel extends BaseModel
         'name',
         'fid',
         'create_time',
+        'has_child',
+        'arr_childid',
     ];
     
     public function __construct()
@@ -87,20 +89,42 @@ class AdvertCateModel extends BaseModel
 
 
     /**
-     * 分类统计
-     * @auther caizhuan
-     * @param array $where 
-     * return array | false
+     * [findByName 根据字符串查找商品分类是否存在]
+     * @param  [string] $name [description]
+     * @return [boole]       [description]
      */
-    public function countByCondition($where){
-        if ( empty($where) ) {
+    public function findChildCateById($id)
+    {
+        $where = [];
+        $where['id'] = $id;
+        $where['has_child'] = 1;
+        $result = $this->where($where)->find();
+        return $result ? true : false;   
+    }
+
+
+    /**
+     * 根据类ID 删除操作
+     * @author liuxuchao
+     * @param string $catId 分类ID
+     * @return array | boolean
+     */
+    public function doDelete($catid)
+    {
+        $catId = intval( $catid );
+        if ( 0 >= $catId) {
             return false;
         }
-        return $this->alias('sorder')
-                    ->join('left join zs_users users on sorder.UID = users.id')
-                    ->join('left join zs_product product on sorder.product_id = product.pro_id')
-                    ->where($where)
-                    ->count();
+        $where['id'] = $catId;
+        $data = $this->where($where)->delete();
+        if ( $data ) {
+            return $data;
+        }
+        return false;
     }
+
+
+
+
 }
 
