@@ -49,8 +49,8 @@ class AdvertController extends AdminBaseController
 
         //结束时间
         if (!empty($param['ertime'])) {
-        	$where['ad.create_time'] = array('egt',strtotime($keyWord['ertime'].' 23:59:59'));
-        	$wheres['create_time'] = array('egt',strtotime($keyWord['ertime'].' 23:59:59'));
+        	$where['ad.create_time'] = array('elt',strtotime($keyWord['ertime'].' 23:59:59'));
+        	$wheres['create_time'] = array('elt',strtotime($keyWord['ertime'].' 23:59:59'));
         }
 
         $orderBy = ' ad.create_time desc';
@@ -92,6 +92,8 @@ class AdvertController extends AdminBaseController
         $data['img_url'] = I('post.group_img','','strip_tags');
         $cate_id = I('post.cate_id','','strip_tags');
         $data['type_id'] = $cate_id != '0' ? $cate_id : 0;
+        $status = I('post.status','','strip_tags');
+        $data['status'] = $status != '0' ? $status : 0;
         $data['create_time'] = time();
 
         if (empty($data['name'])) {
@@ -138,6 +140,8 @@ class AdvertController extends AdminBaseController
         $data['img_url'] = I('post.group_img','','strip_tags');
         $cate_id = I('post.cate_id','','strip_tags');
         $data['type_id'] = $cate_id != '0' ? $cate_id : 0;
+        $status = I('post.status','','strip_tags');
+        $data['status'] = $status != '0' ? $status : 0;
         $data['create_time'] = time();
         if(empty($data['name'])){
             $this->error('分类名称不能为空','/Admin/Advert/updateAdv/id'.$data['id']);

@@ -3,6 +3,7 @@ namespace Admin\Controller;
 
 use Application\AdminBaseController;
 use Common\Service\Zshop\CouponService;
+use Common\Service\Zshop\ActivityService;
 
 /**
  * 管理员登陆
@@ -13,10 +14,12 @@ use Common\Service\Zshop\CouponService;
 class CouponController extends AdminBaseController
 {
 	private $couponService = null;
+    private $activityService = null;
 	function __construct()
 	{
 		parent::__construct();
 		$this->couponService = new CouponService();
+        $this->activityService = new ActivityService();
 	}
 
 
@@ -33,29 +36,29 @@ class CouponController extends AdminBaseController
         $wheres = array();
 
         if (!empty($param['name'])) {
-        	$where['ad.name'] = array('like','\'%'.$param['name'].'%\'');
+        	$where['coupon.name'] = array('like','\'%'.$param['name'].'%\'');
         	$wheres['name'] = array('like','\'%'.$param['name'].'%\'');
         }
 
 
         //开始时间
         if (!empty($param['srtime'])) {
-        	$where['ad.create_time'] = array('egt',strtotime($param['srtime'].' 00:00:00'));
+        	$where['coupon.create_time'] = array('egt',strtotime($param['srtime'].' 00:00:00'));
         	$wheres['create_time'] = array('egt',strtotime($param['srtime'].' 00:00:00'));
         }
 
         //结束时间
         if (!empty($param['ertime'])) {
-        	$where['ad.create_time'] = array('egt',strtotime($keyWord['ertime'].' 23:59:59'));
-        	$wheres['create_time'] = array('egt',strtotime($keyWord['ertime'].' 23:59:59'));
+        	$where['coupon.create_time'] = array('elt',strtotime($keyWord['ertime'].' 23:59:59'));
+        	$wheres['create_time'] = array('elt',strtotime($keyWord['ertime'].' 23:59:59'));
         }
 
-        $orderBy = ' ad.create_time desc';
+        $orderBy = ' coupon.create_time desc';
         
     	//获取总数
         $tCount = $this->couponService->countByCondition($wheres); 
         $show = $this->page($tCount, $tPage, $tPageSize); // 分页显示输出
-		$advertList = $this->couponService->getAdvertList($tPage, $tPageSize,$orderBy,$where);
+		$advertList = $this->couponService->getCouponList($tPage, $tPageSize,$orderBy,$where);
 
 		foreach ($advertList as $key => $value) {
 			$advertList[$key]['statusName'] = ($value['status'] == 1) ? '正常':'禁用';
@@ -75,8 +78,14 @@ class CouponController extends AdminBaseController
      *
      */
     public function addCoupon(){
-    	$resTree = $this->advertCateService->getTree();
-        $this->assign('tree',$resTree);
+        //开始时间
+        $where['startTime'] = array('egt',strtotime(date('Y-m-d',time()).' 00:00:00'));
+
+        //结束时间
+        $where['endTime'] = array('elt',strtotime(date('Y-m-d',time()).' 23:59:59'));
+
+    	$activityInfo = $this->activityService->getActivityInfo($where);
+        $this->assign('activityInfo',$activityInfo);
         $this->display();
     }
 
@@ -84,24 +93,28 @@ class CouponController extends AdminBaseController
     public function doAdd(){
     	$data = [];
         $data['name'] = I('post.name','','strip_tags');
-        $data['postion_desc'] = I('post.postion_desc','','strip_tags');
-        $data['ad_link'] = I('post.ad_link','','strip_tags');
-        $data['img_url'] = I('post.group_img','','strip_tags');
-        $cate_id = I('post.cate_id','','strip_tags');
-        $data['type_id'] = $cate_id != '0' ? $cate_id : 0;
+        $data['amount'] = I('post.amount','','strip_tags');
+        $data['use_from_time'] = strtotime(I('post.use_from_time','','strip_tags'));
+        $data['use_end_time'] = strtotime(I('post.use_end_time','','strip_tags'));
+        $limit_num = I('post.limit_num','','strip_tags');
+        $data['limit_num'] = $limit_num != '0' ? $limit_num : 0;
+        $activity_id = I('post.activity_id','','strip_tags');
+        $data['activity_id'] = $activity_id != '0' ? $activity_id : 0;
+        $status = I('post.status','','strip_tags');
+        $data['status'] = $status != '0' ? $status : 0;
         $data['create_time'] = time();
 
         if (empty($data['name'])) {
-        	$this->error('广告名称不能为空','/Admin/Advert/addAdv');
+        	$this->error('优惠券名称不能为空','/Admin/Coupon/addCoupon');
             return;
         }
 
-        $addresult = $this->advertService->add($data);
+        $addresult = $this->couponService->add($data);
         if($addresult){
-        	$this->success('广告添加成功','/Admin/Advert/index');
+        	$this->success('优惠券添加成功','/Admin/Coupon/index');
             return;
         }else{
-        	$this->success('广告添加失败','/Admin/Advert/addAdv');
+        	$this->success('优惠券添加失败','/Admin/Coupon/addCoupon');
         }
     }
 
@@ -109,10 +122,15 @@ class CouponController extends AdminBaseController
     /**
      * 修改广告
      */
-    public function updateAdv(){
+    public function updateCoupon(){
     	$Id = I('id', '', 'intval,htmlspecialchars');
-        $data = $this->advertService->getByPrimaryKey($Id);
-        $resTree = $this->advertCateService->gettree();
+        $data = $this->couponService->getByPrimaryKey($Id);
+        //开始时间
+        $where['startTime'] = array('egt',strtotime(date('Y-m-d',time()).' 00:00:00'));
+        //结束时间
+        $where['endTime'] = array('elt',strtotime(date('Y-m-d',time()).' 23:59:59'));
+        $activityInfo = $this->activityService->getActivityInfo($where);
+        $this->assign('activityInfo',$activityInfo);
         $this->assign('data', $data);
         $this->assign('tree',$resTree);
         $this->display();
@@ -130,23 +148,26 @@ class CouponController extends AdminBaseController
         $data = [];
         $data['id'] = I('post.id','','strip_tags');
         $data['name'] = I('post.name','','strip_tags');
-        $data['postion_desc'] = I('post.postion_desc','','strip_tags');
-        $data['ad_link'] = I('post.ad_link','','strip_tags');
-        $data['img_url'] = I('post.group_img','','strip_tags');
-        $cate_id = I('post.cate_id','','strip_tags');
-        $data['type_id'] = $cate_id != '0' ? $cate_id : 0;
-        $data['create_time'] = time();
+        $data['amount'] = I('post.amount','','strip_tags');
+        $data['use_from_time'] = strtotime(I('post.use_from_time','','strip_tags'));
+        $data['use_end_time'] = strtotime(I('post.use_end_time','','strip_tags'));
+        $limit_num = I('post.limit_num','','strip_tags');
+        $data['limit_num'] = $limit_num != '0' ? $limit_num : 0;
+        $activity_id = I('post.activity_id','','strip_tags');
+        $data['activity_id'] = $activity_id != '0' ? $activity_id : 0;
+        $status = I('post.status','','strip_tags');
+        $data['status'] = $status != '0' ? $status : 0;
         if(empty($data['name'])){
-            $this->error('分类名称不能为空','/Admin/Advert/updateAdv/id'.$data['id']);
+            $this->error('分类名称不能为空','/Admin/Coupon/updateCoupon/id'.$data['id']);
             return;
         }
 
-        $upResult = $this->advertService->updateByPrimaryKey($data['id'],$data);
+        $upResult = $this->couponService->updateByPrimaryKey($data['id'],$data);
         if(!$upResult){
-            $this->error('修改失败','/Admin/Advert/updateAdv/id/'.$data['id']);
+            $this->error('修改失败','/Admin/Coupon/updateCoupon/id/'.$data['id']);
             return;
         }else{
-        	$this->error('修改成功','/Admin/Advert/index');
+        	$this->error('修改成功','/Admin/Coupon/index');
             return;
         }
     }
@@ -164,7 +185,7 @@ class CouponController extends AdminBaseController
             return;
         }
 
-        $data = $this->advertService->doDelete($Id);
+        $data = $this->couponService->doDelete($Id);
         if ($data) {
             $result = ['error_code'=>'0','message'=>'删除成功'];
             echo json_encode($result);

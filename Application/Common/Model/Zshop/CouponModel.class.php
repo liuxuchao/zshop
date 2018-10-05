@@ -58,7 +58,7 @@ class CouponModel extends BaseModel
      * @param array $order 排序
      * return array | false
      */
-    public function getAdvert($page, $pageSize,$orderBy, $where){
+    public function getCoupon($page, $pageSize,$orderBy, $where){
 
         $page = intval( $page );
         $pageSize = intval($pageSize);

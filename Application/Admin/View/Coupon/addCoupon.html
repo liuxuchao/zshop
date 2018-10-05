@@ -1,6 +1,6 @@
 <extend name="../Application/Admin/View/base.html" />
 
-    <block name="title"><title>Zshop商城 广告管理-添加广告</title></block>
+    <block name="title"><title>Zshop商城 优惠券管理-添加优惠券</title></block>
     <block name="style">
     <link href="/Admin/assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
     <link href="/Admin/assets/jquery-easy-pie-chart/jquery.easy-pie-chart.css" rel="stylesheet" type="text/css" media="screen"/>
@@ -13,8 +13,8 @@
                     <!--breadcrumbs start -->
                     <ul class="breadcrumb">
                         <li><a href="/Admin/Index"><i class="icon-home"></i> 主面板</a></li>
-                        <li><a href="/Admin/Advert/index">广告管理</a></li>
-                        <li class="active">添加广告</li>
+                        <li><a href="/Admin/Coupon/index">广告管理</a></li>
+                        <li class="active">添加优惠券</li>
                     </ul>
                     <!--breadcrumbs end -->
                 </div>
@@ -23,49 +23,50 @@
                 <div class="col-lg-12">
                     <section class="panel">
                         <header class="panel-heading">
-                            添加分类<a href="/Admin/Advert/index" class="btn btn-success pull-right btn-sm">返回列表</a>
+                            添加优惠券<a href="/Admin/Coupon/index" class="btn btn-success pull-right btn-sm">返回列表</a>
                         </header>
                         <div class="panel-body">
-                            <form class="form-horizontal" role="form" method="post" action="/Admin/Advert/doAdd" id="addForm">
+                            <form class="form-horizontal" role="form" method="post" action="/Admin/Coupon/doAdd" id="addForm">
                                 <div class="form-group">
-                                    <label for="parent_name" class="col-lg-2 col-sm-2 control-label text-center">上级分类</label>
+                                    <label for="parent_name" class="col-lg-2 col-sm-2 control-label text-center">活动名称</label>
                                     <div class="col-lg-6">
-                                        <select class="form-control" name="cate_id" id="cate_id">
-                                            <option value="0">顶级分类</option>
-                                            <volist name="tree" id="cattree">
-                                            <option value="<{$cattree.id}>">
-                                            <?php if($cattree['lv']==1){?>&nbsp;&nbsp;&nbsp; 
-                                              <?php }elseif($cattree['lv']==2){?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                              <?php } ?>├ <{$cattree.name}> 
-                                              </option>
+                                        <select class="form-control" name="activity_id" id="activity_id">
+                                            <option value="0">请选择...</option>
+                                            <volist name="activityInfo" id="vo">
+                                            <option value="<{$vo.id}>"><{$vo.name}></option>
                                           </volist>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="title" class="col-lg-2 col-sm-2 control-label text-center">广告名称</label>
+                                    <label for="title" class="col-lg-2 col-sm-2 control-label text-center">优惠券名称</label>
                                     <div class="col-lg-6">
-                                        <input type="text" name="name" class="form-control" id="name" value="" placeholder="广告名称">
+                                        <input type="text" name="name" class="form-control" id="name" value="" placeholder="优惠券名称">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="title" class="col-lg-2 col-sm-2 control-label text-center">位置描述</label>
+                                    <label for="title" class="col-lg-2 col-sm-2 control-label text-center">优惠券面值</label>
                                     <div class="col-lg-6">
-                                        <input type="text" name="postion_desc" class="form-control" id="postion_desc" value="" placeholder="位置描述">
+                                        <input type="text" name="amount" class="form-control" id="amount" value="" placeholder="优惠券面值">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="title" class="col-lg-2 col-sm-2 control-label text-center">链接地址</label>
+                                    <label for="title" class="col-lg-2 col-sm-2 control-label text-center">开始时间</label>
                                     <div class="col-lg-6">
-                                        <input type="text" name="ad_link" class="form-control" id="ad_link" value="" placeholder="链接地址">
+                                        <input type="text" name="use_from_time" class="form-control dpd1" id="use_from_time" value="" placeholder="开始时间">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                     <label for="title" class="col-lg-2 col-sm-2 control-label text-center">图片</label>
-                                    <textarea id="uploadEditor" name="unableueditor" style="display: none;"></textarea>
-                                    <button type="button" class="btn btn-primary" id="j_upload_img_btn">多图上传</button>
-                                    <ul id="upload_img_wrap"></ul>
-                                    <input type="hidden" name="group_img" id="group_img" value="">
+                                    <label for="title" class="col-lg-2 col-sm-2 control-label text-center">结束时间</label>
+                                    <div class="col-lg-6">
+                                        <input type="text" name="use_end_time" class="form-control dpd2" id="use_end_time" value="" placeholder="结束时间">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="title" class="col-lg-2 col-sm-2 control-label text-center">可使用人数</label>
+                                    <div class="col-lg-6">
+                                        <input type="text" name="limit_num" class="form-control dpd2" id="limit_num" value="" placeholder="可使用人数">
+                                    </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="title" class="col-lg-2 col-sm-2 control-label text-center">状态</label>
@@ -108,27 +109,52 @@
     <!-- 使用ue -->
     <script type="text/javascript"> 
         $("#addForm").submit(function() { 
+            if($('select[name=activity_id]').val() == 0){
+                layer.alert('请选择活动', {
+                    title: '错误信息',
+                    icon: 2
+                });
+                return false;
+
+            }   
             var name = $("#name").val(); 
             if (name != "") {
                 return true;
             } else {
-                layer.alert("请填写广告名称");
+                layer.alert("请填写优惠券名称");
                 return false;
             }
 
-            var cate_id = $("#cate_id").val(); 
-            if (cate_id != "") {
+            var amount = $("#amount").val(); 
+            if (amount != "") {
                 return true;
             } else {
-                layer.alert("请选择一个分类");
+                layer.alert("请填写金额");
                 return false;
             }
 
-            var postion_desc = $("#postion_desc").val(); 
-            if (postion_desc != "") {
+            var starttime = $("#use_from_time").val(); 
+            if (starttime != "") {
                 return true;
             } else {
-                layer.alert("请填写位置描述");
+                layer.alert("请填写开始时间");
+                return false;
+            }
+
+
+            var endtime = $("#use_end_time").val(); 
+            if (endtime != "") {
+                return true;
+            } else {
+                layer.alert("请填写结束时间");
+                return false;
+            }
+
+            var limit_num = $("#limit_num").val(); 
+            if (limit_num != "") {
+                return true;
+            } else {
+                layer.alert("请填写可用人数");
                 return false;
             }
 

@@ -28,7 +28,7 @@ class CouponService extends BaseService
         if ( !empty($model) && is_object($model) ) {
             $this->model = $model;
         } else {
-            $this->model = new AdvertModel();
+            $this->model = new CouponModel();
         }
         return;
     }
