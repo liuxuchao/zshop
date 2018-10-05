@@ -132,7 +132,6 @@ class CouponController extends AdminBaseController
         $activityInfo = $this->activityService->getActivityInfo($where);
         $this->assign('activityInfo',$activityInfo);
         $this->assign('data', $data);
-        $this->assign('tree',$resTree);
         $this->display();
     }
 
@@ -158,7 +157,7 @@ class CouponController extends AdminBaseController
         $status = I('post.status','','strip_tags');
         $data['status'] = $status != '0' ? $status : 0;
         if(empty($data['name'])){
-            $this->error('分类名称不能为空','/Admin/Coupon/updateCoupon/id'.$data['id']);
+            $this->error('优惠券名称不能为空','/Admin/Coupon/updateCoupon/id'.$data['id']);
             return;
         }
 
