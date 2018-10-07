@@ -45,6 +45,9 @@ class UserModel extends BaseModel
         'register_type',
         'create_time',
         'update_time',
+        'openid',
+        'userType',
+        'userNum'
     ];
     
     public function __construct()
@@ -136,12 +139,12 @@ class UserModel extends BaseModel
         if ( empty($userId) ) {
             return false;
         }
-        $fieldList=['id','mobile','real_name','gender',
-                    'job','icon_url','company_name',
-                    'balance','channel_id','shortname',
-                    'company_size','company_nature',
-                    'company_trade','company_trade_v2','company_address'];
-        $this->field($fieldList);
+        // $fieldList=['id','mobile','real_name','gender',
+        //             'job','icon_url','company_name',
+        //             'balance','channel_id','shortname',
+        //             'company_size','company_nature',
+        //             'company_trade','company_trade_v2','company_address'];
+        // $this->field($fieldList);
         
 
         $data = $this->where(['id'=>$userId])->find();
@@ -239,7 +242,7 @@ class UserModel extends BaseModel
      * @param array $order 排序
      * @return array | boolean
      */
-    public function getList($page, $pageSize,$orderBy, $where)
+    public function getList($where,$page, $pageSize,$orderBy)
     {
         $page = intval( $page );
         $pageSize = intval($pageSize);
@@ -256,35 +259,37 @@ class UserModel extends BaseModel
         // $field .= 'count(shareB.id) sharebindcount, count(shareC.id) shareallcount';
         
 
-        $field = 'u.id user_id ,u.mobile mobile, u.real_name name,';
-        $field .= 'u.channel_id channel_id, u.balance balance,';
-        $field .= 'u.create_time create_time,';
-        $field .= 'u2.mobile shared_user_mobile, login.login_time login_time,';
-        $field .= 'count(shareB.id) sharebindcount, count(shareC.id) shareallcount';
+        // $field = 'u.id user_id ,u.mobile mobile, u.real_name name,';
+        // $field .= 'u.channel_id channel_id, u.balance balance,';
+        // $field .= 'u.create_time create_time,';
+        // $field .= 'u2.mobile shared_user_mobile, login.login_time login_time,';
+        // $field .= 'count(shareB.id) sharebindcount, count(shareC.id) shareallcount';
         
-        //绑定账号的推荐注册用户数量
-        $subQueryBind = $this->field('sharebind.id,sharebind.shared_user_id')
-            ->table('crap_users_share_register sharebind')
-            ->join('crap_users userbind ON sharebind.shared_user_id=userbind.id','LEFT')
-            ->where('sharebind.register_user_status = 1')
-            ->select(false);
-        //全部推荐注册用户数量
-        $subQueryAll = $this->field('shareall.id,shareall.shared_user_id')
-            ->table('crap_users_share_register shareall')
-            ->join('crap_users userall ON shareall.shared_user_id=userall.id', 'LEFT')
-            ->select(false);
+        // //绑定账号的推荐注册用户数量
+        // $subQueryBind = $this->field('sharebind.id,sharebind.shared_user_id')
+        //     ->table('crap_users_share_register sharebind')
+        //     ->join('crap_users userbind ON sharebind.shared_user_id=userbind.id','LEFT')
+        //     ->where('sharebind.register_user_status = 1')
+        //     ->select(false);
+        // //全部推荐注册用户数量
+        // $subQueryAll = $this->field('shareall.id,shareall.shared_user_id')
+        //     ->table('crap_users_share_register shareall')
+        //     ->join('crap_users userall ON shareall.shared_user_id=userall.id', 'LEFT')
+        //     ->select(false);
 
-        $list  = $this->alias('u')->field($field)
-            ->join('crap_users_share_register share ON u.id=share.register_user_id', 'LEFT')
-            ->join('crap_users u2 ON u2.id=share.shared_user_id', 'LEFT')
-            ->join('crap_users_login_status login ON u.id=login.user_id','LEFT')
-            ->join('LEFT JOIN ('.$subQueryBind.') shareB ON u.id=shareB.shared_user_id')
-            ->join('LEFT JOIN ('.$subQueryAll.') shareC ON u.id=shareC.shared_user_id')
-            ->group('u.id')
-            ->order($orderBy)
-            ->where($where)
-            ->limit($offset, $pageSize)
-            ->select();
+        // $list  = $this->alias('u')->field($field)
+        //     ->join('crap_users_share_register share ON u.id=share.register_user_id', 'LEFT')
+        //     ->join('crap_users u2 ON u2.id=share.shared_user_id', 'LEFT')
+        //     ->join('crap_users_login_status login ON u.id=login.user_id','LEFT')
+        //     ->join('LEFT JOIN ('.$subQueryBind.') shareB ON u.id=shareB.shared_user_id')
+        //     ->join('LEFT JOIN ('.$subQueryAll.') shareC ON u.id=shareC.shared_user_id')
+        //     ->group('u.id')
+        //     ->order($orderBy)
+        //     ->where($where)
+        //     ->limit($offset, $pageSize)
+        //     ->select();
+
+        $list = $this->where($where)->order($orderBy)->limit($offset, $pageSize)->select();
 
         return $list;
     }

@@ -26,9 +26,12 @@
                       <section class="panel">
                           <header class="panel-heading">
                               用户列表
+                              <if condition="$param[usertype] eq 2">
+                              <a href="/Admin/Users/addUser/usertype/2"><button type="button" class="btn btn-success pull-right btn-sm">添加员工</button></a>  
+                              </if>
                           </header>
                           <div class="panel-body">
-                              <form class="form-horizontal" role="form" id="search" method="post" action="/Admin/Users/index" >
+                              <form class="form-horizontal" role="form" id="search" method="post" action="/Admin/Users/index/usertype/<{$Think.get.usertype}>" >
                               <div class="col-md-6 alltimesof">
                                   <button type="button" class='btn timesof <if condition="today eq $param['date']" >btn-primary</if>'>今天</button>
                                   <button type="button" class='btn timesof <if condition="yesterday eq $param['date']" >btn-primary</if>'>昨天</button>
@@ -51,9 +54,10 @@
                                       </div>
                                       </div>
                                       <div class="col-md-9">
+                                        <input type="hidden" id="usertype" name="usertype" value="<{$Think.get.usertype}>">
                                         <button  id="btn_search" class="btn btn-info">搜索</button>
                                         <input type="hidden" id="search_type" name="search_type">
-                                        <button  id="btn_search_share" class="btn btn-info">搜索推荐人</button>
+                                        <!-- <button  id="btn_search_share" class="btn btn-info">搜索推荐人</button> -->
                                       </div>
                               </form>
                           </div>
@@ -71,16 +75,12 @@
                           <table class="table table-striped table-advance table-hover">
                               <thead>
                               <tr>
-                                  <th><i class="icon-phone"></i>手机</th>
+                                  <th><i class="icon-user"></i><if condition="$param[usertype] eq '1'">用户ID<else/>工号</if></th>
                                   <th><i class="icon-user"></i>用户名</th>
-                                  <th><i class="icon-bullhorn"></i>验证渠道</th>
-                                  <th><i class="icon-bullhorn"></i>招聘邮箱</th>
-                                  <th><i class="icon-bullhorn"></i>推荐好友</th>
-                                  <th><i class="icon-bullhorn"></i>推荐人</th>
-                                  <th><i class="icon-jpy"></i>蛙币余额</th>
+                                  <th><i class="icon-user"></i>用户真实姓名</th>
+                                  <th><i class="icon-phone"></i>手机号</th>
+                                  <th><i class="icon-bullhorn"></i>用户余额</th>
                                   <th><i class="icon-time"></i>注册时间</th>
-                                  <th><i class="icon-time"></i>最近登录</th>
-                                  <th>重置密码</th>
                                   <th>操作</th>
                               </tr>
                               </thead>
@@ -88,39 +88,30 @@
                               <if condition="!empty($userList) and is_array($userList)">
                               <volist name="userList" id="user">
                               <tr>
-                                  <td><a href="#"><{$user.mobile}></a></td>
-                                  <td class="hidden-phone"><{$user.name}></td>
-                                  <td class="hidden-phone">
-                                    <volist name="user.channelList" id="channel">
-                                        <{$channel.channel_type}>: <{$channel.login_name}>
-                                        <br>
-                                    </volist>
-                                  </td>
-                                  <td class="hidden-phone"> - </td>
-                                  <td class="hidden-phone">
-                                  <span class="badge bg-success"><{$user.sharebindcount}></span>
-                                    /<{$user.shareallcount}></td>
-                                  <td class="hidden-phone"><{$user.shared_user_mobile}></td>
-                                  <td class="hidden-phone"><{$user.balance}></td>
+                                  <td><a href="#"><{$user.usernum}></a></td>
+                                  <td class="hidden-phone"><{$user.username}></td>
+                                  <td class="hidden-phone"><{$user.real_name}></td>
+                                  <td class="hidden-phone"><{$user.mobile}></td>
+                                  <td class="hidden-phone"></td>
                                   <td class="hidden-phone"><{$user.create_time|date='Y-m-d H:i',###}></td>
-                                  <td class="hidden-phone"><{$user.login_time|date='Y-m-d H:i',###}></td>
-                                  <td>
+                                  <!-- <td>
                                   <a href="/Admin/Users/resetPwd/userId/<{$user.id}>" alt="重置密码" ><button class="btn btn-success btn-xs"><i class="icon-ok"></i></button></a>
-                                  </td>
+                                  </td> -->
                                   <td>
-                                    <a  class="btn btn-xs btn-warning myModal2" href="/Admin/UsersBalanceLog/balanceLog/user_id/<{$user.user_id}>">蛙币收支</a>
-                                    <a class="btn btn-primary btn-xs" href="/Admin/Users/updates/userId/<{$user.user_id}>">修改信息</a>
-                                    <a  class="btn btn-xs btn-warning myModal2" data-toggle="modal" href="#myModal2" value="<{$user.user_id}>">删除</a>
-                                    <div class="btn-group">
+                                 <!--    <a  class="btn btn-xs btn-warning myModal2" href="/Admin/UsersBalanceLog/balanceLog/user_id/<{$user.user_id}>">蛙币收支</a> -->
+                                    <a class="btn btn-primary btn-xs" href="/Admin/Users/resetPwd/userId/<{$user.id}>">重置密码</a>
+                                    <a class="btn btn-primary btn-xs" href="/Admin/Users/updateUser/userId/<{$user.id}>">修改信息</a>
+                                    <a  class="btn btn-xs btn-warning myModal2" data-toggle="modal" href="#myModal2" value="<{$user.id}>">删除</a>
+                                  <!--   <div class="btn-group">
                                       <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle btn-xs btn-info" type="button">更多 <span class="caret"></span></button>
                                       <ul role="menu" class="dropdown-menu">
                                           <li><a href="#">短信发送日志</a></li>
                                           <li><a href="#">登陆日志</a></li>
                                           <li><a href="#">分享记录</a></li>
-<!--                                          <li class="divider"></li>
+                                         <li class="divider"></li>
                                           <li><a href="#"></a></li>-->
-                                      </ul>
-                                    </div>
+ <!--                                      </ul>
+                                    </div> -->
                                   </td>
                               </tr>
                               </volist>
@@ -222,7 +213,7 @@
               $("#value_timesof").val(values+1);
               $(".timesof").removeClass("btn-primary");
               $(this).addClass("btn-primary");
-              window.location.href="/admin/Users/index/date/"+date;
+              window.location.href="/admin/Users/index/usertype/"+<{$Think.get.usertype}>+"/date/"+date;
 
             });
             $("#phone").change(function(){

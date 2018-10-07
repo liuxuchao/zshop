@@ -146,5 +146,21 @@ class UserService extends BaseService
         $result = $this->model->updateUserInfo($userId,$data);
         return $result;
     }
+
+
+    /**
+     * 根据用户ID删除操作
+     * @param type $catId
+     * @return array | bool
+     */
+    public function doDelete($userId)
+    {
+        $userId = intval($userId);
+        if ( 0>= $userId) {
+            return false;
+        }
+        $data = $this->model->doDelete($userId);
+        return $data;
+    }
     
 }

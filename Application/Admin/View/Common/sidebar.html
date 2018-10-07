@@ -15,7 +15,8 @@
                  <span>用户管理</span>
                </a>
             <ul class="sub  dcjq-parent-li">
-             <li <if condition="'index' eq $actionName and 'Users' eq $controllerName" >class="active"</if>><a href="/Admin/Users/index" >用户列表</a></li>
+             <li <if condition="'index' eq $actionName and 'Users' eq $controllerName and '1' eq $param[usertype]" >class="active"</if>><a href="/Admin/Users/index/usertype/1" >普通用户列表</a></li>
+             <li <if condition="'index' eq $actionName and 'Users' eq $controllerName and '2' eq $param[usertype]" >class="active"</if>><a href="/Admin/Users/index/usertype/2" >送货端用户列表</a></li>
            </ul>
          </li>
          <li class="sub-menu  dcjq-parent-li">
