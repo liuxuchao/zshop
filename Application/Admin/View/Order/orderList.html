@@ -58,17 +58,18 @@
                                           <input type="text" name="ordersn" class="form-control" value="<{$param.ordersn}>" placeholder="输入订单号搜索">
                                       </div>
                                       </div>
-                                      <div class="col-md-3">
-                                      <div class="form-group">
-                                          <select name="paytype">
-                                            <option value="0">请选择...</option>
-                                            <option value="1">成功</option>
-                                            <option value="2">失败</option>
-                                            <option value="3">未支付</option>
-                                          </select>
-                                      </div>
-                                      </div>
+                                     
                                       <div class="col-md-9">
+                                         <div class="col-md-3" style="width: 15%">
+                                          <div class="form-group">
+                                              <select name="paytype" style="height: 32px;width: 100px;color: #c2c2c2;">
+                                                <option value="0">请选择...</option>
+                                                <option value="1">成功</option>
+                                                <option value="2">失败</option>
+                                                <option value="3">未支付</option>
+                                              </select>
+                                          </div>
+                                          </div>
                                         <button  id="btn_search" class="btn btn-info">搜索</button>
                                       </div>
                               </form>
@@ -100,9 +101,18 @@
                               </tr>
                               </thead>
                               <tbody>
-                              <if condition="!empty($userList) and is_array($userList)">
-                              <volist name="userList" id="user">
+                              <if condition="!empty($orderList) and is_array($orderList)">
+                              <volist name="orderList" id="order">
                               <tr>
+                                  <td><{$order.order_code}></td>
+                                  <td><{$order.name}></td>
+                                  <td><{$order.username}></td>
+                                  <td><{$order.payPrice}></td>
+                                  <td><{$order.totalPrice}></td>
+                                  <td><{$order.payName}></td>
+                                  <td><{$order.typeName}></td>
+                                  <td><{$order.create_time|date='m/d/Y',###}></td>
+                                  <td><{$order.pay_time|date='m/d/Y',###}></td>
                                   <td>
                                     <a  class="btn btn-xs btn-warning myModal2" data-toggle="modal" href="#myModal2" value="<{$user.user_id}>">删除</a>
                                   </td>

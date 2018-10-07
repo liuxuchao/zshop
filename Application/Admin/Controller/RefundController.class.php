@@ -2,7 +2,7 @@
 namespace Admin\Controller;
 
 use Application\AdminBaseController;
-use Common\Service\Zshop\InvoiceService;
+use Common\Service\Zshop\RefundService;
 
 /**
  * 管理员登陆
@@ -10,13 +10,13 @@ use Common\Service\Zshop\InvoiceService;
  * @author caizhuan <zhuan1127@163.com>
  * @date 2018-10-1 21:20
  */
-class InvoiceController extends AdminBaseController
+class RefundController extends AdminBaseController
 {
-	private $invoiceService = null;
+	private $refundService = null;
 	function __construct()
 	{
 		parent::__construct();
-		$this->invoiceService = new InvoiceService();
+		$this->refundService = new RefundService();
 	}
 
 
@@ -49,9 +49,9 @@ class InvoiceController extends AdminBaseController
         $orderBy = ' create_time desc';
         
     	//获取总数
-        $tCount = $this->invoiceService->countByCondition($wheres); 
+        $tCount = $this->refundService->countByCondition($wheres); 
         $show = $this->page($tCount, $tPage, $tPageSize); // 分页显示输出
-		$advertList = $this->invoiceService->getInvoiceList($tPage, $tPageSize,$orderBy,$where);
+		$advertList = $this->refundService->getInvoiceList($tPage, $tPageSize,$orderBy,$where);
 
 		foreach ($advertList as $key => $value) {
             if ($value['type'] == 1) {
@@ -78,14 +78,6 @@ class InvoiceController extends AdminBaseController
             }else{
                 $advertList[$key]['invoceName']  = '未设置';
             }
-
-            if ($value['itype'] == -1) {
-                $advertList[$key]['handleName']  = '已删除';
-            }elseif ($value['invoice_type'] == 1) {
-                $advertList[$key]['handleName']  = '待处理';
-            }else{
-                $advertList[$key]['handleName']  = '已完成';
-            }
 			
 			$advertList[$key]['creatime'] = date("Y-m-d",$value['create_time']) ;
             $advertList[$key]['useing_time'] = date("Y-m-d",$value['useing_time']) ;
@@ -100,11 +92,17 @@ class InvoiceController extends AdminBaseController
 
 
     /**
-     * 开票申请
+     * 修改广告
      */
-    public function ApplyInvoice(){
+    public function updateCoupon(){
     	$Id = I('id', '', 'intval,htmlspecialchars');
-        $data = $this->invoiceService->getByPrimaryKey($Id);
+        $data = $this->refundService->getByPrimaryKey($Id);
+        //开始时间
+        $where['startTime'] = array('egt',strtotime(date('Y-m-d',time()).' 00:00:00'));
+        //结束时间
+        $where['endTime'] = array('elt',strtotime(date('Y-m-d',time()).' 23:59:59'));
+        $activityInfo = $this->activityService->getActivityInfo($where);
+        $this->assign('activityInfo',$activityInfo);
         $this->assign('data', $data);
         $this->display();
     }
@@ -119,25 +117,28 @@ class InvoiceController extends AdminBaseController
             exit("非法请求");
         }
         $data = [];
-        $data['id'] = I('post.InvoiceID','','strip_tags');
-        $data['type'] = I('post.type','','strip_tags');
-        $data['price'] = I('post.price','','strip_tags');
-        $data['invoice_title'] = I('post.invoice_title','','strip_tags');
-        $data['taxpayer_number'] = I('post.taxpayer_number','','strip_tags');
-        $data['address'] = I('post.address','','strip_tags');
-        $data['invoice_type'] = I('post.invoice_type','','strip_tags');
-        $data['taxpayer_tel'] = I('post.taxpayer_tel','','strip_tags');
-        $data['taxpayer_blank_account'] = I('post.taxpayer_blank_account','','strip_tags');
-        $data['itype'] = I('post.itype','','strip_tags');
-        if(!isset($data['itype']))
-       
+        $data['id'] = I('post.id','','strip_tags');
+        $data['name'] = I('post.name','','strip_tags');
+        $data['amount'] = I('post.amount','','strip_tags');
+        $data['use_from_time'] = strtotime(I('post.use_from_time','','strip_tags'));
+        $data['use_end_time'] = strtotime(I('post.use_end_time','','strip_tags'));
+        $limit_num = I('post.limit_num','','strip_tags');
+        $data['limit_num'] = $limit_num != '0' ? $limit_num : 0;
+        $activity_id = I('post.activity_id','','strip_tags');
+        $data['activity_id'] = $activity_id != '0' ? $activity_id : 0;
+        $status = I('post.status','','strip_tags');
+        $data['status'] = $status != '0' ? $status : 0;
+        if(empty($data['name'])){
+            $this->error('分类名称不能为空','/Admin/Coupon/updateCoupon/id'.$data['id']);
+            return;
+        }
 
-        $upResult = $this->invoiceService->updateByPrimaryKey($data['id'],$data);
+        $upResult = $this->refundService->updateByPrimaryKey($data['id'],$data);
         if(!$upResult){
-            $this->error('开票失败','/Admin/Invoice/ApplyInvoice/id/'.$data['id']);
+            $this->error('修改失败','/Admin/Coupon/updateCoupon/id/'.$data['id']);
             return;
         }else{
-        	$this->error('修改成功','/Admin/Invoice/index');
+        	$this->error('修改成功','/Admin/Coupon/index');
             return;
         }
     }
@@ -155,7 +156,7 @@ class InvoiceController extends AdminBaseController
             return;
         }
 
-        $data = $this->invoiceService->doDelete($Id);
+        $data = $this->refundService->doDelete($Id);
         if ($data) {
             $result = ['error_code'=>'0','message'=>'删除成功'];
             echo json_encode($result);

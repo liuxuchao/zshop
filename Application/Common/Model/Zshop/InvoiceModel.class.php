@@ -81,9 +81,9 @@ class InvoiceModel extends BaseModel
 
 
     /**
-     * 根据类ID 删除操作
+     * 根据发票ID 删除操作
      * @author liuxuchao
-     * @param string $Id 广告ID
+     * @param string $Id 发票ID
      * @return array | boolean
      */
     public function doDelete($id)

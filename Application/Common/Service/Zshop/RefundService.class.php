@@ -2,14 +2,14 @@
 namespace Common\Service\Zshop;
 
 use Application\BaseService;
-use Common\Model\Zshop\InvoiceModel;
+use Common\Model\Zshop\RefundModel;
 
 /**
  * ti_order
  *
  * @author caizhuan
  */
-class InvoiceService extends BaseService
+class RefundService extends BaseService
 {
     public function __construct()
     {
@@ -28,26 +28,30 @@ class InvoiceService extends BaseService
         if ( !empty($model) && is_object($model) ) {
             $this->model = $model;
         } else {
-            $this->model = new InvoiceModel();
+            $this->model = new RefundModel();
         }
         return;
     }
 
 
+
     /**
-     * 获取发票信息
+     *广告列表
      * @auther caizhaun
+     * @param string $page 页码
+     * @param array $pageSize 页数
+     * @param array $order 排序
      * return array | false
      */
-    public function getInvoiceList($tPage, $tPageSize,$orderBy,$where){
+    public function getRefundList($page, $pageSize,$orderBy,$where){
 
-        return $this->model->getInvoice($tPage, $tPageSize,$orderBy,$where);
+        return $this->model->getRefund($page, $pageSize,$orderBy,$where);
 
     }
 
 
-    /**
-     * 根据发票ID删除操作
+     /**
+     * 根据广告ID删除操作
      * @param type $Id
      * @return array | bool
      */
@@ -60,7 +64,5 @@ class InvoiceService extends BaseService
         $data = $this->model->doDelete($Id);
         return $data;
     }
-
-
 
 }

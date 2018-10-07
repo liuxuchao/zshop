@@ -94,6 +94,26 @@ class OrderController extends AdminBaseController
 
         	$orderList = $this->orderService->getOrderList($tPage, $tPageSize,$orderBy,$where);
 
+                foreach ($orderList as $key => $value) {
+                        if ($value['pay_status'] == 1) {
+                               $orderList[$key]['payName'] = '成功';
+                        }elseif ($value['pay_status'] == 2) {
+                               $orderList[$key]['payName'] = '失败';
+                        }elseif ($value['pay_status'] == 3) {
+                               $orderList[$key]['payName'] = '未支付';
+                        }
+
+                        if ($value['pay_type'] == 1) {
+                               $orderList[$key]['typeName'] = '余额';
+                        }elseif ($value['pay_type'] == 2) {
+                               $orderList[$key]['typeName'] = '微信';
+                        }elseif ($value['pay_type'] == 3) {
+                               $orderList[$key]['typeName'] = '支付宝';
+                        }elseif ($value['pay_type'] == 4) {
+                               $orderList[$key]['typeName'] = '其他';
+                        }
+                        
+                }
         	$this->assign('param', $param);
                 $this->assign('count', $tCount);
                 $this->assign('orderList', $orderList);

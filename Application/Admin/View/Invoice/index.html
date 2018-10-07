@@ -25,15 +25,15 @@
                       <section class="panel">
                           <div class="panel-body">
                               <form class="form-horizontal" role="form" id="search" method="post" action="/Admin/Coupon/index" >
-                                  <div class="col-md-6 alltimesof">
-                                    <div class="input-group input-large" data-date="2016/07/28" data-date-format="yyyy/mm/dd">
+                                  <div class="col-md-6">
+                                          <div class="input-group input-large" data-date="2016/07/28" data-date-format="yyyy/mm/dd">
                                          
-                                      <input type="text" class="form-control dpd1" value="<{$param.srtime|date='m/d/Y',###}>" name="srtime">
-                                      <span class="input-group-addon">To</span>
-                                      <input type="text" class="form-control dpd2" value="<{$param.ertime|date='m/d/Y',###}>" name="ertime">
-                                      <span class="help-block">下单时间查询</span>
-                                    </div>
-                                  </div>
+                                            <input type="text" class="form-control dpd1" value="<{$param.srtime|date='m/d/Y',###}>" name="srtime">
+                                            <span class="input-group-addon">To</span>
+                                            <input type="text" class="form-control dpd2" value="<{$param.ertime|date='m/d/Y',###}>" name="ertime">
+                                        </div>
+                                          <span class="help-block">下单时间查询</span>
+                                      </div>
                                   <div class="col-md-6">
                                           
                                           
@@ -68,7 +68,9 @@
                                   <th><i class="icon-user"></i>纳税人识别号</th>
                                   <th><i class="icon-jpy"></i>发票类型</th>
                                   <th><i class="icon-jpy"></i>纳税人电话</th>
+                                  <th><i class="icon-jpy"></i>开票金额</th>
                                   <th><i class="icon-user"></i>发票状态</th>
+                                  <th><i class="icon-user"></i>处理状态</th>
                                   <th><i class="icon-bullhorn"></i>创建时间</th>
                                   <th><i class="icon-bullhorn"></i>发送时间</th>
                                   <th>操作</th>
@@ -94,20 +96,26 @@
                                     <{$in.invoceName}>
                                   </td>
                                   <td>
-                                    <{$ad.taxpayer_tel}>
+                                    <{$in.taxpayer_tel}>
                                   </td>
                                   <td>
-                                    <{$ad.statusName}>
+                                    <{$in.price}>
                                   </td>
                                   <td>
-                                    <{$ad.creatime}>
+                                    <{$in.statusName}>
                                   </td>
                                   <td>
-                                    <{$ad.useing_time}>
+                                    <{$in.handleName}>
                                   </td>
                                   <td>
-                                    <a  class="btn btn-xs btn-warning myModal2" data-toggle="modal" href="/Admin/Advert/updateAdv/id/<{$ad.id}>" value="<{$ad.id}>">修改</a>
-                                    <a  class="btn btn-xs btn-warning myModal2" data-toggle="modal" href="#myModal2" value="<{$ad.id}>">删除</a>
+                                    <{$in.creatime}>
+                                  </td>
+                                  <td>
+                                    <{$in.useing_time}>
+                                  </td>
+                                  <td>
+                                    <a  class="btn btn-xs btn-warning myModal2" data-toggle="modal" href="/Admin/Invoice/ApplyInvoice/id/<{$in.id}>" value="<{$in.id}>">开票</a>
+                                    <a  class="btn btn-xs btn-warning myModal2" data-toggle="modal" href="#myModal2" value="<{$in.id}>">删除</a>
                                   </td>
                               </tr>
                               </volist>

@@ -8,7 +8,7 @@ use Application\BaseModel;
  *
  * @author caizhuan  <zhuan1127@163.com>
  */
-class CouponModel extends BaseModel
+class RefundModel extends BaseModel
 {
     
     /**
@@ -27,7 +27,7 @@ class CouponModel extends BaseModel
      * 实际数据表名（包含表前缀）
      * @var string 
      */
-    protected $trueTableName = 'zs_coupons';
+    protected $trueTableName = 'zs_orderrefund';
     
     /**
      * 数据表字段列表
@@ -35,14 +35,14 @@ class CouponModel extends BaseModel
      */
     protected $fields = [
         'id',
-        'name',
-        'activity_id',
-        'amount',
-        'use_from_time',
-        'use_end_time',
-        'status',
-        'create_time',
-        'limit_num',
+        'sOrderNo',
+        'fAmonut',
+        'fPayAmonut',
+        'sFlowNo',
+        'iOperationDate',
+        'iOpreation',
+        'iCreateTime',
+        'iStatus',
     ];
     
     public function __construct()
