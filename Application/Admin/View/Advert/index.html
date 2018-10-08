@@ -15,8 +15,6 @@
                           <li><a href="/Admin/Index"><i class="icon-home"></i> 主面板</a></li>
                           <li><a href="/Admin/Advert/index" >广告管理</a></li>
                           <li class="active">广告列表</li>
-                          <li><a href="/Admin/Advert/addAdv"><i class="icon-home"></i> 添加广告</a></li>
-                          <li><a href="/Admin/AdvertCate/addAdvType" >添加广告分类</a></li>
                       </ul>
                       <!--breadcrumbs end -->
                       <ul class="breadcrumb">
@@ -29,29 +27,31 @@
                   <div class="col-lg-12">
                       <div class="col-sm-12" style="padding-left:0px;padding-right:0px;">
                       <section class="panel">
+                          <header class="panel-heading">
+                              广告列表
+                              <a href="/Admin/AdvertCate/addAdvType"><button type="button" class="btn btn-success pull-right btn-sm">添加广告分类</button></a> 
+                              <a href="/Admin/Advert/addAdv"><button type="button" class="btn btn-success pull-right btn-sm">添加广告</button></a>    
+                          </header>
                           <div class="panel-body">
                               <form class="form-horizontal" role="form" id="search" method="post" action="/Admin/Advert/index" >
-                                  <div class="col-md-6 alltimesof">
-                                    <div class="input-group input-large" data-date="2016/07/28" data-date-format="yyyy/mm/dd">
-                                         
-                                      <input type="text" class="form-control dpd1" value="<{$param.srtime|date='m/d/Y',###}>" name="srtime">
-                                      <span class="input-group-addon">To</span>
-                                      <input type="text" class="form-control dpd2" value="<{$param.ertime|date='m/d/Y',###}>" name="ertime">
-                                      <span class="help-block">下单时间查询</span>
-                                    </div>
-                                  </div>
                                   <div class="col-md-6">
-                                          
-                                          
+                                        <div class="input-group input-large" data-date="2016/07/28" data-date-format="yyyy/mm/dd">
+                                       
+                                          <input type="text" class="form-control dpd1" value="<{$param.srtime|date='m/d/Y',###}>" name="srtime">
+                                          <span class="input-group-addon">To</span>
+                                          <input type="text" class="form-control dpd2" value="<{$param.ertime|date='m/d/Y',###}>" name="ertime">
                                       </div>
-                                      <div class="col-md-3">
-                                      <div class="form-group">
-                                          <input type="text" name="name" class="form-control" value="<{$param.name}>" placeholder="输入广告名称搜索">
-                                      </div>
-                                      </div>
-                                      <div class="col-md-9">
-                                        <button  id="btn_search" class="btn btn-info">搜索</button>
-                                      </div>
+                                        <span class="help-block">下单时间查询</span>
+                                    </div>
+                             
+                                  <div class="col-md-3">
+                                  <div class="form-group">
+                                      <input type="text" name="name" class="form-control" value="<{$param.name}>" placeholder="输入广告名称搜索">
+                                  </div>
+                                  </div>
+                                  <div class="col-md-9">
+                                    <button  id="btn_search" class="btn btn-info">搜索</button>
+                                  </div>
                               </form>
                           </div>
                                   
