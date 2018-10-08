@@ -1,6 +1,6 @@
 <extend name="../Application/Admin/View/base.html" />
 
-    <block name="title"><title>Zshop商城-管理-广告列表-第<{$currentPage}>页</title></block>
+    <block name="title"><title>Zshop商城-管理-退款列表-第<{$currentPage}>页</title></block>
     <block name="style">
     <link href="/Admin/assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
     <link href="/Admin/assets/jquery-easy-pie-chart/jquery.easy-pie-chart.css" rel="stylesheet" type="text/css" media="screen"/>
@@ -13,8 +13,8 @@
                       <!--breadcrumbs start -->
                       <ul class="breadcrumb">
                           <li><a href="/Admin/Index"><i class="icon-home"></i> 主面板</a></li>
-                          <li><a href="/Admin/Advert/index" >广告管理</a></li>
-                          <li class="active">广告列表</li>
+                          <li><a href="/Admin/Refund/index" >退款管理</a></li>
+                          <li class="active">退款列表</li>
                       </ul>
                   </div>
               </div>
@@ -23,11 +23,6 @@
                   <div class="col-lg-12">
                       <div class="col-sm-12" style="padding-left:0px;padding-right:0px;">
                       <section class="panel">
-                          <header class="panel-heading">
-                              广告列表
-                              <a href="/Admin/AdvertCate/addAdvType"><button type="button" class="btn btn-success pull-right btn-sm">添加广告分类</button></a> 
-                              <a href="/Admin/Advert/addAdv"><button type="button" class="btn btn-success pull-right btn-sm">添加广告</button></a>    
-                          </header>
                           <div class="panel-body">
                               <form class="form-horizontal" role="form" id="search" method="post" action="/Admin/Advert/index" >
                                   <div class="col-md-6">
@@ -37,12 +32,12 @@
                                           <span class="input-group-addon">To</span>
                                           <input type="text" class="form-control dpd2" value="<{$param.ertime|date='m/d/Y',###}>" name="ertime">
                                       </div>
-                                        <span class="help-block">下单时间查询</span>
+                                        <span class="help-block">申请时间查询</span>
                                     </div>
                              
                                   <div class="col-md-3">
                                   <div class="form-group">
-                                      <input type="text" name="name" class="form-control" value="<{$param.name}>" placeholder="输入广告名称搜索">
+                                      <input type="text" name="order_id" class="form-control" value="<{$param.order_id}>" placeholder="输入订单编号搜索">
                                   </div>
                                   </div>
                                   <div class="col-md-9">
@@ -64,40 +59,40 @@
                           <table class="table table-striped table-advance table-hover">
                               <thead>
                               <tr>
-                                  <th><i class="icon-bullhorn"></i>订单名称</th>
-                                  <th><i class="icon-bullhorn"></i>广告类型</th>
-                                  <th><i class="icon-user"></i>位置描述</th>
-                                  <th><i class="icon-jpy"></i>状态</th>
-                                  <th><i class="icon-jpy"></i>图片</th>
-                                  <th><i class="icon-bullhorn"></i>创建时间</th>
+                                  <th><i class="icon-bullhorn"></i>订单号</th>
+                                  <th><i class="icon-bullhorn"></i>申请退款金额</th>
+                                  <th><i class="icon-user"></i>申请时间</th>
+                                  <th><i class="icon-jpy"></i>单子处理状态</th>
+                                  <th><i class="icon-jpy"></i>实退金额</th>
+                                  <th><i class="icon-bullhorn"></i>操作时间</th>
                                   <th>操作</th>
                               </tr>
                               </thead>
                               <tbody>
                               <if condition="!empty($advertList) and is_array($advertList)">
-                              <volist name="advertList" id="ad">
+                              <volist name="refundList" id="re">
                               <tr>
                                   <td>
-                                    <{$ad.name}>
+                                    <{$re.sOrderNo}>
                                   </td>
                                   <td>
-                                    <{$ad.cname}>
+                                    <{$re.fAmonut}>
                                   </td>
                                   <td>
-                                    <{$ad.postion_desc}>
+                                    <{$re.creatime}>
                                   </td>
                                   <td>
-                                    <{$ad.statusName}>
+                                    <{$re.statusName}>
                                   </td>
                                   <td>
-                                    <{$ad.img_url}>
+                                    <{$re.fPayAmonut}>
                                   </td>
                                   <td>
-                                    <{$ad.creatime}>
+                                    <{$re.iOperationDate}>
                                   </td>
                                   <td>
-                                    <a  class="btn btn-xs btn-warning myModal2" data-toggle="modal" href="/Admin/Advert/updateAdv/id/<{$ad.id}>" value="<{$ad.id}>">修改</a>
-                                    <a  class="btn btn-xs btn-warning myModal2" data-toggle="modal" href="#myModal2" value="<{$ad.id}>">删除</a>
+                                    <a  class="btn btn-xs btn-warning myModal2" data-toggle="modal" href="/Admin/Advert/updateRefund/sOrderNo/<{$re.sOrderNo}>" value="<{$re.sOrderNo}>">退款</a>
+                                    <a  class="btn btn-xs btn-warning myModal2" data-toggle="modal" href="#myModal2" value="<{$re.sOrderNo}>">删除</a>
                                   </td>
                               </tr>
                               </volist>

@@ -55,13 +55,13 @@ class RefundService extends BaseService
      * @param type $Id
      * @return array | bool
      */
-    public function doDelete($Id)
+    public function doDelete($sOrderNo)
     {
-        $Id = intval($Id);
-        if ( 0>= $Id) {
+        $sOrderNo = intval($sOrderNo);
+        if (empty($sOrderNo)) {
             return false;
         }
-        $data = $this->model->doDelete($Id);
+        $data = $this->model->doDelete($sOrderNo);
         return $data;
     }
 

@@ -34,7 +34,6 @@ class RefundModel extends BaseModel
      * @var array
      */
     protected $fields = [
-        'id',
         'sOrderNo',
         'fAmonut',
         'fPayAmonut',
@@ -58,7 +57,7 @@ class RefundModel extends BaseModel
      * @param array $order 排序
      * return array | false
      */
-    public function getCoupon($page, $pageSize,$orderBy, $where){
+    public function getRefund($page, $pageSize,$orderBy, $where){
 
         $page = intval( $page );
         $pageSize = intval($pageSize);
@@ -69,10 +68,7 @@ class RefundModel extends BaseModel
             $offset = ($page - 1) * $pageSize;
         }
 
-        return $this->alias('coupon')
-                    ->join('left join zs_activities activities on coupon.activity_id = activities.id')
-                    ->where($where)
-                    ->field('coupon.id,coupon.name,coupon.amount,coupon.use_from_time,coupon.use_end_time,coupon.create_time,coupon.status,coupon.limit_num,activities.name cname')
+        return $this->where($where)
                     ->order($orderBy)
                     ->limit($offset, $pageSize)
                     ->select();
@@ -85,13 +81,13 @@ class RefundModel extends BaseModel
      * @param string $Id 优惠券ID
      * @return array | boolean
      */
-    public function doDelete($id)
+    public function doDelete($sOrderNo)
     {
         $id = intval( $id );
-        if ( 0 >= $id) {
+        if ( empty($sOrderNo)) {
             return false;
         }
-        $where['id'] = $id;
+        $where['sOrderNo'] = $sOrderNo;
         $data = $this->where($where)->delete();
         if ( $data ) {
             return $data;
