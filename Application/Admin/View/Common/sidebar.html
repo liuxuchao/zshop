@@ -39,10 +39,6 @@
           <ul class="sub">
             <li <if condition="'Product' eq $controllerName">class="active"</if>><a href="/Admin/Product">商品列表</a></li>
             <li <if condition="'ProductCate' eq $controllerName">class="active"</if>><a href="/Admin/ProductCate" >商品分类</a></li>
-            <li <if condition="'ProductCate' eq $controllerName">class="active"</if>><a href="/Admin/ProductCate" >服务分类</a></li>
-            <li <if condition="'ProductCate' eq $controllerName">class="active"</if>><a href="/Admin/ProductCate" >服务列表</a></li>
-            <li <if condition="'ProductCate' eq $controllerName">class="active"</if>><a href="/Admin/ProductCate" >活动分类</a></li>
-            <li <if condition="'ProductCate' eq $controllerName">class="active"</if>><a href="/Admin/ProductCate" >活动列表</a></li>
           </ul>
         </li>
 		
@@ -68,10 +64,10 @@
             <li <if condition="'Coupon' eq $controllerName">class="active"</if>><a href="/Admin/Coupon/index" >优惠券列表</a></li>
             <li <if condition="'Invoice' eq $controllerName">class="active"</if>><a href="/Admin/Invoice/index" >发票列表</a></li>
             <li <if condition="'Refund' eq $controllerName">class="active"</if>><a href="/Admin/Refund/index" >退款列表</a></li>
-            <li <if condition="'Task' eq $controllerName">class="active"</if>><a href="/Admin/Task/index"  style="display: none;">任务列表</a></li>
+            <!--<li <if condition="'Task' eq $controllerName">class="active"</if>><a href="/Admin/Task/index"  style="display: none;">任务列表</a></li>-->
           </ul>
         </li>
-        <li><a href="/Admin/Source" <if condition="'Source' eq $controllerName" >class="active dcjq-parent"</if>> <i class="icon-dashboard"></i><span>附件管理</span></a></li>
+        <!--<li><a href="/Admin/Source" <if condition="'Source' eq $controllerName" >class="active dcjq-parent"</if>> <i class="icon-dashboard"></i><span>附件管理</span></a></li>
          <li class="sub-menu">
           <a href="javascript:;" <if condition="'SmsLog' eq $controllerName or 'LoginLog' eq $controllerName or 'RecommendStatistical' eq $controllerName or 'ResumeSearchLog' eq $controllerName" >class="active dcjq-parent"</if>>
             <i class=" icon-pencil"></i>
@@ -92,7 +88,7 @@
                   <li <if condition="'Admin' eq $controllerName and 'index' eq $actionName" >class="active"</if>><a href="/Admin/Admin" >管理员列表</a></li>
                   <li <if condition="'Role' eq $controllerName and 'index' eq $actionName" >class="active"</if>><a href="/Admin/Role">角色管理</a></li>
                 </ul>
-            </li>
+            </li>-->
         <li class="sub-menu  dcjq-parent-li" >
             <a href="javascript:;"  <if condition="'Auth' eq $controllerName" >class="active dcjq-parent"</if>>
             <i class="icon-laptop"></i>
@@ -110,7 +106,7 @@
             </a>
             <ul class="sub">
               <li <if condition="'add' eq $actionName" >class="active"</if>><a href="/Admin/Version/add">基本设置</a></li>
-              <li style="display: none;"><if condition="'add' eq $actionName" >class="active"</if>><a href="/Admin/Version/add">字典管理</a></li>
+              <!--<li style="display: none;"><if condition="'add' eq $actionName" >class="active"</if>><a href="/Admin/Version/add">字典管理</a></li>-->
             </ul>
           </li>
       </ul>
