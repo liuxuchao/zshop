@@ -34,14 +34,22 @@ class OrderModel extends BaseModel
      * @var array
      */
     protected $fields = [
-        'id',
-        'user_id',
-        'pro_id',
-        'buy_number',
-        'is_pay',
-        'pay_uuid',
-        'pay_type',
-        'create_time',
+		'id',
+		'uid',
+		'order_code',
+		'order_type',
+		'product_id',
+		'service_id',
+		'customer',
+		'phone',
+		'services_name',
+		'services_time',
+		'attention',
+		'create_time',
+		'pay_status',
+		'pay_type',
+		'pay_serial_number',
+		'pay_time'
     ];
     
     public function __construct()
@@ -73,10 +81,10 @@ class OrderModel extends BaseModel
         }
 
         return $this->alias('sorder')
-                    ->join('left join zs_users users on sorder.UID = users.id')
+                    ->join('left join zs_users users on sorder.uid = users.id')
                     ->join('left join zs_product product on sorder.product_id = product.pro_id')
                     ->where($where)
-                    ->field('sorder.order_code,sorder.create_time,sorder.pay_status,sorder.pay_type,sorder.pay_time,sorder.totalPrice,sorder.couponPrice,sorder.payPrice,product.name,users.username')
+                    ->field('sorder.order_code,sorder.create_time,sorder.pay_status,sorder.pay_type,sorder.pay_time,product.name,users.username')
                     ->order($orderBy)
                     ->limit($offset, $pageSize)
                     ->select();
@@ -94,7 +102,7 @@ class OrderModel extends BaseModel
             return false;
         }
         return $this->alias('sorder')
-                    ->join('left join zs_users users on sorder.UID = users.id')
+                    ->join('left join zs_users users on sorder.uid = users.id')
                     ->join('left join zs_product product on sorder.product_id = product.pro_id')
                     ->where($where)
                     ->count();

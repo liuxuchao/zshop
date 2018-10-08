@@ -4,7 +4,7 @@ namespace Api\Controller;
 vendor('MobileDetect.Detection.MobileDetect');
 
 use Application\ApiBaseController;
-use Common\Service\UURecommend\UsersService;
+use Common\Service\Zshop\UsersService;
 
 
 use Org\Util\RNCryptor;

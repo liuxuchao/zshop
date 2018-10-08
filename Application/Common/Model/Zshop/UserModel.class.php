@@ -35,6 +35,7 @@ class UserModel extends BaseModel
      */
     protected $fields = [
         'id',
+		'openid',
         'username',
         'mobile',
         'password',

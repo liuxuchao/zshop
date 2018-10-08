@@ -90,19 +90,6 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="template_style" class="col-lg-2 col-md-2 col-sm-2 control-label text-right">前台模板样式</label>
-                                        <div class="col-lg-5 col-md-5">
-                                            <select class="form-control" name="template_style" id="template_style">
-                                                <option value="0">请选择模板样式</option>
-                                                <option value="1">背景通栏居中</option>
-                                                <option value="2">居中左图右文</option>
-                                                <option value="3">居中左文右图</option>
-                                                <option value="4">居中背景文字左</option>
-                                                <option value="5">居中背景文字右</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
                                         <label for="description" class="col-lg-2 col-sm-2 control-label text-right">商品缩略图</label>
                                         <div class="col-lg-5 col-md-5">
                                             <div id="uploader" class="wu-example">
@@ -288,21 +275,6 @@
                             stringLength: {min: 1,max: 8,message: '积分必须在1到8位之间'},
                             regexp: { regexp:/^\+?[1-9]\d*/,message: '积分为正整数'}, 
                         }
-                    },
-                    template_style:{
-                        validators: {
-                            notEmpty: {message: '模板样式不能为空'},
-                            callback: {
-                                message: '必须选择一个模板样式',
-                                callback: function(value, validator) {
-                                    if (value == 0) {
-                                        return false;
-                                    }else{
-                                        return true;
-                                    }
-                                }
-                            }
-                        } 
                     },
                     contents: {
                         validators: {

@@ -2,7 +2,7 @@
 namespace Common\Library\Behavior;
 
 use Behavior\CheckActionRouteBehavior;
-use Common\Service\UURecommend\UsersActionLogService;
+use Common\Service\Zshop\UsersActionLogService;
 
 class ActionLogBehavior extends CheckActionRouteBehavior{
     // 行为参数定义

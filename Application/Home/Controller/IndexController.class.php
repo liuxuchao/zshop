@@ -7,8 +7,7 @@ class IndexController extends HomeBaseController
 {
     public function index()
     {
-        $this->assign('title','首页');
-        $this->display();
+        echo "index of test!";
     }
     
 }

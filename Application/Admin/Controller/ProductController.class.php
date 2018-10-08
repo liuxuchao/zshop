@@ -31,7 +31,7 @@ class ProductController extends AdminBaseController
         //获取总数
         $tCount = $this->productService->countByCondition($where);
         $show = $this->page($tCount, $tPage, $tPageSize); // 分页显示输出
-        $productList = $this->productService->getList($where, $tPage, $tPageSize, [], 'id DESC');
+        $productList = $this->productService->getList($where, $tPage, $tPageSize, [], 'pro_id DESC');
         //显示商品分类
         $resTree = $this->productcateService->gettree();
         if($productList){

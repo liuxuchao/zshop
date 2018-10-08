@@ -21,7 +21,7 @@ class ProductModel extends BaseModel
      * 主键字段名称
      * @var string 
      */
-    protected $pk = 'id';
+    protected $pk = 'pro_id';
     
     /**
      * 实际数据表名（包含表前缀）
@@ -34,7 +34,7 @@ class ProductModel extends BaseModel
      * @var array
      */
     protected $fields = [
-        'id',
+        'pro_id',
         'cate_id',
         'product_name',
         'small_title',

@@ -3,19 +3,19 @@ namespace Api\Controller;
 
 import("Org.Util.ShortUrl");
 use Application\ApiBaseController;
-use Common\Service\UURecommend\AuthCodeService;
-use Common\Service\UURecommend\UsersService;
-use Common\Service\UURecommend\ChannelService;
-use Common\Service\UURecommend\InviteService;
-use Common\Service\UURecommend\UsersBalanceLogService;
-use Common\Service\UURecommend\UsersModifyCompanyLogService;
-use Common\Service\UURecommend\UsersPushConfigService;
-use Common\Service\UURecommend\UsersShareLogService;
-use Common\Service\UURecommend\UsersPriceConfigService;
-use Common\Service\UURecommend\UsersShareRegisterService;
-use Common\Service\UURecommend\ChannelJobsService;
-use Common\Service\UURecommend\UsersMessagesLogService;
-use Common\Service\UURecommend\VersionService;
+use Common\Service\Zshop\AuthCodeService;
+use Common\Service\Zshop\UsersService;
+use Common\Service\Zshop\ChannelService;
+use Common\Service\Zshop\InviteService;
+use Common\Service\Zshop\UsersBalanceLogService;
+use Common\Service\Zshop\UsersModifyCompanyLogService;
+use Common\Service\Zshop\UsersPushConfigService;
+use Common\Service\Zshop\UsersShareLogService;
+use Common\Service\Zshop\UsersPriceConfigService;
+use Common\Service\Zshop\UsersShareRegisterService;
+use Common\Service\Zshop\ChannelJobsService;
+use Common\Service\Zshop\UsersMessagesLogService;
+use Common\Service\Zshop\VersionService;
 use Common\Service\RecommendResume\RecommendService;
 
 use Org\Util\RNCryptor;
@@ -737,7 +737,7 @@ class UserController extends ApiBaseController
         if ( empty($userInfo) ) {
             return $this->returnJson(1, '失败');
         }
-        $dictTradesService =  new \Common\Service\UURecommend\DictTradesService();
+        $dictTradesService =  new \Common\Service\Zshop\DictTradesService();
         $tradeDict = $dictTradesService->getDictTradeList(0);
         $trade = '' ;
         $tradeParentId = '0';

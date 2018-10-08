@@ -2,7 +2,7 @@
 namespace Application;
 
 use Application\BaseController;
-use Common\Service\UURecommend\UsersLoginStatusService;
+use Common\Service\Zshop\UsersLoginStatusService;
 use Org\Util\RNCryptor;
 
 /**
