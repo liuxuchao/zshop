@@ -4,6 +4,7 @@ namespace Admin\Controller;
 use Application\AdminBaseController;
 use Common\Service\Zshop\CouponService;
 use Common\Service\Zshop\ActivityService;
+use Common\Service\Zshop\ProductService;
 use Vendor\Excel\PHPExcel;
 
 /**
@@ -16,11 +17,13 @@ class CouponController extends AdminBaseController
 {
 	private $couponService = null;
     private $activityService = null;
+    private $productService = null;
 	function __construct()
 	{
 		parent::__construct();
 		$this->couponService = new CouponService();
         $this->activityService = new ActivityService();
+        $this->productService = new ProductService();
 	}
 
 
@@ -65,6 +68,8 @@ class CouponController extends AdminBaseController
 			$advertList[$key]['statusName'] = ($value['status'] == 1) ? '正常':'禁用';
 			$advertList[$key]['creatime'] = date("Y-m-d",$value['create_time']) ;
 		}
+
+        
 		
 		$this->assign('param', $param);
         $this->assign('count', $tCount);
@@ -79,13 +84,17 @@ class CouponController extends AdminBaseController
      *
      */
     public function addCoupon(){
-        //开始时间
-        $where['startTime'] = array('egt',strtotime(date('Y-m-d',time()).' 00:00:00'));
+        // //开始时间
+        // $where['startTime'] = array('egt',strtotime(date('Y-m-d',time()).' 00:00:00'));
 
-        //结束时间
-        $where['endTime'] = array('elt',strtotime(date('Y-m-d',time()).' 23:59:59'));
+        // //结束时间
+        // $where['endTime'] = array('elt',strtotime(date('Y-m-d',time()).' 23:59:59'));
 
-    	$activityInfo = $this->activityService->getActivityInfo($where);
+        //获取产品
+        $productInfo = $this->productService->getProduct();
+        $this->assign('productInfo', $productInfo);
+
+    	$activityInfo = $this->activityService->getActivityInfo();
         $this->assign('activityInfo',$activityInfo);
         $this->display();
     }

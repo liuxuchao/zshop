@@ -74,6 +74,14 @@ class ProductModel extends BaseModel
         $result = $this->where($where)->find();
         return $result;   
     }
+
+
+    /**
+     *获取产品
+     */
+    public function getProduct(){
+        return $this->select();
+    }
     
 
 

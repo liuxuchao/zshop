@@ -47,4 +47,12 @@ class ProductService extends BaseService
         $data = $this->model->findByName($name);
         return $data;
     }
+
+
+    /**
+     *获取产品
+     */
+    public function getProduct(){
+        return $this->model->select();
+    }
 }
