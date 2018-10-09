@@ -109,44 +109,6 @@
                    $("#opt_vals,#opt_vals_is_sku").css("display","none");
                }
             });
-           
-            $('#updateForm').bootstrapValidator({
-                message: 'This value is not valid',
-                fields: {
-                    attr_cn: {
-                        validators: {
-                            notEmpty: {message: '属性中文名称不能为空'},
-                            stringLength: {min: 2,max: 30,message: '属性中文名称长度必须在2到30之间'},
-                            remote: {//ajax验证。
-                                url: '/Admin/ProductAttr/ajaxCheckAttrNameOfCn',
-                                type: 'post',
-                                data:{attr_cn:function() {return $('input[name="attr_cn"]').val()},type:'1'},
-                                delay :  2000,
-                                dataFilter:function(data,type){
-                                    return data;
-                                },
-                                message: '属性中文名称已存在',//提示消息
-                            }
-                        }
-                    },
-                    attr_en: {
-                        validators: {
-                            notEmpty: {message: '属性英文名称不能为空'},
-                            stringLength: {min: 2,max: 30,message: '属性英文名称长度必须在2到30之间'},
-                            remote: {//ajax验证。
-                                url: '/Admin/ProductAttr/ajaxCheckAttrNameOfEn',
-                                type: 'post',
-                                data:{attr_en:function() {return $('input[name="attr_en"]').val()},type:'1'},
-                                delay :  2000,
-                                dataFilter:function(data,type){
-                                    return data;
-                                },
-                                message: '属性英文名称已存在',//提示消息
-                            }
-                        }
-                    },
-                }
-            });
        });
     </script>  
     </block>

@@ -35,7 +35,6 @@ class OrderModel extends BaseModel
      */
     protected $fields = [
 		'id',
-		'uid',
 		'order_code',
 		'order_type',
 		'product_id',
@@ -49,7 +48,14 @@ class OrderModel extends BaseModel
 		'pay_status',
 		'pay_type',
 		'pay_serial_number',
-		'pay_time'
+		'pay_time',
+		'coupon_num',
+		'UID',
+		'totalPrice',
+		'couponPrice',
+		'payPrice',
+		'buyNum',
+		'iUseCoupon',
     ];
     
     public function __construct()
@@ -84,10 +90,11 @@ class OrderModel extends BaseModel
                     ->join('left join zs_users users on sorder.uid = users.id')
                     ->join('left join zs_product product on sorder.product_id = product.pro_id')
                     ->where($where)
-                    ->field('sorder.order_code,sorder.create_time,sorder.pay_status,sorder.pay_type,sorder.pay_time,product.name,users.username')
+                    ->field('sorder.order_code,sorder.create_time,sorder.pay_status,sorder.pay_type,sorder.pay_time,product.product_name,users.username')
                     ->order($orderBy)
                     ->limit($offset, $pageSize)
                     ->select();
+		
     }
 
 

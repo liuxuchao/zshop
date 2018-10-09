@@ -62,7 +62,7 @@ class ProductAttrService extends BaseService
         if ( empty($name) ) {
             return false;
         }
-        $data = $this->model->findByEName($name);
+        $data = $this->model->findByEname($name);
         return $data;
     }
     /**

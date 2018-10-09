@@ -123,7 +123,7 @@ class ProductAttrModel extends BaseModel
             return false;
         }
         $where['cate_id'] = $catId;
-        $where['is_sku'] = 1;
+        //$where['is_sku'] = 1;
         return $this->where($where)->field('attr_cn,unit,json_values')->select();
     }
     /**

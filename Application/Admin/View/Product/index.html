@@ -32,7 +32,6 @@
                     <th><i class="icon-suitcase"></i> 销量(个)</th>
                     <th><i class="icon-bookmark"></i> 积分</th>
                     <th><i class="icon-picture"></i> 缩略图</th>
-                    <th><i class="icon-picture"></i> 模板样式</th>
                     <th><i class="icon-time"></i> 创建时间</th>
                     <th><i class="icon-sort"></i> 状态</th>
                     <th><i class="icon-cog"> 操作</th>
@@ -42,7 +41,7 @@
                 <if condition="!empty($productList) and is_array($productList)">
                 <volist name="productList" id="productList">
                 <tr>
-                    <td><{$productList.id}></td>
+                    <td><{$productList.pro_id}></td>
                     <td><a href="#"><{$productList.product_name}></a></td>
                     <td class="hidden-phone"><{$productList.parent_name}></td>
                     <td><{$productList.price}> </td>
@@ -50,15 +49,6 @@
                     <td>暂无 </td>
                     <td><{$productList.integral}> </td>
                     <td><img src="<{$productList.thumb}>" alt="" height="60"></td>
-                    <td>
-                        <if condition="$productList['template_style'] eq 1"> 背景通栏居中 </if>
-                        <if condition="$productList['template_style'] eq 2"> 居中左图右文</if>
-                        <if condition="$productList['template_style'] eq 3"> 居中左文右图</if>
-                        <if condition="$productList['template_style'] eq 4"> 居中背景文字左</if>
-                        <if condition="$productList['template_style'] eq 5"> 居中背景文字右</if>
-                        <br/>
-                        <a href="/Admin/Product/templatesStyle" target="_blank">查看样式</a>
-                    </td>
                     <td><{$productList.create_time|date="Y-m-d H:i:s",###}> </td>
                     <td class="status">
                       <if condition="$productList['status'] eq '0'">  
@@ -67,9 +57,9 @@
                       </if>
                     </td>
                     <td>
-                        <a class="myModal1" data-toggle="modal" href="#myModal1" value="<{$productList.id}>"><button class="btn btn-success btn-xs" title="下架或者上架"><i class="icon-off"></i></button></a>
-                        <a href="/Admin/Product/updates/id/<{$productList.id}>"  title="编辑"><button class="btn btn-primary btn-xs"><i class="icon-pencil"></i></button></a>
-                        <a class="myModal2" data-toggle="modal" href="#myModal2" value="<{$productList.id}>" title="删除"><button class="btn btn-danger btn-xs"><i class="icon-trash "></i></button></a>
+                        <a class="myModal1" data-toggle="modal" href="#myModal1" value="<{$productList.pro_id}>"><button class="btn btn-success btn-xs" title="下架或者上架"><i class="icon-off"></i></button></a>
+                        <a href="/Admin/Product/updates/id/<{$productList.pro_id}>"  title="编辑"><button class="btn btn-primary btn-xs"><i class="icon-pencil"></i></button></a>
+                        <a class="myModal2" data-toggle="modal" href="#myModal2" value="<{$productList.pro_id}>" title="删除"><button class="btn btn-danger btn-xs"><i class="icon-trash "></i></button></a>
                     </td>
                 </tr>
                 </volist>

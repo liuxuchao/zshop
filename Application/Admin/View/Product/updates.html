@@ -91,19 +91,6 @@
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="template_style" class="col-lg-2 col-md-2 col-sm-2 control-label text-right">前台模板样式</label>
-                                        <div class="col-lg-5 col-md-5">
-                                            <select class="form-control" name="template_style" id="template_style">
-                                                <option value="0">请选择模板样式</option>
-                                                <option value="1" <if condition="$data['template_style'] eq 1"> selected="selected" </if>>背景通栏居中</option>
-                                                <option value="2" <if condition="$data['template_style'] eq 2"> selected="selected" </if>>居中左图右文</option>
-                                                <option value="3" <if condition="$data['template_style'] eq 3"> selected="selected" </if>>居中左文右图</option>
-                                                <option value="4" <if condition="$data['template_style'] eq 4"> selected="selected" </if>>居中背景文字左</option>
-                                                <option value="5" <if condition="$data['template_style'] eq 5"> selected="selected" </if>>居中背景文字右</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
                                         <label for="description" class="col-lg-2 col-sm-2 control-label text-right">商品缩略图</label>
                                         <div class="col-lg-6">
                                             <div class="col-lg-8">
@@ -135,37 +122,7 @@
                                     </div>
                                     <div class="form-group" id="product_attributes">
                                         <label for="integral" class="col-lg-2 col-sm-2 control-label">该类商品属性组</label>
-                                        <div class="col-lg-10 col-md-10 input-group" id="attr_values"></div>
-                                    </div>
-                                    <div class="form-group" id="product_attributes_sku">
-                                        <label for="integral" class="col-lg-2 col-sm-2 control-label">该类商品SKU属性组</label>
-                                        <div class="col-lg-6 col-md-6 input-group" id="attr_values_sku">
-                                            <table class="table table-bordered" id="skus">
-                                                <tr>
-                                                    <volist name="sku_name" id="sku_name">
-                                                    <th><{$sku_name.attr_cn}><{$sku_name.unit}></th>
-                                                    </volist>
-                                                    <th>价格</th>
-                                                    <th>库存</th>
-                                                </tr>
-                                                <volist name="sku" id="sku">
-                                                <tr>
-                                                    <?php 
-                                                        $sku_key =array();
-                                                        $sku_key = explode("_",$sku['sku_key']);
-                                                    ?>
-                                                    <td>
-                                                        <?php echo $sku_key[0];?>
-                                                    </td>
-                                                    <td>
-                                                       <?php echo $sku_key[1];?>
-                                                    </td>
-                                                    <td><input type="text" class="form-control attr_prices" value="<{$sku.price}>" name="sku[<{$sku['id']}>_price]" style="padding:0"></td>
-                                                    <td><input type="text" class="form-control attr_prices" value="<{$sku.stock_number}>" name="sku[<{$sku['id']}>_stock_number]" style="padding:0"></td>
-                                                </tr>
-                                                </volist>
-                                            </table>
-                                        </div>
+                                        <div class="col-lg-10 col-md-10 input-group" id="attr_values"><{$data.sku_name}></div>
                                     </div>
                                     <div class="form-group">
                                         <label for="description" class="col-lg-2 col-sm-2 control-label text-right">商品描述</label>
@@ -240,23 +197,6 @@
                     }
                 },
                 error:function(){},
-            });
-            //当选择商品分类后获取该类的商品属性
-            $("#cate_id").on("change",function(){
-                
-                var _cateId = $(this).val();
-                if(_cateId !='0'){
-                    $.ajax({
-                        url: '/Admin/Product/ajaxgetAttrByCate',
-                        type: 'post',
-                        data: {"cate_id":_cateId},
-                        dateType:"json",
-                        success:function(data){
-                            $("#attr_values").html(data);
-                        },
-                        error:function(){},
-                    });
-                }
             });
             
             //表单验证开始
