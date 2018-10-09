@@ -77,7 +77,7 @@ class AdminUserModel extends BaseModel
      * @return array | boolean
      */
     public function getList($page, $pageSize,$orderType=1)
-    {echo 1;die();
+    {
         $page = intval( $page );
         $pageSize = intval($pageSize);
         if ( 0 >= $page || 0>=$pageSize ) {
