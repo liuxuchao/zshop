@@ -1,10 +1,11 @@
 <extend name="../Application/Admin/View/base.html" />
 
-    <block name="title"><title>Zshop商城 优惠券管理-添加优惠券</title></block>
+    <block name="title"><title>Zshop商城 优惠券管理-更新优惠券</title></block>
     <block name="style">
     <link href="/Admin/assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
     <link href="/Admin/assets/jquery-easy-pie-chart/jquery.easy-pie-chart.css" rel="stylesheet" type="text/css" media="screen"/>
     <link rel="stylesheet" href="/Admin/css/owl.carousel.css" type="text/css">
+    <script type="text/javascript" charset="utf-8" src="/Admin/js/jquery.js"> </script>
     </block>
     <block name="content">
         <section class="wrapper">
@@ -14,7 +15,7 @@
                     <ul class="breadcrumb">
                         <li><a href="/Admin/Index"><i class="icon-home"></i> 主面板</a></li>
                         <li><a href="/Admin/Coupon/index">广告管理</a></li>
-                        <li class="active">添加优惠券</li>
+                        <li class="active">更新优惠券</li>
                     </ul>
                     <!--breadcrumbs end -->
                 </div>
@@ -23,10 +24,10 @@
                 <div class="col-lg-12">
                     <section class="panel">
                         <header class="panel-heading">
-                            添加优惠券<a href="/Admin/Coupon/index" class="btn btn-success pull-right btn-sm">返回列表</a>
+                            更新优惠券<a href="/Admin/Coupon/index" class="btn btn-success pull-right btn-sm">返回列表</a>
                         </header>
                         <div class="panel-body">
-                            <form class="form-horizontal" role="form" method="post" action="/Admin/Coupon/doAdd" id="addForm">
+                            <form class="form-horizontal" role="form" method="post" action="/Admin/Coupon/doApdate" id="addForm">
                                 <div class="form-group">
                                     <label for="parent_name" class="col-lg-2 col-sm-2 control-label text-center">活动名称</label>
                                     <div class="col-lg-6">
@@ -53,19 +54,39 @@
                                 <div class="form-group">
                                     <label for="title" class="col-lg-2 col-sm-2 control-label text-center">开始时间</label>
                                     <div class="col-lg-6">
-                                        <input type="text" name="use_from_time" class="form-control dpd1" id="use_from_time" value="<{$data.use_from_time}>" placeholder="开始时间">
+                                        <input type="text" name="use_from_time" class="form-control dpd1" id="use_from_time" value="<{$data.use_from_time|date='m/d/Y',###}>" placeholder="开始时间">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="title" class="col-lg-2 col-sm-2 control-label text-center">结束时间</label>
                                     <div class="col-lg-6">
-                                        <input type="text" name="use_end_time" class="form-control dpd2" id="use_end_time" value="<{$data.use_end_time}>" placeholder="结束时间">
+                                        <input type="text" name="use_end_time" class="form-control dpd2" id="use_end_time" value="<{$data.use_end_time|date='m/d/Y',###}>" placeholder="结束时间">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="title" class="col-lg-2 col-sm-2 control-label text-center">可使用人数</label>
+                                    <label for="title" class="col-lg-2 col-sm-2 control-label text-center">使用限制数量</label>
                                     <div class="col-lg-6">
-                                        <input type="text" name="limit_num" class="form-control dpd2" id="limit_num" value="<{$data.limit_num}>" placeholder="可使用人数">
+                                        <input type="text" name="limit_num" class="form-control" id="limit_num" value="<{$data.limit_num}>" placeholder="使用限制数量">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="title" class="col-lg-2 col-sm-2 control-label text-center">产品使用</label>
+                                    <!-- <div class="col-lg-6">
+                                        <input type="checkbox" name="rangeInfo[]" id="rangeInfo" value="1" checked >模块使用  
+                                        <input type="text" name="moduleValue" id="moduleValue" value="">
+                                        <select> 
+                                            <option>请选择...</option>>
+                                        </select>
+                                    </div> -->
+                                    <div class="col-lg-6">
+                                        <input type="text" name="moduleValue" id="moduleValue" value="<{$data.modulevalue}>">
+                                        <select multiple="multiple" id="productID" > 
+                                            <option>请选择...</option>
+                                            <volist name="productInfo" id="vo">
+                                                <option value="<{$vo.pro_id}>" class="bb"><{$vo.name}></option>
+                                            </volist>
+                                        </select>
+                                        <input type="button" name="" onclick="getvalue()" value="确定">
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -74,6 +95,7 @@
                                         <input type="radio" name="status" id="status" <if condition="$data.status == 1">checked</if> value="1" checked >正常
                                         <input type="radio" name="status" id="status" <if condition="$data.status == 2">checked</if> value="2" >下架
                                     </div>
+                                    <input type="hidden" name="id" value="<{$data.id}>">
                                 </div>
                                 <div class="form-group">
                                     <div class="col-lg-offset-2 col-lg-6">
@@ -86,28 +108,34 @@
                 </div>
             </div>
         </section>
-    </block>
-    <block name="script">
-    <!--百度编辑器-->
-    <script type="text/javascript" charset="utf-8" src="/Ueditor/ueditor.config.js"></script>
-    <script type="text/javascript" charset="utf-8" src="/Ueditor/ueditor.all.min.js"> </script>
-    <!--文件上传-->
-    <script type="text/javascript" charset="utf-8" src="/Admin/plugins/webuploader/js/webuploader.min.js"> </script>
-    <script type="text/javascript">
-        var BASE_URL = '/Admin/plugins/webuploader';
-    </script>
-    <script type="text/javascript" charset="utf-8" src="/Admin/plugins/webuploader/js/demo.js"> </script>
-    <!-- 表单验证 -->
-    <script src="/Admin/js/bootstrapValidator.min.js"></script>
-    <!-- 表单验证 -->
-    <script src="/layer/layer.js"></script>
-    <!-- 加载编辑器的容器 -->
-    <style>
-        ul#upload_img_wrap{display: inline-block;width: 100%;margin: 0;padding-top: 5px;}
-        ul#upload_img_wrap>li{float:left;list-style-type: none;margin: 5px;padding: 0;}
-    </style>
-    <!-- 使用ue -->
-    <script type="text/javascript"> 
+         <script type="text/javascript">
+            function getvalue(){
+                var str = new Array();
+                $("#productID option:selected").each(function () {
+                    str.push($(this).val());
+                })
+               
+               $('#moduleValue').val(str)
+            }
+
+        // $('.productID').bind('change',function(){
+        //     alert(111)
+        // })
+        // $('.productID').onchange = function(){
+        //     alert(111)
+        //     alert($(this).val())
+        // }
+        // $('#getvalue').onclick = function(){
+        //     alert(111)
+        //     var str = '';
+        //         $("#productID option:selected").each(function () {
+        //             alert($(this).val())
+        //             str += $(this).val() + ',';
+        //         })
+                
+        //        str = str.substring(0,str.Length-1);
+        //        $('#moduleValue').val(str)
+        //    }
         $("#addForm").submit(function() { 
             if($('select[name=activity_id]').val() == 0){
                 layer.alert('请选择活动', {
@@ -166,41 +194,6 @@
             //     return false;
             // }
         });
-        var ue = UE.getEditor('editor');
-        // 实例化编辑器，这里注意配置项隐藏编辑器并禁用默认的基础功能。
-        var uploadEditor = UE.getEditor("uploadEditor", {
-            isShow: false,
-            focus: false,
-            enableAutoSave: false,
-            autoSyncData: false,
-            autoFloatEnabled:false,
-            wordCount: false,
-            sourceEditor: null,
-            scaleEnabled:true,
-            toolbars: [["insertimage", "attachment"]]
-        });
-        // 监听多图上传和上传附件组件的插入动作
-        uploadEditor.ready(function () {
-            uploadEditor.addListener("beforeInsertImage", _beforeInsertImage);
-        });
-        // 自定义按钮绑定触发多图上传和上传附件对话框事件
-        document.getElementById('j_upload_img_btn').onclick = function () {
-           var dialog = uploadEditor.getDialog("insertimage");
-           dialog.title = '多图上传';
-           dialog.render();
-           dialog.open();
-        };
-        // 多图上传动作
-        function _beforeInsertImage(t, result) {
-            var imageHtml = '';
-            var imageFiles = '';
-            for(var i in result){
-                imageHtml += '<li><img src="'+result[i].src+'" alt="'+result[i].alt+'" height="150"></li>';
-                imageFiles += result[i].src+',';
-            }
-            document.getElementById('upload_img_wrap').innerHTML = imageHtml;
-            $("#group_img").val(imageFiles);
-        }
+      
     </script>
     </block>
-    

@@ -43,6 +43,8 @@ class CouponModel extends BaseModel
         'status',
         'create_time',
         'limit_num',
+        'moduleValue',
+        'linkUrl'
     ];
     
     public function __construct()

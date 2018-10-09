@@ -88,23 +88,29 @@
                                     <{$ad.cname}>
                                   </td>
                                   <td>
+                                    <{$ad.amount}>
+                                  </td>
+                                  <td>
+                                    <{$ad.use_from_time}>
+                                  </td>
+                                  <td>
+                                    <{$ad.use_end_time}>
+                                  </td>
+                                  <td>
                                     <{$ad.postion_desc}>
                                   </td>
                                   <td>
                                     <{$ad.statusName}>
                                   </td>
                                   <td>
-                                    <{$ad.img_url}>
-                                  </td>
-                                  <td>
                                     <{$ad.creatime}>
                                   </td>
                                   <td>
-                                    <a  class="btn btn-xs btn-warning myModal2" data-toggle="modal" href="/Admin/Advert/updateAdv/id/<{$ad.id}>" value="<{$ad.id}>">修改</a>
-                                    <a  class="btn btn-xs btn-warning myModal2" data-toggle="modal" href="/Admin/Advert/upAdv/id/<{$ad.id}>" value="<{$ad.id}>">上架</a>
-                                    <a  class="btn btn-xs btn-warning myModal2" data-toggle="modal" href="/Admin/Advert/downAdv/id/<{$ad.id}>" value="<{$ad.id}>">下架</a>
-                                    <a  class="btn btn-xs btn-warning myModal2" data-toggle="modal" href="/Admin/Advert/sendCoupon/id/<{$ad.id}>" value="<{$ad.id}>">优惠券发放</a>
-                                    <a  class="btn btn-xs btn-warning myModal2" data-toggle="modal" href="#" value="<{$ad.id}>">优惠券领取链接</a>
+                                    <a  class="btn btn-xs btn-warning myModal2" data-toggle="modal" href="/Admin/Coupon/updateCoupon/id/<{$ad.id}>" value="<{$ad.id}>">修改</a>
+                                    <a  class="btn btn-xs btn-warning myModal2" data-toggle="modal" href="/Admin/Coupon/upAdv/id/<{$ad.id}>" value="<{$ad.id}>">上架</a>
+                                    <a  class="btn btn-xs btn-warning myModal2" data-toggle="modal" href="/Admin/Coupon/downAdv/id/<{$ad.id}>" value="<{$ad.id}>">下架</a>
+                                    <a  class="btn btn-xs btn-warning myModal2" data-toggle="modal" href="/Admin/Coupon/sendCoupon/id/<{$ad.id}>" value="<{$ad.id}>">优惠券发放</a>
+                                    <a  class="btn btn-xs btn-warning myModal2" data-toggle="modal" href="#" alt="<{$ad.linkUrl}>"value="<{$ad.id}>">优惠券领取链接</a>
                                     <!-- <a  class="btn btn-xs btn-warning myModal2" data-toggle="modal" href="#myModal2" value="<{$ad.id}>">删除</a> -->
                                   </td>
                               </tr>

@@ -67,6 +67,8 @@ class CouponController extends AdminBaseController
 		foreach ($advertList as $key => $value) {
 			$advertList[$key]['statusName'] = ($value['status'] == 1) ? '正常':'禁用';
 			$advertList[$key]['creatime'] = date("Y-m-d",$value['create_time']) ;
+            $advertList[$key]['use_from_time'] = date("Y-m-d",$value['use_from_time']) ;
+            $advertList[$key]['use_end_time'] = date("Y-m-d",$value['use_end_time']) ;
 		}
 
         
@@ -113,6 +115,7 @@ class CouponController extends AdminBaseController
         $status = I('post.status','','strip_tags');
         $data['status'] = $status != '0' ? $status : 0;
         $data['create_time'] = time();
+        $data['moduleValue'] = I('post.moduleValue','','strip_tags');
 
         if (empty($data['name'])) {
         	$this->error('优惠券名称不能为空','/Admin/Coupon/addCoupon');
@@ -135,11 +138,11 @@ class CouponController extends AdminBaseController
     public function updateCoupon(){
     	$Id = I('id', '', 'intval,htmlspecialchars');
         $data = $this->couponService->getByPrimaryKey($Id);
-        //开始时间
-        $where['startTime'] = array('egt',strtotime(date('Y-m-d',time()).' 00:00:00'));
-        //结束时间
-        $where['endTime'] = array('elt',strtotime(date('Y-m-d',time()).' 23:59:59'));
-        $activityInfo = $this->activityService->getActivityInfo($where);
+        //获取产品
+        $productInfo = $this->productService->getProduct();
+        $this->assign('productInfo', $productInfo);
+
+        $activityInfo = $this->activityService->getActivityInfo();
         $this->assign('activityInfo',$activityInfo);
         $this->assign('data', $data);
         $this->display();
@@ -166,17 +169,21 @@ class CouponController extends AdminBaseController
         $data['activity_id'] = $activity_id != '0' ? $activity_id : 0;
         $status = I('post.status','','strip_tags');
         $data['status'] = $status != '0' ? $status : 0;
+        $data['moduleValue'] = I('post.moduleValue','','strip_tags');
+
         if(empty($data['name'])){
             $this->error('优惠券名称不能为空','/Admin/Coupon/updateCoupon/id'.$data['id']);
             return;
         }
 
         $upResult = $this->couponService->updateByPrimaryKey($data['id'],$data);
-        if(!$upResult){
-            $this->error('修改失败','/Admin/Coupon/updateCoupon/id/'.$data['id']);
+
+        if($upResult>=0){
+            $this->success('修改成功','/Admin/Coupon/index');
             return;
+            
         }else{
-        	$this->success('修改成功','/Admin/Coupon/index');
+        	$this->error('修改失败','/Admin/Coupon/updateCoupon/id/'.$data['id']);
             return;
         }
     }
@@ -210,14 +217,11 @@ class CouponController extends AdminBaseController
      *上架
      */
     public function upAdv(){
-        if (!IS_POST) {
-            exit("非法请求");
-        }
         $data = [];
-        $data['id'] = I('post.id','','strip_tags');
+        $data['id'] = I('get.id','','strip_tags');
         $data['status'] = 1;
         $upResult = $this->couponService->updateByPrimaryKey($data['id'],$data);
-        if($upResult){
+        if($upResult>=0){
             $this->success('上架成功','/Admin/Coupon/index');
             return;
         }else{
@@ -231,14 +235,11 @@ class CouponController extends AdminBaseController
      *下架
      */
     public function downAdv(){
-        if (!IS_POST) {
-            exit("非法请求");
-        }
         $data = [];
-        $data['id'] = I('post.id','','strip_tags');
-        $data['status'] = 1;
+        $data['id'] = I('get.id','','strip_tags');
+        $data['status'] = 0;
         $upResult = $this->couponService->updateByPrimaryKey($data['id'],$data);
-        if($upResult){
+        if($upResult>=0){
             $this->success('下架成功','/Admin/Coupon/index');
             return;
         }else{
@@ -289,6 +290,7 @@ class CouponController extends AdminBaseController
                 $data[$j][]=$objPHPExcel->getActiveSheet()->getCell("$k$j")->getValue();
             } 
         }  
+        echo "<pre/>";var_dump($data);die();
         return $data;
     }
 
@@ -299,7 +301,7 @@ class CouponController extends AdminBaseController
      * 但是csv建议使用 下面的import_csv 效率更高
      */
     public function import_xls(){
-        $data = import_excel('./Upload/excel/simple.xls');
+        $data = $this->import_excel('./Upload/excel/simple.xls');
         p($data);
     }
 
