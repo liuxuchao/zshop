@@ -271,9 +271,11 @@ class CouponController extends AdminBaseController
         $type = strtolower($type["extension"]);
         $type=$type==='csv' ? $type : 'Excel5';
         ini_set('max_execution_time', '0');
-        Vendor('PHPExcel.PHPExcel');
+        Vendor('Excel.PHPExcel');
+        Vendor('Excel.PHPExcel.IOFactory');
+       // var_dump(Vendor('PHPExcel.PHPExcel'));
         // 判断使用哪种格式
-        $objReader = PHPExcel_IOFactory::createReader($type);
+        $objReader = \PHPExcel_IOFactory::createReader($type);
         $objPHPExcel = $objReader->load($file); 
         $sheet = $objPHPExcel->getSheet(0); 
         // 取得总行数 
@@ -300,9 +302,30 @@ class CouponController extends AdminBaseController
      * 也可以用来导入csv格式的数据
      * 但是csv建议使用 下面的import_csv 效率更高
      */
-    public function import_xls(){
-        $data = $this->import_excel('./Upload/excel/simple.xls');
+    public function import_xls($filename){
+
+        $data = $this->import_excel($filename);
         p($data);
     }
 
+    //文件上传
+    public function upload(){
+        //文件上传
+        $upload = new \Think\Upload();// 实例化上传类
+        $upload->maxSize   =     3145728 ;// 设置附件上传大小
+        $upload->rootPath  =     './Uploads/excel/'; // 设置附件上传根目录
+        // 上传文件
+        $info   =   $upload->upload();
+        if(!$info) {
+            // 上传错误提示错误信息
+            $this->error($upload->getError());
+        }else{
+            // 上传成功 获取上传文件信息
+            foreach($info as $file){
+                $filename = './Uploads/excel/'.$file['savepath'].$file['savename'];
+                $this->import_xls($filename);//传递文件上传的路径给这个方法，进行读取excel文件数据
+              //  $this->display("index");
+            }
+        }
+    }
 }
