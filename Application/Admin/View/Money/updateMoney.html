@@ -1,0 +1,165 @@
+<extend name="../Application/Admin/View/base.html" />
+    <block name="title"><title>Zshop商城-基础设置-编辑套餐</title></block>
+    <block name="style">
+    <!--文件上传-->
+    <link rel="stylesheet" href="/Admin/plugins/webuploader/css/webuploader.css" type="text/css">
+    <link rel="stylesheet" href="/Admin/plugins/webuploader/css/demo.css" type="text/css">
+    <style>
+        th{text-align: center !important;}
+        td{padding:3px !important;vertical-align: middle !important;text-align: center !important;}
+        td input{height:28px !important;}
+    </style>
+    </block>
+    <block name="content">
+        <section class="wrapper">
+            <div class="row">
+                <div class="col-lg-12">
+                    <!--breadcrumbs start -->
+                    <ul class="breadcrumb">
+                        <li><a href="/Admin/Index"><i class="icon-home"></i> 主面板</a></li>
+                        <li><a href="/Admin/Money/index">基础设置</a></li>
+                        <li class="active">编辑套餐</li>
+                    </ul>
+                    <!--breadcrumbs end -->
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <section class="panel">
+                        <header class="panel-heading">
+                            添加员工<a href="/Admin/Product/index" class="btn btn-success pull-right btn-sm">返回列表</a>
+                        </header>
+                        <div class="panel-body">
+                            <form class="form-horizontal" role="form" method="post" action="/Admin/Money/updateMoney" id="addForm">
+                                <div class="col-lg-10 col-md-10">
+                                    <div class="form-group">
+                                        <label for="product_name" class="col-lg-2 col-sm-2 control-label">充值面值</label>
+                                        <div class="col-lg-5 col-md-5">
+                                            <input type="text" name="amonut" class="form-control" id="amonut" value="<{$data.amonut}>" placeholder="充值面值">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="small_title" class="col-lg-2 col-sm-2 control-label">送的金额</label>
+                                        <div class="col-lg-5 col-md-5">
+                                            <input type="text" name="giveMoney" class="form-control" id="giveMoney" value="<{$data.giveMoney}>" placeholder="送的金额">
+                                        </div>
+                                        <input type="hidden" name="id" value="<{$data.id}>">
+                                    </div>
+                                </div>
+                                <div class="col-lg-10">
+                                    <div class="form-group">
+                                        <div class="col-lg-offset-2 col-lg-6">
+                                            <button type="reset" id="resetBtn" class="btn btn-default">取消</button>
+                                            <button type="submit" class="btn btn-danger">提交</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </section>
+    </block>
+    <block name="script">
+    <!--百度编辑器-->
+    <script type="text/javascript" charset="utf-8" src="/Ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/Ueditor/ueditor.all.min.js"> </script>
+    <!--文件上传-->
+    <script type="text/javascript" charset="utf-8" src="/Admin/plugins/webuploader/js/webuploader.min.js"> </script>
+    <script type="text/javascript">
+        var BASE_URL = '/Admin/plugins/webuploader';
+    </script>
+    <script type="text/javascript" charset="utf-8" src="/Admin/plugins/webuploader/js/demo.js"> </script>
+    <!-- 表单验证 -->
+    <script src="/Admin/js/bootstrapValidator.min.js"></script>
+    <!-- 表单验证 -->
+    <script src="/layer/layer.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            //调用百度编辑器
+            var ue = UE.getEditor('editor');
+            //表单验证开始
+            $('#addForm').bootstrapValidator({
+                message: 'This value is not valid',
+                excluded: [':disabled', ':hidden', ':not(:visible)'],//排除无需验证的控件，比如被禁用的或者被隐藏的  
+                submitButtons: 'button[type="submit"]',
+                fields: {
+                    username:{
+                        validators: {
+                            notEmpty: {message: '用户名不能为空'},
+                            callback: {
+                                message: '必须填写用户名',
+                                callback: function(value, validator) {
+                                    if (value == 0) {
+                                        return false;
+                                    }else{
+                                        return true;
+                                    }
+                                }
+                            }
+                        } 
+                    },
+                    userNum:{
+                        validators: {
+                            notEmpty: {message: '员工工号不能为空'},
+                            callback: {
+                                message: '必须填写员工工号',
+                                callback: function(value, validator) {
+                                    if (value == 0) {
+                                        return false;
+                                    }else{
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
+                    },
+                 }               
+             });     
+        });
+    </script>
+    <!-- 加载编辑器的容器 -->
+    <style>
+        ul#upload_img_wrap{display: inline-block;width: 100%;margin: 0;padding-top: 5px;}
+        ul#upload_img_wrap>li{float:left;list-style-type: none;margin: 5px;padding: 0;}
+    </style>
+    <!-- 使用ue -->
+    <script type="text/javascript">
+        // 实例化编辑器，这里注意配置项隐藏编辑器并禁用默认的基础功能。
+        var uploadEditor = UE.getEditor("uploadEditor", {
+            isShow: false,
+            focus: false,
+            enableAutoSave: false,
+            autoSyncData: false,
+            autoFloatEnabled:false,
+            wordCount: false,
+            sourceEditor: null,
+            scaleEnabled:true,
+            toolbars: [["insertimage", "attachment"]]
+        });
+        // 监听多图上传和上传附件组件的插入动作
+        uploadEditor.ready(function () {
+            uploadEditor.addListener("beforeInsertImage", _beforeInsertImage);
+        });
+        // 自定义按钮绑定触发多图上传和上传附件对话框事件
+        document.getElementById('j_upload_img_btn').onclick = function () {
+           var dialog = uploadEditor.getDialog("insertimage");
+           dialog.title = '多图上传';
+           dialog.render();
+           dialog.open();
+        };
+        // 多图上传动作
+        function _beforeInsertImage(t, result) {
+            var imageHtml = '';
+            var imageFiles = '';
+            for(var i in result){
+                imageHtml += '<li><img src="'+result[i].src+'" alt="'+result[i].alt+'" height="150"></li>';
+                imageFiles += result[i].src+',';
+            }
+            document.getElementById('upload_img_wrap').innerHTML = imageHtml;
+            $("#group_img").val(imageFiles);
+        }
+    </script>
+    </block>
+    

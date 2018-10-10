@@ -102,10 +102,11 @@
 	<li class="sub-menu  dcjq-parent-li" >
              <a href="javascript:;"  <if condition="'Version' eq $controllerName" >class="active dcjq-parent"</if>>
               <i class="icon-flag-alt"></i>
-              <span>系统设置</span>
+              <span>基础设置</span>
             </a>
             <ul class="sub">
-              <li <if condition="'add' eq $actionName" >class="active"</if>><a href="/Admin/Version/add">基本设置</a></li>
+              <li  <if condition="'index' eq $actionName and 'Money' eq $controllerName"  >class="active"</if>><a href="/Admin/Money/index">套餐设置</a></li>
+              <li  <if condition="'index' eq $actionName and 'Shop' eq $controllerName"  >class="active"</if>><a href="/Admin/Shop/index">门店设置</a></li>
               <!--<li style="display: none;"><if condition="'add' eq $actionName" >class="active"</if>><a href="/Admin/Version/add">字典管理</a></li>-->
             </ul>
           </li>

@@ -1,0 +1,171 @@
+<extend name="../Application/Admin/View/base.html" />
+
+    <block name="title"><title>Zshop商城-管理-门店列表-第<{$currentPage}>页</title></block>
+    <block name="style">
+    <link href="/Admin/assets/font-awesome/css/font-awesome.css" rel="stylesheet" />
+    <link href="/Admin/assets/jquery-easy-pie-chart/jquery.easy-pie-chart.css" rel="stylesheet" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="/Admin/css/owl.carousel.css" type="text/css">
+    </block>
+<block name="content">
+      <section class="wrapper">
+              <div class="row">
+                  <div class="col-lg-12">
+                      <!--breadcrumbs start -->
+                      <ul class="breadcrumb">
+                          <li><a href="/Admin/Index"><i class="icon-home"></i> 主面板</a></li>
+                          <li><a href="/Admin/Shop/index" >门店管理</a></li>
+                          <li class="active">门店列表</li>
+                      </ul>
+                  </div>
+              </div>
+              <!-- page start-->
+              <div class="row">
+                  <div class="col-lg-12">
+                      <div class="col-sm-12" style="padding-left:0px;padding-right:0px;">
+                      <section class="panel">
+                         <header class="panel-heading">
+                              门店列表
+                              <a href="/Admin/Shop/addShop"><button type="button" class="btn btn-success pull-right btn-sm">添加门店</button></a>    
+                          </header>
+                          <div class="panel-body">
+                              <form class="form-horizontal" role="form" id="search" method="post" action="/Admin/Shop/index" >
+                             
+                                  <div class="col-md-3">
+                                  <div class="form-group">
+                                      <input type="text" name="name" class="form-control" value="<{$param.name}>" placeholder="输入门店名称搜索">
+                                  </div>
+                                  </div>
+                                  <div class="col-md-9">
+                                    <button  id="btn_search" class="btn btn-info">搜索</button>
+                                  </div>
+                              </form>
+                          </div>
+                                  
+                      </section>
+
+                    </div>
+
+
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-lg-12">
+                      <section class="panel">
+                          <table class="table table-striped table-advance table-hover">
+                              <thead>
+                              <tr>
+                                  <th><i class="icon-bullhorn"></i>门店id</th>
+                                  <th><i class="icon-bullhorn"></i>门店名称</th>
+                                  <th><i class="icon-user"></i>门店地址</th>
+                                  <th>操作</th>
+                              </tr>
+                              </thead>
+                              <tbody>
+                              <if condition="!empty($advertList) and is_array($advertList)">
+                              <volist name="refundList" id="re">
+                              <tr>
+                                  <td>
+                                    <{$re.id}>
+                                  </td>
+                                  <td>
+                                    <{$re.sname}>
+                                  </td>
+                                  <td>
+                                    <{$re.address}>
+                                  </td>
+                                  <td>
+                                    <a  class="btn btn-xs btn-warning myModal2" data-toggle="modal" href="/Admin/Shop/updateShop/id/<{$re.id}>" value="<{$re.id}>">退款</a>
+                                    <a  class="btn btn-xs btn-warning myModal2" data-toggle="modal" href="#myModal2" value="<{$re.id}>">删除</a>
+                                  </td>
+                              </tr>
+                              </volist>
+                              <else />
+                              
+                              <tr><td colspan="10">没有数据</td></tr>
+                              
+                              </if>
+                              </tbody>
+                          </table>
+                      </section>
+                  </div>
+                  <if condition="$count neq 0">
+                    <div class="col-lg-6"><div class="dataTables_info" id="editable-sample_info">共 <{$count}> 条记录，当前显示 第 <{$currentPage}> 页</div></div>
+                    <div class="col-lg-6"><{$page}></div>
+                  </if>
+              </div>
+              <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                        <h4 class="modal-title">对话框</h4>
+                                    </div>
+                                    <div class="modal-body">
+
+                                        确定删除此记录
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button data-dismiss="modal" class="btn btn-default" type="button">关闭</button>
+                                        <button class="btn btn-warning" id="confirmvalue" value="" type="button"> 确认</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">提示消息</h4>
+                                    </div>
+                                    <div class="modal-body" id="reback_message">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+              <!-- page end-->
+       </section>
+</block>
+    <block name="script">
+      <script src="/Admin/js/advanced-form-components.js"></script>
+      <script type="text/javascript" src="/Admin/assets/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+          //confirm start
+            $(".myModal2").click(function(){
+                var uid = $(this).attr("value");
+                $("#confirmvalue").attr("value",$(this).attr("value"));
+            });
+            $("#confirmvalue").click(function(){
+              $("#myModal2").css('display','none'); 
+              $("#myModal2").removeClass("in"); 
+              $("body").removeClass("modal-open");
+                var id = $(this).attr("value");
+                  $.post("/Admin/Advert/doDelete",{id:id},function(data,textStatus, jqXHR){
+                    console.log(data);
+                    if (data) {
+                        $("#reback_message").text("删除成功");
+                        $("body").removeClass("modal-open");
+                        $("#myModal3").addClass("in"); 
+                        $("#myModal3").css('display','block'); 
+                    }else{
+                        $("#reback_message").text("删除失败");
+                        $("body").removeClass("modal-open");
+                        $("#myModal3").addClass("in"); 
+                        $("#myModal3").css('display','block'); 
+                    }
+                    setTimeout(function (){
+                        $("#myModal3").removeClass("in"); 
+                        $("#myModal3").css('display','none'); 
+                        $("body").removeClass("modal-open");
+                        $(".modal-backdrop").removeClass("in");
+                     }, 2000);
+                    window.location.reload();
+                  });
+            });
+            
+        });
+      </script>
+    </block>
