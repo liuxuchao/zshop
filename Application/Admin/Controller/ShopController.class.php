@@ -30,10 +30,9 @@ class ShopController extends AdminBaseController
         $tPageSize = I('page_size', 10, 'intval');
 
         $where = array();
-        $wheres = array();
 
         if (!empty($param['name'])) {
-        	$wheres['sname'] = array('like','\'%'.$param['name'].'%\'');
+        	$where['sname'] = array('like','\'%'.$param['name'].'%\'');
         }
 
 
@@ -52,13 +51,13 @@ class ShopController extends AdminBaseController
         $orderBy = ' id desc';
         
     	//获取总数
-        $tCount = $this->shopService->countByCondition($wheres); 
+        $tCount = $this->shopService->countByCondition($where); 
         $show = $this->page($tCount, $tPage, $tPageSize); // 分页显示输出
 		$shopList = $this->shopService->getShopList($tPage, $tPageSize,$orderBy,$where);
-		
+	
 		$this->assign('param', $param);
         $this->assign('count', $tCount);
-        $this->assign('advertList', $advertList);
+        $this->assign('advertList', $shopList);
         $this->assign('currentPage', $tPage);
 		$this->display();
 	}
@@ -85,8 +84,8 @@ class ShopController extends AdminBaseController
        
        // $data['create_time'] = time();
 
-        if (empty($data['name'])) {
-        	$this->error('门店名称不能为空','/Admin/Advert/addAdv');
+        if (empty($data['sname'])) {
+        	$this->error('门店名称不能为空','/Admin/Shop/addAdv');
             return;
         }
 
@@ -128,7 +127,7 @@ class ShopController extends AdminBaseController
         $data['lon'] = I('post.lon','','strip_tags');
         $data['lat'] = I('post.lat','','strip_tags');
         $data['address'] = I('post.address','','strip_tags');
-        if(empty($data['name'])){
+        if(empty($data['sname'])){
             $this->error('门店名称不能为空','/Admin/Shop/updateShop/id'.$data['id']);
             return;
         }
