@@ -162,5 +162,13 @@ class UserService extends BaseService
         $data = $this->model->doDelete($userId);
         return $data;
     }
+
+
+    /**
+     *判断该用户是否存在
+     */
+    public function isExist($where = array()){
+        return $this->model->isExist($where);
+    }
     
 }

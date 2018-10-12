@@ -420,6 +420,14 @@ class UserModel extends BaseModel
             return false;
         }
     }
+
+
+    /**
+     *判断用户是否存在
+     */
+    public function isExist($where = array()){
+        return $this->where($where)->count();
+    }
    
 }
 
